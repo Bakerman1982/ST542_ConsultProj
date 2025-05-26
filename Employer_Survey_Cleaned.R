@@ -86,9 +86,6 @@ Employer_Data <- Employer_Data %>%
 
 #Q40 -> Q40 (Formatting issue), Which of the following skills did you learn after graduation from your DVM program?  Select all that apply. - Selected Choice
 
-#Q10_4, Q17_2, Q25, Q49, Q31, Q39, Q51
-
-
 # Remove uncertain/problematic columns while awaiting clarification
 Employer_Data_Clean <- Employer_Data %>%
   select(
@@ -101,7 +98,7 @@ Employer_Data_Clean <- Employer_Data %>%
     -starts_with("Q51")
   )
 
-# Remove specified ResponseId rows (corresponds to rows where multiple answers were given but not approriate to the question)
+# Remove specified record_id rows (corresponds to rows where multiple answers were given but not appropriate to the question)
 Employer_Data_Clean <- Employer_Data_Clean %>%
   filter(!(record_id %in% c("R_3NQGIXluF0NVk8B", "R_1JyDJnIPpkeoXOi")))
 
@@ -109,48 +106,10 @@ Employer_Data_Clean <- Employer_Data_Clean %>%
 dim(Employer_Data)
 dim(Employer_Data_Clean)
 
+colnames(Employer_Data_Clean)
+view(Employer_Data_Clean)
+view(Employer_Data)
 
-df <- Employer_Data %>%
-  mutate(Q3_list = strsplit(as.character(Q3), ","))  # Convert string to list
-
-# 2. Create binary indicator columns for Q3_1 to Q3_14
-for (i in 1:14) {
-  df[[paste0("Q3", i)]] <- sapply(df$Q3_list, function(x) as.integer(i %in% as.integer(x)))
-}
-
-# 3. Optional: Remove the original list column
-df <- df %>% select(-Q3_list)
-
-
-colnames(Employer_Data)
-
-
-
-
-
-
-
-
-
-
-
-# 2. Identify multi-response columns
-multi_response_cols <- Employer_Data %>% 
-  select(matches("^qid(4|5|7|10|11|12|13|14|16|17|18|19|20|21|22|24|26|27|28|29|30|33|34|353|36|37)_\\d+$")) %>%
-  names()
-
-
-# 3. Pivot to long format
-Employer_Long <- Employer_Data %>%
-  pivot_longer(
-    cols = all_of(multi_response_cols),
-    names_to = "question_item",
-    values_to = "response"
-  ) %>%
-  filter(!is.na(response) & response != "")
-
-
-Employer_Long
-
+unique(Employer_Data_Clean$Q3)
 
 
