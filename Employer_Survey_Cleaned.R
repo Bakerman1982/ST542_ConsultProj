@@ -7,21 +7,16 @@ library(janitor)
 library(googledrive)
 
 
-# Connect and Import
-# Connect to Google Drive.  Place the email address you use to reach the shared drive. 
-email = "blakerma@ncsu.edu"
-drive_auth(email)
+#############################################
+## Connect, Import, group and primary key. ##
+#############################################
 
-
-# Imports dataset to R environment; use clean_names to coerce col_names for R
-Employer_Data <- read_csv("Employer_Dentistry_Survey.csv", skip = 2) %>%
-  clean_names()
-
+# Read data into R environment. 
+Employer_Data <- read_csv("Employer_Dentistry_Survey.csv", skip = 2) %>% clean_names()
 
 # Adjust headers for readability and add grouping identifier.
 # Remove redundancy in column names, replace "quid" with "Q", all "_text" with "T". 
 colnames(Employer_Data) <- gsub("_text$", "_T", gsub("^import_id_", "", gsub("qid", "Q", colnames(Employer_Data))))
-
 
 # Add grouping identifier now so if we combine data later, we have our groups delineated. 
 Employer_Data <- Employer_Data %>%
@@ -31,12 +26,11 @@ Employer_Data <- Employer_Data %>%
   )
 
 
-
 ############################
 #####  DATA WRANGLING  #####
 ############################
 
-# LANGUAGE CONVERSIONS
+### GLOSSARY/PHRASE CONVERSION ###
 # There are some differences in terminologies within the survey and the output. 
 
 #SURVEY:  where it says "practice/learn"
@@ -49,7 +43,8 @@ Employer_Data <- Employer_Data %>%
 #OUTPUT:  the output uses the term "COHAT" (short for `Comprehensive Oral Health Assessment and Treatment`)
 
 
-# Convert column responses that are comma-separated into wide-format. 
+
+### Convert column responses that are comma-separated into wide-format. ###
 # Convert all question responses to binaries. 
 
 # These are the columns that have comma-separated values that need splitting. 
@@ -106,10 +101,73 @@ Employer_Data_Clean <- Employer_Data_Clean %>%
 dim(Employer_Data)
 dim(Employer_Data_Clean)
 
-colnames(Employer_Data_Clean)
-view(Employer_Data_Clean)
-view(Employer_Data)
+# Format the column headers so that it is sortable both by question and sub question. 
+pad_question_ids <- function(col_names) {
+  col_names %>%
+    # Step 1: Pad main Q numbers (e.g., Q3 → Q03, Q9 → Q09)
+    str_replace_all("Q(\\d{1})(?!\\d)", "Q0\\1") %>%
+    # Step 2: Pad sub-question numbers (e.g., Q03_3 → Q03_03, Q12_4 → Q12_04)
+    str_replace_all("Q(\\d{2})_(\\d{1})(?!\\d)", "Q\\1_0\\2")
+}
+# Apply to your data frame column names
+colnames(Employer_Data_Clean) <- pad_question_ids(colnames(Employer_Data_Clean))
+# Optional: View all column names that start with Q, now properly sorted
+colnames(Employer_Data_Clean)[startsWith(colnames(Employer_Data_Clean), "Q")] %>%
+  sort()
 
-unique(Employer_Data_Clean$Q3)
 
+# Rearrange the table so that it makes sense and lines up with the survey document. 
+# Identify the non-Q columns to keep at the beginning and end
+non_q_start <- Employer_Data_Clean[1:17]                       # First 17 columns
+non_q_end   <- Employer_Data_Clean[, (ncol(Employer_Data_Clean)-1):ncol(Employer_Data_Clean)]  # Last 2 columns
+
+# Extract and sort the "Q"-starting columns
+q_cols <- Employer_Data_Clean %>%
+  select(starts_with("Q")) %>%
+  select(sort(names(.)))  # Sort by name
+
+# Combine into final sorted data frame
+Employer_Data_Clean_Sorted <- bind_cols(non_q_start, q_cols, non_q_end)
+
+# Optional: View the new column order
+colnames(Employer_Data_Clean_Sorted)
+
+
+
+
+
+
+
+
+
+
+
+############################
+########  MAPPINGS  ########
+############################
+
+# There are some serious issues with the columns and data that I need to resolve. I am going to address what needs to happen column grouping by column grouping.  
+
+Q2
+Q3Q4Q5Q6Q7Q8Q9Q10Q11Q12Q13Q14Q15Q16Q17Q18Q19Q20
+
+There are only 40 questions on this survey but I am seeing the following column headers that are outside the bounds of the question count:
+[134] "Q43" mapped to Q31 in .csv
+[135] "Q44_01" mapped to Q34_1 in .csv
+[136] "Q44_02" mapped to Q34_2 in .csv
+[137] "Q44_03" mapped to Q34_3 in .csv
+[138] "Q46" mapped to Q37 in .csv
+[139] "Q46_03_T" mapped to Q37_T in .csv
+[140] "Q47_01" mapped to Q35_1 in .csv
+[141] "Q47_02" mapped to Q35_2 in .csv
+[142] "Q48" mapped to Q2 in .csv
+[143] "Q50" Possibly mapped to Q20 or Q26.  
+[144] "Q50_13_T" Possibly mapped to Q20 or Q26.  
+[145] "Q52" likely mapped to Q39 based on question in row 2 of same column. 
+[146] "Q52_13_T" likely mapped to Q39 based on question in row 2 of same column. 
+[147] "Q53" question regarding age >= 18; not in survey, possibly a part of the qualtric administrative preprocessing. 
+
+
+I am missing a column for Q23.  Its more akin to 22_T right after column CR.  
+Q:  "Q23 If you selected ""Other"" in the above item, where do you believe DVM students are performing dental procedures?"
 
