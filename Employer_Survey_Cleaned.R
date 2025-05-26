@@ -36,24 +36,44 @@ Employer_Data <- Employer_Data %>%
 #####  DATA WRANGLING  #####
 ############################
 
+# LANGUAGE CONVERSIONS
+# There are some differences in terminologies within the survey and the output. 
+
+#SURVEY:  where it says "practice/learn"
+#OUTPUT:  the output uses "observe(d)"
+
+#SURVEY:  where it says "DVM students"
+#OUTPUT:  the output uses "early career veterinarians"
+
+#SURVEY:  where it says "dental procedures"
+#OUTPUT:  the output uses the term "COHAT" (short for `Comprehensive Oral Health Assessment and Treatment`)
+
+
+
+
+
+
 # Convert column responses that are comma-separated into wide-format. 
 # Convert all question responses to binaries. 
 
 # These are the columns that have comma-separated values that need splitting. 
 # Q3, Q10_3, Q11, Q16, Q17_2, Q_18, Q20, Q25, Q49, Q31, Q39, Q51, Q40
-Q3, What does a COHAT include at your practice/organization?  Select all that apply. - Selected Choice
 
-Q10_4, Which of the following types of instructors found in a typical DVM program do you think should be training DVM students in dentistry?  Select one response for each category of educator listed below. - Registered Veterinary Technicians
+#Q3 -> Q3 (Formatting Issue), What does a COHAT include at your practice/organization?  Select all that apply. - Selected Choice
 
-Q11, Which of the following instructors trained the early career veterinarians hired into your practice in dentistry during their DVM program?  Select all that apply. - Selected Choice
+#Q10_4, Which of the following types of instructors found in a typical DVM program do you think should be training DVM students in dentistry?  Select one response for each category of educator listed below. - Registered Veterinary Technicians 
+NOTE:  Participant answered "agree" and "disagree"; not a formatting issue. 
 
-Q16, Which of the following skills do you think were taught as part of the pre-clinical dentistry curriculum in the DVM program attended by the early career veterinarians at your practice?  Select all that apply. - Selected Choice
+#Q11 -> Q11 (Formatting Issue), Which of the following instructors trained the early career veterinarians hired into your practice in dentistry during their DVM program?  Select all that apply. - Selected Choice
 
-Q17_2, Which of the following skills do you think that DVM students should be taught during their pre-clinical dentistry courses.  Select one response for skill listed below. - Radiographic positioning
+#Q16 -> Q16 (Formatting Issue), Which of the following skills do you think were taught as part of the pre-clinical dentistry curriculum in the DVM program attended by the early career veterinarians at your practice?  Select all that apply. - Selected Choice
 
-Q_18, What format of pre-clinical instruction in dentistry do you believe that the early career veterinarians hired into your practice completed as part of their DVM training?  Select all that apply. - Selected Choice
+#Q17_2, Which of the following skills do you think that DVM students should be taught during their pre-clinical dentistry courses.  Select one response for skill listed below. - Radiographic positioning
+NOTE:  Participant answered "agree" and "disagree"; not a formatting issue. 
 
-Q20, Which of the following format of instruction in dentistry do you believe that the early career veterinarians hired into your practice completed during their clinical training?  Select all that apply. - Selected Choice
+#Q_18 -> Q18 (Formatting Issue), What format of pre-clinical instruction in dentistry do you believe that the early career veterinarians hired into your practice completed as part of their DVM training?  Select all that apply. - Selected Choice
+
+#Q20, Which of the following format of instruction in dentistry do you believe that the early career veterinarians hired into your practice completed during their clinical training?  Select all that apply. - Selected Choice
 
 Q25, Which of the following skills do you think that early career veterinarians hired into your practice observed during their clinical training?  Select all that apply. - Selected Choice
 
