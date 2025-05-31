@@ -15,16 +15,21 @@ library(naniar)
 #############################################
 
 # Read data into R environment. 
-Employer_Data <- read_csv("Employer_Dentistry_Survey.csv") %>% 
+Educator_Data <- read_csv("PCVE_Dentistry_Survey.csv") %>% 
   clean_names()
-Employer_Data_Clean <- Employer_Data
+Educator_Data_Clean <- Educator_Data
 
 # Add grouping identifier now so if we combine data later, we have our groups delineated. 
-Employer_Data_Clean <- Employer_Data_Clean %>%
+Educator_Data_Clean <- Educator_Data_Clean %>%
   mutate(
-    group = "Employer", #Categorizes all responses as Employer
+    group = "Educator", #Categorizes all responses as Employer
     respondent_id = row_number() #Maintains respondent ID
   )
+
+
+
+Educator_Data_Clean %>%
+  select(starts_with("Q04"))
 
 ############################
 #####  DATA WRANGLING  #####
@@ -44,8 +49,8 @@ Employer_Data_Clean <- Employer_Data_Clean %>%
 
 # Adjust headers for readability and add grouping identifier.
 # Remove redundancy in column names, replace "quid" with "Q", all "_text" with "T". 
-colnames(Employer_Data_Clean) <- gsub("_text$", "_T", gsub("q", "Q", colnames
-(Employer_Data_Clean)))
+colnames(Educator_Data_Clean) <- gsub("_text$", "_T", gsub("q", "Q", colnames
+                                                           (Educator_Data_Clean)))
 
 # Format the column headers so that it is sort-able both by question and sub question. 
 pad_question_ids <- function(col_names) {
@@ -54,79 +59,78 @@ pad_question_ids <- function(col_names) {
     str_replace_all("Q(\\d{2})_(\\d{1})(?!\\d)", "Q\\1_0\\2")
 }
 # Apply to your data frame column names
-colnames(Employer_Data_Clean) <- pad_question_ids(colnames(Employer_Data_Clean))
+colnames(Educator_Data_Clean) <- pad_question_ids(colnames(Educator_Data_Clean))
 
 
 
 ##### FILTER DATASET #####
 
 # Remove uncertain/problematic columns while awaiting clarification
-Employer_Data_Clean <- Employer_Data_Clean %>%
+Educator_Data_Clean <- Educator_Data_Clean %>%
   select(
     ip_address, progress, duration_in_seconds,
     finished, recorded_date, response_id, group, respondent_id,
-    starts_with("Q04"),
-    starts_with("Q09"),
-    starts_with("Q16"),
-    starts_with("Q17"),
-    starts_with("Q22"),
-    starts_with("Q24")
+    starts_with("Q04"), #Keep
+    starts_with("Q07"), #Was 9 in EMP, Its 7 in EDU
+    starts_with("Q12"), #Was 16 in EMP, Its 12 in EDU
+    starts_with("Q13"), #Was 17 in EMP, Its 13 in EDU
+    starts_with("Q18"), #Was 22 in EMP, Its 18 in EDU
+    starts_with("Q24")  #Was 24 in EMP, Its 19 in EDU
   )
 
+colnames(Educator_Data_Clean)
+
+
 # Remove specified record_id rows (corresponds to rows where multiple answers were given but not appropriate to the question)
-Employer_Data_Clean <- Employer_Data_Clean %>%
+Educator_Data_Clean <- Educator_Data_Clean %>%
   slice(-1, -2)
 
-
 ##### Making corrections to question formatting #####
+Educator_Data_Clean %>% select(starts_with("Q12")) %>% print(n=length(Educator_Data_Clean))
 
 # Question #04
 # Renames the text response to index 13 and places it in its order. 
-Employer_Data_Clean <- Employer_Data_Clean %>%
+Educator_Data_Clean <- Educator_Data_Clean %>%
   rename(Q04_13 = Q04_12_T) %>%
   relocate(Q04_13, .after = Q04_12)
 
-# Question #09 does not need correcting. 
+# Question #07 does not need correcting. 
 
-# Question #16
-# Add column for unanswered response #9 to account for no responses.
-Employer_Data_Clean <- Employer_Data_Clean %>%
-  mutate(Q16_09 = 0)
-
+# Question #12
 # Change column name from _10_T to _11 for readability. 
-Employer_Data_Clean <- Employer_Data_Clean %>%
-  rename(Q16_11 = Q16_10_T)
+Educator_Data_Clean <- Educator_Data_Clean %>%
+  rename(Q12_11 = Q12_10_T)
 
 # Process Q16: Split responses and pivot to wide format
-Employer_Data_Clean <- Employer_Data_Clean %>%
+Educator_Data_Clean <- Educator_Data_Clean %>%
   # Create a temporary respondent ID if not already done
   mutate(respondent_id = row_number()) %>%
   # Separate comma-separated values into long format
-  separate_rows(Q16, sep = ",") %>%
+  separate_rows(Q12, sep = ",") %>%
   # Trim whitespace if any
-  mutate(Q16 = str_trim(Q16)) %>%
+  mutate(Q12 = str_trim(Q12)) %>%
   # Filter out any non-numeric or NA entries just in case
-  filter(!is.na(Q16) & str_detect(Q16, "^\\d+$")) %>%
+  filter(!is.na(Q12) & str_detect(Q12, "^\\d+$")) %>%
   # Pad values with leading zero for consistent column naming (01, 02, ..., 11)
-  mutate(Q16 = str_pad(Q16, width = 2, pad = "0"),
+  mutate(Q12 = str_pad(Q12, width = 2, pad = "0"),
          value = 1) %>%
   # Pivot wider to get binary indicator columns
   pivot_wider(
-    names_from = Q16,
-    names_prefix = "Q16_",
+    names_from = Q12,
+    names_prefix = "Q12_",
     values_from = value,
     values_fill = 0
   )
 
-# Question #17
+# Question #13
 # Contains NA values but I was opposed to removing them due to the sampling concerns 
 # the fact that the rest of the rows are useable. 
 
-# Question #22
+# Question #18
 # Contains NA values but I was opposed to removing them due to the sampling concerns 
 # the fact that the rest of the rows are useable. 
 
-# Question #20
+# Question #24
 # Contains NA values but I was opposed to removing them due to the sampling concerns 
 # the fact that the rest of the rows are useable. 
 
@@ -137,14 +141,16 @@ meta_cols <- c("ip_address", "progress", "duration_in_seconds",
                "finished", "recorded_date", "response_id", "group", "respondent_id")
 
 # Sort the rest alphabetically
-Employer_Data_Clean <- Employer_Data_Clean %>%
+Educator_Data_Clean <- Educator_Data_Clean %>%
   select(all_of(meta_cols), sort(setdiff(names(.), meta_cols)))
 
-summary(Employer_Data_Clean)
+colnames(Educator_Data_Clean)
+
+summary(Educator_Data_Clean)
 
 
-#Visualize heatmap of missing values. 
-Employer_Data_Clean %>%
+
+Educator_Data_Clean %>%
   select(-ip_address, -recorded_date, -response_id) %>%  # Optional: remove metadata
   vis_miss(sort_miss = TRUE) +
   labs(title = "Heatmap of Missing Values in Employer Survey")
