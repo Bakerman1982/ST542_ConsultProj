@@ -1,147 +1,153 @@
-# Install Packages
+#Install Packages
 #install.packages("tidyverse")
 #install.packages("janitor")
-
+#install.packages("gtools")
 # Load Libraries
 library(tidyverse)
 library(janitor)
-
+library(gtools)
 
 #############################################
 ## Connect, Import, group and primary key. ##
 #############################################
 
 # Read data into R environment. 
-Employer_Data <- read_csv("Employer_Dentistry_Survey.csv") %>%#, skip = 2) %>% 
+Employer_Data <- read_csv("Employer_Dentistry_Survey.csv") %>% 
   clean_names()
-
-# Adjust headers for readability and add grouping identifier.
-# Remove redundancy in column names, replace "quid" with "Q", all "_text" with "T". 
-colnames(Employer_Data) <- gsub("_text$", "_T", gsub("^import_id_", "", gsub("qid", "Q", colnames(Employer_Data))))
+Employer_Data_Clean <- Employer_Data
 
 # Add grouping identifier now so if we combine data later, we have our groups delineated. 
-Employer_Data <- Employer_Data %>%
+Employer_Data_Clean <- Employer_Data_Clean %>%
   mutate(
     group = "Employer", #Categorizes all responses as Employer
     respondent_id = row_number() #Maintains respondent ID
   )
 
-
 ############################
 #####  DATA WRANGLING  #####
 ############################
 
+# LIKERT SCALE
+#Question 4   (Binarize)
+#Question 17  (Binarize)
 
-# Remove uncertain/problematic columns while awaiting clarification
-Employer_Data_Clean <- Employer_Data %>%
-  select(
-    -starts_with("Q10"),
-    -starts_with("Q17"),
-    -starts_with("Q25"),
-    -starts_with("Q49"),
-    -starts_with("Q31"),
-    -starts_with("Q39"),
-    -starts_with("Q51"),
-    -starts_with("Q43"),
-    -starts_with("Q44"),
-    -starts_with("Q46"),
-    -starts_with("Q47"),
-    -starts_with("Q48"),
-    -starts_with("Q50"),
-    -starts_with("Q52"),
-    -starts_with("Q5")
-    )
+# SELECT ALL THAT APPLY
+#Question 16  (Widen)
 
+# TEXT
+#Question 09
+#Question 22 (Related:  Question 23)
+#Question 24
 
-# Remove specified record_id rows (corresponds to rows where multiple answers were given but not appropriate to the question)
-Employer_Data_Clean <- Employer_Data_Clean %>%
-filter(!(response_id %in% c("R_3NQGIXluF0NVk8B", "R_1JyDJnIPpkeoXOi")))
-
-# Dimensionality checkpoint.  Making sure removals and filters have been applied. 
-dim(Employer_Data)
-dim(Employer_Data_Clean)
+# Adjust headers for readability and add grouping identifier.
+# Remove redundancy in column names, replace "quid" with "Q", all "_text" with "T". 
+colnames(Employer_Data_Clean) <- gsub("_text$", "_T", gsub("q", "Q", colnames
+(Employer_Data_Clean)))
 
 # Format the column headers so that it is sort-able both by question and sub question. 
 pad_question_ids <- function(col_names) {
   col_names %>%
-    # Step 1: Pad main Q numbers (e.g., Q3 → Q03, Q9 → Q09)
     str_replace_all("Q(\\d{1})(?!\\d)", "Q0\\1") %>%
-    # Step 2: Pad sub-question numbers (e.g., Q03_3 → Q03_03, Q12_4 → Q12_04)
     str_replace_all("Q(\\d{2})_(\\d{1})(?!\\d)", "Q\\1_0\\2")
 }
-
 # Apply to your data frame column names
 colnames(Employer_Data_Clean) <- pad_question_ids(colnames(Employer_Data_Clean))
-colnames(Employer_Data_Clean)
 
 
 
+##### FILTER DATASET #####
 
-Employer_Data_Clean %>% select("q3")
-
-
-###### Spread columns that can go to wide ######
-
-
-
-#####  Restructure Questions:  #####
-# Question 03
-q03_choices <- c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13")
-# Loop over choices and create binary columns named Q11_1, Q11_2, ..., Q11_6
-for (choice in q03_choices) {
-  Employer_Data_Clean[[paste0("Q03_", choice)]] <- ifelse(
-    grepl(paste0("\\b", choice, "\\b"), Employer_Data_Clean$q11),
-    1, 0
-  )
-}
-# Question 11
-q11_choices <- c("1", "2", "3", "4", "5", "6")
-for (choice in q11_choices) {
-  Employer_Data_Clean[[paste0("Q11_", choice)]] <- ifelse(
-    grepl(paste0("\\b", choice, "\\b"), Employer_Data_Clean$q11), 1, 0)
-}
-
-
-
-
-# Question 13 -- Rename columns
+# Remove uncertain/problematic columns while awaiting clarification
 Employer_Data_Clean <- Employer_Data_Clean %>%
-  rename(
-    q13_01 = q13_1,
-    q13_02 = q13_06_T
+  select(
+    ip_address, progress, duration_in_seconds,
+    finished, recorded_date, response_id, group, respondent_id,
+    starts_with("Q04"),
+    starts_with("Q09"),
+    starts_with("Q16"),
+    starts_with("Q17"),
+    starts_with("Q22"),
+    starts_with("Q24")
   )
 
+# Remove specified record_id rows (corresponds to rows where multiple answers were given but not appropriate to the question)
+Employer_Data_Clean <- Employer_Data_Clean %>%
+  filter(!(response_id %in% c("R_3NQGIXluF0NVk8B", "R_1JyDJnIPpkeoXOi"))) %>%
+  filter(!str_detect(Q16, "Which of the following skills")) %>%
+  filter(!str_detect(Q16, "ImportId"))
 
 
+##### Making corrections to question formatting #####
 
-# Drop the original Q11 column
-Employer_Data_Clean$q11 <- NULL
-Employer_Data_Clean$q11 <- NULL
+# Question #04
+# Renames the text response to index 13 and places it in its order. 
+Employer_Data_Clean <- Employer_Data_Clean %>%
+  rename(Q04_13 = Q04_12_T) %>%
+  relocate(Q04_13, .after = Q04_12)
+
+# Question #09 does not need correcting. 
+
+# Question #16
+# Add column for unanswered response #9 to account for no responses.
+Employer_Data_Clean <- Employer_Data_Clean %>%
+  mutate(Q16_09 = 0)
+
+# Change column name from _10_T to _11 for readability. 
+Employer_Data_Clean <- Employer_Data_Clean %>%
+  rename(Q16_11 = Q16_10_T)
+
+# Process Q16: Split responses and pivot to wide format
+Employer_Data_Clean <- Employer_Data_Clean %>%
+  # Create a temporary respondent ID if not already done
+  mutate(respondent_id = row_number()) %>%
+  # Separate comma-separated values into long format
+  separate_rows(Q16, sep = ",") %>%
+  # Trim whitespace if any
+  mutate(Q16 = str_trim(Q16)) %>%
+  # Filter out any non-numeric or NA entries just in case
+  filter(!is.na(Q16) & str_detect(Q16, "^\\d+$")) %>%
+  # Pad values with leading zero for consistent column naming (01, 02, ..., 11)
+  mutate(Q16 = str_pad(Q16, width = 2, pad = "0"),
+         value = 1) %>%
+  # Pivot wider to get binary indicator columns
+  pivot_wider(
+    names_from = Q16,
+    names_prefix = "Q16_",
+    values_from = value,
+    values_fill = 0
+  )
+
+# Question #17
+# Contains NA values but I was opposed to removing them due to the sampling concerns 
+# the fact that the rest of the rows are useable. 
+
+# Question #22
+# Contains NA values but I was opposed to removing them due to the sampling concerns 
+# the fact that the rest of the rows are useable. 
+
+# Question #20
+# Contains NA values but I was opposed to removing them due to the sampling concerns 
+# the fact that the rest of the rows are useable. 
 
 
+# Sort Everything:
+# Define metadata columns to preserve in order
+meta_cols <- c("ip_address", "progress", "duration_in_seconds",
+               "finished", "recorded_date", "response_id", "group", "respondent_id")
+
+# Sort the rest alphabetically
+Employer_Data_Clean <- Employer_Data_Clean %>%
+  select(all_of(meta_cols), sort(setdiff(names(.), meta_cols)))
+
+summary(Employer_Data_Clean)
 
 
-# Optional: View all column names that start with Q, now properly sorted
-colnames(Employer_Data_Clean)[startsWith(colnames(Employer_Data_Clean), "q")] %>%
-  sort()
+# install.packages("naniar")
+library(naniar)
+Employer_Data_Clean %>%
+  select(-ip_address, -recorded_date, -response_id) %>%  # Optional: remove metadata
+  vis_miss(sort_miss = TRUE) +
+  labs(title = "Heatmap of Missing Values in Employer Survey")
 
-Employer_Data_Clean %>% select("Q02", "Q02_13_T") %>% print(n = 31)
 
-
-
-# Rearrange the table so that it makes sense and lines up with the survey document. 
-# Identify the non-Q columns to keep at the beginning and end
-non_q_start <- Employer_Data_Clean[1:17]                       # First 17 columns
-non_q_end   <- Employer_Data_Clean[, (ncol(Employer_Data_Clean)-1):ncol(Employer_Data_Clean)]  # Last 2 columns
-
-# Extract and sort the "Q"-starting columns
-q_cols <- Employer_Data_Clean %>%
-  select(starts_with("Q")) %>%
-  select(sort(names(.)))  # Sort by name
-
-# Combine into final sorted data frame
-Employer_Data_Clean_Sorted <- bind_cols(non_q_start, q_cols, non_q_end)
-
-# Optional: View the new column order
-colnames(Employer_Data_Clean_Sorted)
 
