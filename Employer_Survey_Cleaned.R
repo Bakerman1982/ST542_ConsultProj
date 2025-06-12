@@ -118,6 +118,8 @@ Employer_Data_Clean <- Employer_Data_Clean %>%
     values_fill = 0
   )
 
+dim(Employer_Data_Clean)
+
 # Question #17
 # Contains NA values but I was opposed to removing them due to the sampling concerns 
 # the fact that the rest of the rows are useable. 
@@ -150,4 +152,4 @@ Employer_Data_Clean %>%
   labs(title = "Heatmap of Missing Values in Employer Survey")
 
 
-
+Employer_Data_Clean %>% 

@@ -1,0 +1,96 @@
+---
+title: "Exploratory Data Analysis"
+subtitle: "Educators and Employers Survey Data Exploration"
+author: 
+  - "Brock Akerman"
+  - "Hanan Ali"
+  - "Taylor Cesarski"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+format:
+  pdf:
+    pdf-engine: xelatex
+    mainfont: "Times New Roman"
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    fig-align: center
+    fig-cap-location: top
+    fig-pos: 'H'
+    geometry: margin=1in
+    fontsize: 11pt
+    keep-tex: true
+    linkcolor: blue
+---
+
+
+```{r packages, output=F, echo=F}
+library(tidyverse)
+library(janitor)
+library(gtools)
+library(naniar)
+```
+
+\newpage
+
+Our researcher, Dr. Ross-Estrada has distributed a survey to two distinct participant groups:
+
+* Educators who teach in the field of dental veterinary medicine (DVM), and
+
+* Employers who have recently hired graduates from DVM programs.
+
+These two respondent groups provide us with two separate datasets—educators and employers—each with its own structure and variables. While there is some overlap between them, differences in content and context mean that we will treat these datasets separately in most of our analysis.  Dr. Ross-Estrada wishes to extract insights about the two groups and their perspectives concerning training and capabilities of new graduates of dental veterinarian medicine programs.  The survey was conducted during the summer of 2024 using Qualtrics--an experience management software service.  Selection of the participants was not conducted randomly; instead our researchers network was used.  
+
+## Initial Data Inspection
+-Load the data and inspect dimensions (n rows × p columns)
+-Check variable names and types (numeric, factor, character, date, etc.)
+-Print first few rows (head()) and summary statistics
+-Identify response (outcome) and predictor (explanatory) variables
+
+## Missing Data
+Count missing values per column and per row
+Visualize missingness patterns (e.g., heatmap or naniar/VIM plots)
+Check for systematic missingness (by group, time, etc.)
+Decide: drop, impute, flag, or model missingness?
+ 
+## Univariate Analysis
+* For each variable:
+Compute summary stats: mean, median, SD, range, IQR
+Plot distribution: histograms (numeric), bar plots (categorical)
+Identify outliers or skewness
+Check for unusual values or coding errors
+ 
+## Bivariate Analysis
+* Numeric vs Numeric
+Scatterplots with smoothing (e.g., LOESS)
+Correlation coefficients (Pearson/Spearman)
+* Categorical vs Numeric
+Boxplots or violin plots
+Group means + CI/error bars
+ANOVA or t-tests (exploratory, not confirmatory)
+* Categorical vs Categorical
+Cross-tabulations
+Chi-square or Fisher’s tests (exploratory)
+ 
+## Multivariate Structure
+Correlation heatmap (numeric variables)
+Principal Component Analysis (PCA) or t-SNE (if high-dimensional)
+Pair plots / scatterplot matrix
+Check multicollinearity (VIFs, condition index)
+
+### Time/Spatial Data (if needed)
+Time series plots
+Trends, seasonality, anomalies
+Autocorrelation, lag plots
+Maps or geospatial distribution
+ 
+## Data Integrity Checks
+Check for duplicates (rows, IDs)
+Validate ranges against expected values
+Consistency across related variables (e.g., start_date < end_date)
+Confirm units and scales are consistent
+ 
+## Documentation & client Communication
+Create a clean report with summary tables and visualizations
+Highlight any data issues that could affect modeling
+Document assumptions, decisions (e.g., handling of missing or outliers)
+Make notes on variables of interest for modeling
