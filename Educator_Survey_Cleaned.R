@@ -31,7 +31,6 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
     respondent_id = row_number()
   )
 
-
 ############################
 #####  DATA WRANGLING  #####
 ############################
@@ -85,7 +84,7 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
   # Trim whitespace if any
   mutate(Q12 = str_trim(Q12)) %>%
   # Filter out any non-numeric or NA entries just in case
-  filter(!is.na(Q12) & str_detect(Q12, "^\\d+$")) %>%
+  #filter(!is.na(Q12) & str_detect(Q12, "^\\d+$")) %>%
   # Pad values with leading zero for consistent column naming (01, 02, ..., 11)
   mutate(Q12 = str_pad(Q12, width = 2, pad = "0"),
          value = 1) %>%
@@ -116,7 +115,7 @@ Q16_binary <- Educator_Data_Clean %>%
   select(respondent_id, Q16) %>%
   separate_rows(Q16, sep = ",") %>%
   mutate(Q16 = str_trim(Q16)) %>%
-  filter(!is.na(Q16) & str_detect(Q16, "^\\d+$")) %>%
+  #filter(!is.na(Q16) & str_detect(Q16, "^\\d+$")) %>%
   mutate(Q16 = str_pad(Q16, width = 2, pad = "0"),
          value = 1) %>%
   pivot_wider(
@@ -168,7 +167,7 @@ Q20_binary <- Educator_Data_Clean %>%
   select(respondent_id, Q20) %>%
   separate_rows(Q20, sep = ",") %>%
   mutate(Q20 = str_trim(Q20)) %>%
-  filter(!is.na(Q20) & str_detect(Q20, "^\\d+$")) %>%
+  #filter(!is.na(Q20) & str_detect(Q20, "^\\d+$")) %>%
   mutate(Q20 = str_pad(Q20, width = 2, pad = "0"),
          value = 1) %>%
   pivot_wider(
@@ -228,6 +227,7 @@ q_cols_sorted <- mixedsort(q_cols)
 
 #Reorder the data frame
 Educator_Data_Clean <- Educator_Data_Clean[, c(meta_cols, q_cols_sorted)]
+Educator_Data_Clean
 colnames(Educator_Data_Clean)
 
 
@@ -235,6 +235,8 @@ colnames(Educator_Data_Clean)
 
 
 
+
+print(Educator_Data_Clean, n = nrow(Educator_Data_Clean))
 
 
 
