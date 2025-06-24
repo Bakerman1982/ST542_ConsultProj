@@ -191,16 +191,6 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
   rename(Q21_14 = Q21_13_T) 
 
 
-"Q44" %in% names(Educator_Data_Clean)
-
-Educator_Data_Clean %>%
-  mutate(progress = as.numeric(progress)) %>%
-  filter(Q44 != "2", progress >= 50) %>%
-  select(Q44, progress) %>%
-  print(n = 43)
-
-
-
 ##########################
 ##### FILTER DATASET #####
 ##########################
@@ -224,7 +214,7 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
     starts_with("Q21")
   )
 
-Educator_Data_Clean %>% print(n = 43)
+
 
 #Identify metadata columns to keep at the front
 meta_cols <- c("ip_address", "progress", "duration_in_seconds",
@@ -239,31 +229,8 @@ Educator_Data_Clean <- Educator_Data_Clean[, c(meta_cols, q_cols_sorted)]
 Educator_Data_Clean
 colnames(Educator_Data_Clean)
 
-View(Educator_Data_Clean)
-
-
-
-
-
-
-print(Educator_Data_Clean, n = nrow(Educator_Data_Clean))
-
-
-colnames(Educator_Data)["q44"]
-
-dim(Educator_Data[Educator_Data$q44 == 2, ])
-
-
- 
-
-
-
-
-
-
-
-
-
+#Print the entire dataframe
+Educator_Data_Clean %>% print(n = 43)
 
 
 
