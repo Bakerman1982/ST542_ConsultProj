@@ -191,6 +191,15 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
   rename(Q21_14 = Q21_13_T) 
 
 
+"Q44" %in% names(Educator_Data_Clean)
+
+Educator_Data_Clean %>%
+  mutate(progress = as.numeric(progress)) %>%
+  filter(Q44 != "2", progress >= 50) %>%
+  select(Q44, progress) %>%
+  print(n = 43)
+
+
 
 ##########################
 ##### FILTER DATASET #####
@@ -198,7 +207,8 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
 
 #Remove irrelevant/problematic columns to the research/stats questions
 Educator_Data_Clean <- Educator_Data_Clean %>%
-  filter(Q44 != 2, progress < 50) %>%
+  mutate(progress = as.numeric(progress)) %>%
+  filter(Q44 != "2", progress >= 50) %>%
   select(
     ip_address, progress, duration_in_seconds,
     finished, recorded_date, response_id, group, respondent_id,
@@ -213,6 +223,8 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
     starts_with("Q20"),
     starts_with("Q21")
   )
+
+Educator_Data_Clean %>% print(n = 43)
 
 #Identify metadata columns to keep at the front
 meta_cols <- c("ip_address", "progress", "duration_in_seconds",
