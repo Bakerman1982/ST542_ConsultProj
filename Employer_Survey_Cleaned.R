@@ -82,7 +82,7 @@ Employer_Data_Clean <- Employer_Data_Clean %>%
   mutate(respondent_id = row_number()) %>%
   separate_rows(Q16, sep = ",") %>%
   mutate(Q16 = str_trim(Q16)) %>%
-  filter(!is.na(Q16)) %>%  # 🔧 prevent Q16_NA column in pivot_wider
+  #filter(!is.na(Q16)) %>%  # 🔧 prevent Q16_NA column in pivot_wider
   mutate(Q16 = str_pad(Q16, width = 2, pad = "0"),
          value = 1) %>%
   pivot_wider(
@@ -118,7 +118,7 @@ Q20_binary <- Employer_Data_Clean %>%
   select(respondent_id, Q20) %>%
   separate_rows(Q20, sep = ",") %>%
   mutate(Q20 = str_trim(Q20)) %>%
-  filter(!is.na(Q20)) %>%   # 👈 Prevents Q20_NA from being created
+  #filter(!is.na(Q20)) %>%   # 👈 Prevents Q20_NA from being created
   mutate(Q20 = str_pad(Q20, width = 2, pad = "0"),
          value = 1) %>%
   pivot_wider(
@@ -171,7 +171,7 @@ Q25_binary <- Employer_Data_Clean %>%
   select(respondent_id, Q25) %>%
   separate_rows(Q25, sep = ",") %>%
   mutate(Q25 = str_trim(Q25)) %>%
-  filter(!is.na(Q25)) %>%   # 👈 Prevents Q25_NA
+  #filter(!is.na(Q25)) %>%   # 👈 Prevents Q25_NA
   mutate(Q25 = str_pad(Q25, width = 2, pad = "0"),
          value = 1) %>%
   pivot_wider(
@@ -216,7 +216,7 @@ Employer_Data_Clean <- Employer_Data_Clean %>%
 #Remove irrelevant/problematic columns to the research/stats questions
 Employer_Data_Clean <- Employer_Data_Clean %>%
   mutate(progress = as.numeric(progress)) %>%
-  filter(progress >= 50) %>%
+  filter(Q02 == '1', progress >= 50) %>%
   select(
     ip_address, progress, duration_in_seconds,
     finished, recorded_date, response_id, group, respondent_id,
@@ -229,7 +229,10 @@ Employer_Data_Clean <- Employer_Data_Clean %>%
     starts_with("Q22"),
     starts_with("Q24"),
     starts_with("Q25"),
-    starts_with("Q26")
+    starts_with("Q26"),
+    -Q16_NA,  # 👈 drop this
+    -Q20_NA,  # 👈 drop this
+    -Q25_NA
   )
 
 #Identify metadata columns to keep at the front
@@ -248,3 +251,4 @@ Employer_Data_Clean %>% print(n = 43)
 colnames(Employer_Data_Clean)
 
 
+count(Employer_Data_Clean)
