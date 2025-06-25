@@ -1,6 +1,6 @@
 ---
 title: "Bridging the Gap:"
-subtitle: \LARGE Comparing Employer and Educator Expectations in Small Animal Dentistry
+subtitle: "Comparing Employer and Educator Expectations in Small Animal Dentistry"
 author: Brock Akerman, Hanan Ali, Taylor Cesarski
 date: "June, 25, 2025"
 format:
@@ -18,17 +18,37 @@ format:
     keep-tex: true
     linkcolor: blue
 ---
+```{r package_load}
+```
+
 
 ## Abstract
 
 ## Introduction
 
+### Purpose of project
+### Study details
+
+
 ## Data
+### Data Description
+### Data Source
+### Describe any Preprocessing
 
 ## Statistical Methods
+### Research Question Answered
+### Method Description
 
 ## Results
+### Findings
+### Statistical Analysis
 
-## Summary
+## Discussion/Conclusion
+### Interpretation of Results
+### Implications of the Study
+### Limitations
+### Recommendations
+### Summary of Key Findings
+### Final Thoughts
 
 ## Appendix
