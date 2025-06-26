@@ -576,7 +576,7 @@ mw_results <- q4_long %>%
   arrange(p_value)
 
 print(mw_results)
-
+   
 
 ```
 We used the Mann-Whitney U test, a non-parametric method appropriate for comparing ordinal ratings between two independent groups. Ratings ranged from 1 (Strongly Disagree) to 4 (Strongly Agree) regarding new graduate competence for each skill.
