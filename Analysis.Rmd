@@ -508,6 +508,8 @@ count(Educator_Data_Clean)
 
 
 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
+
+First I'll combine the datasets and keep it to question 4 only
 ```{r}
 library(dplyr)
 
@@ -538,74 +540,237 @@ combined_data <- bind_rows(educator_q4, employer_q4)
 
 
 
-
+Run Mann-Whitney U Test
 ```{r}
 library(tidyr)
 library(dplyr)
+library(purrr)
 
+# Pivot data to long format
 q4_long <- combined_data %>%
   pivot_longer(
     cols = starts_with("Q04_"),
     names_to = "Skill",
-    values_to = "Rating"
-  ) %>%
-  filter(!is.na(Rating))  # Remove NAs
-
-
-q4_long <- q4_long %>%
-  mutate(
-    Rating_num = case_when(
-      Rating == "Strongly disagree" ~ 1,
-      Rating == "Disagree" ~ 2,
-      Rating == "Agree" ~ 3,
-      Rating == "Strongly agree" ~ 4,
-      TRUE ~ NA_real_
-    )
+    values_to = "Rating_num"
   ) %>%
   filter(!is.na(Rating_num))
 
+#Must coerce character to numeric explicitly because removing na values is not enough so redo and see if it works
+q4_long <- q4_long %>%
+  mutate(Rating_num = as.numeric(Rating_num))
 
-# Only keep skills with responses from both groups
-q4_filtered <- q4_long %>%
-  group_by(Skill, group) %>%
-  summarise(n = n(), .groups = "drop") %>%
-  group_by(Skill) %>%
-  filter(n_distinct(group) == 2) %>%
-  pull(Skill) %>%
-  unique()
+str(q4_long)
 
-q4_long_filtered <- q4_long %>%
-  filter(Skill %in% q4_filtered)
-
-mw_results <- q4_long_filtered %>%
+# Run Mann-Whitney U test for each skill
+mw_results <- q4_long %>%
+  filter(!is.na(Rating_num)) %>%  # Exclude rows with NA ratings because there is NA values hindering it from being able to run 
   group_by(Skill) %>%
   summarise(
-    p_value = if (n_distinct(group) == 2) wilcox.test(Rating_num ~ group)$p.value else NA_real_,
+    p_value = wilcox.test(Rating_num ~ group)$p.value,
+    median_educator = median(Rating_num[group == "Educator"]),
+    median_employer = median(Rating_num[group == "Employer"]),
+    n_educator = sum(group == "Educator"),
+    n_employer = sum(group == "Employer"),
     .groups = "drop"
   ) %>%
-  filter(!is.na(p_value)) %>%
   arrange(p_value)
 
 print(mw_results)
 
 
-
-unique(q4_long_filtered$group)
-
-
-
 ```
+We used the Mann-Whitney U test, a non-parametric method appropriate for comparing ordinal ratings between two independent groups. Ratings ranged from 1 (Strongly Disagree) to 4 (Strongly Agree) regarding new graduate competence for each skill.
+
+Results:
+
+For most dental skills, the differences in ratings between educators and practice owners were not statistically significant (p-values well above 0.05), indicating that both groups generally agree on the competency level of new graduates. The skill “interpreting dental radiographs” (dental X-rays) showed the closest difference with a p-value of 0.064. Although this is just above the conventional 0.05 threshold, it suggests a trend where practice owners were slightly more confident in new graduates’ abilities compared to educators. Median ratings for this skill were equal (3 out of 4), reinforcing that the difference is subtle.
+
+Interpretation: There is no strong evidence that educators and practice owners disagree on the preparedness of new graduates for dental tasks. Both groups mostly agree on which skills new graduates can perform competently from day one. The only exception might be interpreting dental X-rays, where practice owners seem a little more optimistic about new grads' skills — but this difference isn’t strong enough to be sure it’s real. The near-significant difference in confidence regarding interpreting dental X-rays may warrant further investigation but should be interpreted cautiously.
+
+
+ 
+
 
 
 
 
 
 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
+
+Employer Q16: “What format of instruction in dentistry does your DVM program provide during the clinical year?” (select all that apply)
+
+Educator Q12: “Which of the following skills are taught as part of the pre-clinical dentistry courses in your DVM program?” (select all that apply)
 ```{r}
+library(dplyr)
+library(tidyr)
+
+# Select Q12 columns from Educator data and label group
+educator_q12 <- Educator_Data_Clean %>%
+  select(starts_with("Q12_")) %>%
+  mutate(group = "Educator")
+
+# Select Q16 columns from Employer data and label group
+employer_q16 <- Employer_Data_Clean %>%
+  select(starts_with("Q16_")) %>%
+  mutate(group = "Employer")
+
+# Make sure both have the same number of columns for binding
+# You might want to subset Q16 columns to match Q12 (e.g. Q16_01 to Q16_11, or subset to Q16_01:Q16_07)
+employer_q16 <- employer_q16 %>%
+  select(Q16_01:Q16_07) %>%
+  mutate(group = "Employer")
+
+# Now rename employer_q16 columns to match educator_q12 columns for easier comparison
+colnames(employer_q16)[1:7] <- colnames(educator_q12)[1:7]
+
+# Combine the datasets (you might need to drop extra columns or handle mismatches)
+combined_q12_q16 <- bind_rows(educator_q12, employer_q16)
+
+
+# Assuming your combined dataset is wide format like:
+# Columns: Q12_01, Q12_02, ... Q12_07, group
+
+combined_long <- combined_q12_q16 %>%
+  pivot_longer(
+    cols = starts_with("Q12_"),  # or Q16_ columns renamed as Q12_01 etc.
+    names_to = "Skill_Format",
+    values_to = "Taught"
+  ) %>%
+  mutate(
+    Taught = as.numeric(as.character(Taught)) 
+  )
+
+#Convert Q12_11 to numeric since it is a character which is causing the pivot_longer error.
+combined_q12_q16 <- combined_q12_q16 %>%
+  mutate(Q12_11 = as.numeric(Q12_11))
+
+
+combined_long <- combined_q12_q16 %>%
+  pivot_longer(
+    cols = starts_with("Q12_"),
+    names_to = "Skill_Format",
+    values_to = "Taught"
+  )
+
+
+# Make sure your data is in long format
+combined_long <- combined_q12_q16 %>%
+  pivot_longer(
+    cols = starts_with("Q12_"),   
+    names_to = "Skill_Format",
+    values_to = "Taught"
+  ) %>%
+  mutate(Taught = as.numeric(Taught))  
+
+
+table(combined_long$group[combined_long$Skill_Format == "Q12_11"], 
+      combined_long$Taught[combined_long$Skill_Format == "Q12_11"])
+
+#check what data values are in here causing the issues
+combined_long %>%
+  filter(Skill_Format == "Q12_11") %>%
+  select(group, Taught)
+
+
+```
+
+During the analysis of the combined dataset comparing educators’ reports and practice owners’ perceptions of which dental skills are taught in the pre-clinical DVM curriculum, we encountered a data quality issue with the survey item labeled Q12_11. Specifically, all responses for this skill were recorded as missing values (NAs) across both groups—educators and employers. Because there were no actual observed responses for this item, the contingency table used for statistical testing contained no valid data points. Removing Q12_11 allows us to focus on skills where sufficient data exist to reliably assess differences in perceptions about curriculum content between educators and practice owners.
+
+
+
+
+```{r}
+library(dplyr)
+
+test_results <- combined_long_filtered %>%
+  group_by(Skill_Format) %>%
+  summarise(
+    tab = list(table(group, Taught)),
+    .groups = "drop"
+  ) %>%
+  rowwise() %>%
+  mutate(
+    is_valid = length(dim(tab)) == 2 &&
+               all(dim(tab) == c(2, 2))
+  ) %>%
+  filter(is_valid) %>%
+  mutate(
+    p_value = fisher.test(tab)$p.value,
+    n_educator = sum(tab["Educator", ]),
+    n_employer = sum(tab["Employer", ]),
+    prop_educator = tab["Educator", "1"] / sum(tab["Educator", ]),
+    prop_employer = tab["Employer", "1"] / sum(tab["Employer", ])
+  ) %>%
+  ungroup() %>%
+  select(-tab, -is_valid) %>%
+  arrange(p_value)
+
+
+print(test_results)
 
 ```
 
 
+CONTINUE FROM HERE: need to figure out why question 16 data is not in combined set and rerun this test
 
 
 
+
+
+```{r}
+# Step 1: Select and rename employer Q16 columns to match Q12 labels
+employer_q16 <- Employer_Data_Clean %>%
+  select(Q16_01:Q16_07) %>%
+  rename_with(~ paste0("Q12_", sprintf("%02d", 1:7)), .cols = everything()) %>%
+  mutate(group = "Employer")
+
+# Step 2: Select educator Q12 columns
+educator_q12 <- Educator_Data_Clean %>%
+  select(Q12_01:Q12_07) %>%
+  mutate(group = "Educator")
+
+# Step 3: Combine the two
+combined_q12_q16 <- bind_rows(educator_q12, employer_q16)
+
+
+
+combined_long <- combined_q12_q16 %>%
+  pivot_longer(
+    cols = starts_with("Q12_"),
+    names_to = "Skill_Format",
+    values_to = "Taught"
+  ) %>%
+  mutate(Taught = as.numeric(as.character(Taught)))
+
+
+
+
+# Remove skills with invalid data (all NA or only one group present)
+library(dplyr)
+
+test_results <- combined_long %>%
+  group_by(Skill_Format) %>%
+  summarise(tab = list(table(group, Taught)), .groups = "drop") %>%
+  rowwise() %>%
+  mutate(
+    is_valid = {
+      dims <- dim(tab[[1]])
+      !is.null(dims) && all(dims >= 2)
+    }
+  ) %>%
+  filter(is_valid) %>%
+  mutate(
+    p_value = tryCatch(fisher.test(tab[[1]])$p.value, error = function(e) NA_real_),
+    n_educator = if ("Educator" %in% rownames(tab[[1]])) sum(tab[[1]]["Educator", ]) else NA_integer_,
+    n_employer = if ("Employer" %in% rownames(tab[[1]])) sum(tab[[1]]["Employer", ]) else NA_integer_,
+    prop_educator = if (all(c("Educator", "1") %in% dimnames(tab[[1]]))) tab[[1]]["Educator", "1"] / sum(tab[[1]]["Educator", ]) else NA_real_,
+    prop_employer = if (all(c("Employer", "1") %in% dimnames(tab[[1]]))) tab[[1]]["Employer", "1"] / sum(tab[[1]]["Employer", ]) else NA_real_
+  ) %>%
+  ungroup() %>%
+  select(-tab, -is_valid) %>%
+  arrange(p_value)
+
+
+print(test_results)
+```
+ALSO: figure out what is causing the result to look like this
