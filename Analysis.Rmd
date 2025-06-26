@@ -512,7 +512,7 @@ Are there significant differences between educators and practice owners in their
 First I'll combine the datasets and keep it to question 4 only
 ```{r}
 library(dplyr)
-
+   
 # Add group identifiers
 educator_cleaned <- Educator_Data_Clean %>%
   mutate(group = "Educator")
