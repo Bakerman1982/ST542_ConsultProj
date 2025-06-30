@@ -44,13 +44,13 @@ colnames(Employer_Data_Clean) <- gsub("_text$", "_T", gsub("q", "Q", colnames(Em
 #4.) Format the column headers so that it is sort-able both by question and sub question. So where 
 #questions are formatted with header Q10_2, the header will now be Q10_02.  This preserves ordering
 #and makes indexing easier. 
-pad_question_ids <- function(col_names) {
+emp_pad_question_ids <- function(col_names) {
   col_names %>%
     str_replace_all("Q(\\d{1})(?!\\d)", "Q0\\1") %>%
     str_replace_all("Q(\\d{2})_(\\d{1})(?!\\d)", "Q\\1_0\\2")}
 
 #Apply above formatting changes to data frame column names
-colnames(Employer_Data_Clean) <- pad_question_ids(colnames(Employer_Data_Clean))
+colnames(Employer_Data_Clean) <- emp_pad_question_ids(colnames(Employer_Data_Clean))
 
 #Removes Qualtric metadata from the first two rows
 Employer_Data_Clean <- Employer_Data_Clean %>% slice(-1, -2)
@@ -236,15 +236,15 @@ Employer_Data_Clean <- Employer_Data_Clean %>%
   )
 
 #Identify metadata columns to keep at the front
-meta_cols <- c("ip_address", "progress", "duration_in_seconds",
+emp_meta_cols <- c("ip_address", "progress", "duration_in_seconds",
                "finished", "recorded_date", "response_id", "group", "respondent_id")
 
 #Identify and sort Q columns using mixedsort
-q_cols <- setdiff(colnames(Employer_Data_Clean), meta_cols)
-q_cols_sorted <- mixedsort(q_cols)
+emp_q_cols <- setdiff(colnames(Employer_Data_Clean), emp_meta_cols)
+emp_q_cols_sorted <- mixedsort(emp_q_cols)
 
 #Reorder the data frame
-Employer_Data_Clean <- Employer_Data_Clean[, c(meta_cols, q_cols_sorted)]
+Employer_Data_Clean <- Employer_Data_Clean[, c(emp_meta_cols, emp_q_cols_sorted)]
 
 #Print the entire dataframe
 Employer_Data_Clean %>% print(n = 43)

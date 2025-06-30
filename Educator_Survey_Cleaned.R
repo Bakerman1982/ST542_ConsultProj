@@ -43,13 +43,13 @@ colnames(Educator_Data_Clean) <- gsub("_text$", "_T", gsub("q", "Q", colnames(Ed
   #4.) Format the column headers so that it is sort-able both by question and sub question. So where 
     #questions are formatted with header Q10_2, the header will now be Q10_02.  This preserves ordering
     #and makes indexing easier. 
-pad_question_ids <- function(col_names) {
+edu_pad_question_ids <- function(col_names) {
   col_names %>%
     str_replace_all("Q(\\d{1})(?!\\d)", "Q0\\1") %>%
     str_replace_all("Q(\\d{2})_(\\d{1})(?!\\d)", "Q\\1_0\\2")}
 
 #Apply above formatting changes to data frame column names
-colnames(Educator_Data_Clean) <- pad_question_ids(colnames(Educator_Data_Clean))
+colnames(Educator_Data_Clean) <- edu_pad_question_ids(colnames(Educator_Data_Clean))
 
 #Removes Qualtric metadata from the first two rows
 Educator_Data_Clean <- Educator_Data_Clean %>% slice(-1, -2)
@@ -217,19 +217,19 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
 
 
 #Identify metadata columns to keep at the front
-meta_cols <- c("ip_address", "progress", "duration_in_seconds",
+edu_meta_cols <- c("ip_address", "progress", "duration_in_seconds",
                "finished", "recorded_date", "response_id", "group", "respondent_id")
 
 #Identify and sort Q columns using mixedsort
-q_cols <- setdiff(colnames(Educator_Data_Clean), meta_cols)
-q_cols_sorted <- mixedsort(q_cols)
+edu_q_cols <- setdiff(colnames(Educator_Data_Clean), edu_meta_cols)
+edu_q_cols_sorted <- mixedsort(edu_q_cols)
 
 #Reorder the data frame
-Educator_Data_Clean <- Educator_Data_Clean[, c(meta_cols, q_cols_sorted)]
-Educator_Data_Clean
-colnames(Educator_Data_Clean)
+Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)]
+#Educator_Data_Clean
+#colnames(Educator_Data_Clean)
 
 #Print the entire dataframe
-Educator_Data_Clean %>% print(n = 43)
+#Educator_Data_Clean %>% print(n = 43)
 
-count(Educator_Data_Clean)
+#count(Educator_Data_Clean)
