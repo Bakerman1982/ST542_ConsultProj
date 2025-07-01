@@ -484,10 +484,75 @@ Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)
 ### Study details
 
 
-## Data
+## Data 
 ### Data Description
+
+Researcher collected two datasets; an employer dataset for practices who have worked with dental veterinarian students, or educators who taught those students.  These are mutually exclusive groups in that there was no indication student(s) were the subject of the same survey (i.e., the same student was taught by an educator and hired or completed work with the employer).  The employer dataset contained 29 survey participants.  
+
+```{r datadescvis_1_emp}
+#Average time for survey completion
+# Convert and clean both datasets
+clean_employer <- Employer_Data[-c(1,2), ] %>%
+  mutate(
+    duration_in_seconds = as.numeric(duration_in_seconds),
+    duration_minutes = duration_in_seconds / 60,
+    group = "Employer"
+  )
+
+clean_educator <- Educator_Data[-c(1,2), ] %>%
+  mutate(
+    duration_in_seconds = as.numeric(duration_in_seconds),
+    duration_minutes = duration_in_seconds / 60,
+    group = "Educator"
+  )
+
+# Combine for optional single-geom plotting, or keep separate for layers
+ggplot() +
+  geom_boxplot(data = clean_employer,
+               aes(x = group, y = duration_minutes),
+               fill = "steelblue", alpha = 0.6) +
+  geom_boxplot(data = clean_educator,
+               aes(x = group, y = duration_minutes),
+               fill = "darkorange", alpha = 0.6) +
+  coord_cartesian(ylim = c(0, 80)) +  # Optional: zoom to 0–60 minutes
+  labs(
+    title = "Survey Completion Time by Group",
+    x = "Respondent Group",
+    y = "Duration (minutes)"
+  ) +
+  theme_minimal()
+
+
+
+#Average percent of survey completed
+combined_progress <- bind_rows(
+  Employer_Data[-c(1,2), ] %>% mutate(group = "Employer"),
+  Educator_Data[-c(1,2), ] %>% mutate(group = "Educator")
+) %>%
+  mutate(progress = as.numeric(progress))
+
+ggplot(combined_progress, aes(x = progress, fill = group)) +
+  geom_density(alpha = 0.4) +
+  labs(title = "Survey Progress Density by Group", x = "Progress (%)", y = "Density") +
+  theme_minimal()
+
+
+#Contingency Supervised/Observed student
+
+
+```
+
 ### Data Source
-### Describe any Preprocessing
+
+Survey data was collected using Qualtrics, an experience management cloud company, who specializes in gathering human sentiment in all areas of the workforce.  Participants were sent an inventation to volunteer to take the survey from the researcher from a contact.
+
+### Preprocessing Description
+
+Both datasets were similar, yet not identical.  Many of the preprocessing steps were the same for both datasets except where I mention the differences in the instructions to follow.  
+
+Datasets were imported into the R Studio environment (2024.04.1 Build 748).  Immediately a column to identify the data source (Educator or Employer) was created to keep both sets separate and a primary key was created out of the column *respondent_id* that already exist.  This made the most sense since this column was already unique.
+
+Both datasets had a lot of noise that needed trimming. Included in Qualtrics survey output was metadata that was not helpful for analysis.  
 
 ## Statistical Methods
 ### Research Question Answered

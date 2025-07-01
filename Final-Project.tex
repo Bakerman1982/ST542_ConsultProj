@@ -69,6 +69,46 @@
 \fi
 \makeatother
 
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
@@ -177,51 +217,140 @@ Dentistry}
 \tableofcontents
 }
 
-\section{Abstract}\label{abstract}
+\subsection{Abstract}\label{abstract}
 
-\section{Introduction}\label{introduction}
+\subsection{Introduction}\label{introduction}
 
-\subsection{Purpose of project}\label{purpose-of-project}
+\subsubsection{Purpose of project}\label{purpose-of-project}
 
-\subsection{Study details}\label{study-details}
+\subsubsection{Study details}\label{study-details}
 
-\section{Data}\label{data}
+\subsection{Data}\label{data}
 
-\subsection{Data Description}\label{data-description}
+\subsubsection{Data Description}\label{data-description}
 
-\subsection{Data Source}\label{data-source}
+Researcher collected two datasets; an employer dataset for practices who
+have worked with dental veterinarian students, or educators who taught
+those students. These are mutually exclusive groups in that there was no
+indication student(s) were the subject of the same survey (i.e., the
+same student was taught by an educator and hired or completed work with
+the employer). The employer dataset contained 29 survey participants.
 
-\subsection{Describe any
-Preprocessing}\label{describe-any-preprocessing}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Average time for survey completion}
+\CommentTok{\# Convert and clean both datasets}
+\NormalTok{clean\_employer }\OtherTok{\textless{}{-}}\NormalTok{ Employer\_Data[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), ] }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{duration\_in\_seconds =} \FunctionTok{as.numeric}\NormalTok{(duration\_in\_seconds),}
+    \AttributeTok{duration\_minutes =}\NormalTok{ duration\_in\_seconds }\SpecialCharTok{/} \DecValTok{60}\NormalTok{,}
+    \AttributeTok{group =} \StringTok{"Employer"}
+\NormalTok{  )}
 
-\section{Statistical Methods}\label{statistical-methods}
+\NormalTok{clean\_educator }\OtherTok{\textless{}{-}}\NormalTok{ Educator\_Data[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), ] }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}
+    \AttributeTok{duration\_in\_seconds =} \FunctionTok{as.numeric}\NormalTok{(duration\_in\_seconds),}
+    \AttributeTok{duration\_minutes =}\NormalTok{ duration\_in\_seconds }\SpecialCharTok{/} \DecValTok{60}\NormalTok{,}
+    \AttributeTok{group =} \StringTok{"Educator"}
+\NormalTok{  )}
 
-\subsection{Research Question
+\CommentTok{\# Combine for optional single{-}geom plotting, or keep separate for layers}
+\FunctionTok{ggplot}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ clean\_employer,}
+               \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ group, }\AttributeTok{y =}\NormalTok{ duration\_minutes),}
+               \AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_boxplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ clean\_educator,}
+               \FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ group, }\AttributeTok{y =}\NormalTok{ duration\_minutes),}
+               \AttributeTok{fill =} \StringTok{"darkorange"}\NormalTok{, }\AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{coord\_cartesian}\NormalTok{(}\AttributeTok{ylim =} \FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{80}\NormalTok{)) }\SpecialCharTok{+}  \CommentTok{\# Optional: zoom to 0–60 minutes}
+  \FunctionTok{labs}\NormalTok{(}
+    \AttributeTok{title =} \StringTok{"Survey Completion Time by Group"}\NormalTok{,}
+    \AttributeTok{x =} \StringTok{"Respondent Group"}\NormalTok{,}
+    \AttributeTok{y =} \StringTok{"Duration (minutes)"}
+\NormalTok{  ) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/datadescvis_1_emp-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Average percent of survey completed}
+\NormalTok{combined\_progress }\OtherTok{\textless{}{-}} \FunctionTok{bind\_rows}\NormalTok{(}
+\NormalTok{  Employer\_Data[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), ] }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{group =} \StringTok{"Employer"}\NormalTok{),}
+\NormalTok{  Educator\_Data[}\SpecialCharTok{{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{), ] }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{mutate}\NormalTok{(}\AttributeTok{group =} \StringTok{"Educator"}\NormalTok{)}
+\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{progress =} \FunctionTok{as.numeric}\NormalTok{(progress))}
+
+\FunctionTok{ggplot}\NormalTok{(combined\_progress, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ progress, }\AttributeTok{fill =}\NormalTok{ group)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_density}\NormalTok{(}\AttributeTok{alpha =} \FloatTok{0.4}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Survey Progress Density by Group"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Progress (\%)"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Density"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/datadescvis_1_emp-2.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Contingency Supervised/Observed student}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Data Source}\label{data-source}
+
+Survey data was collected using Qualtrics, an experience management
+cloud company, who specializes in gathering human sentiment in all areas
+of the workforce. Participants were sent an inventation to volunteer to
+take the survey from the researcher from a contact.
+
+\subsubsection{Preprocessing
+Description}\label{preprocessing-description}
+
+Both datasets were similar, yet not identical. Many of the preprocessing
+steps were the same for both datasets except where I mention the
+differences in the instructions to follow.
+
+Datasets were imported into the R Studio environment (2024.04.1 Build
+748). Immediately a column to identify the data source (Educator or
+Employer) was created to keep both sets separate and a primary key was
+created out of the column \emph{respondent\_id} that already exist. This
+made the most sense since this column was already unique.
+
+Both datasets had a lot of noise that needed trimming. Included in
+Qualtrics survey output was metadata that was not helpful for analysis.
+
+\subsection{Statistical Methods}\label{statistical-methods}
+
+\subsubsection{Research Question
 Answered}\label{research-question-answered}
 
-\subsection{Method Description}\label{method-description}
+\subsubsection{Method Description}\label{method-description}
 
-\section{Results}\label{results}
+\subsection{Results}\label{results}
 
-\subsection{Findings}\label{findings}
+\subsubsection{Findings}\label{findings}
 
-\subsection{Statistical Analysis}\label{statistical-analysis}
+\subsubsection{Statistical Analysis}\label{statistical-analysis}
 
-\section{Discussion/Conclusion}\label{discussionconclusion}
+\subsection{Discussion/Conclusion}\label{discussionconclusion}
 
-\subsection{Interpretation of Results}\label{interpretation-of-results}
+\subsubsection{Interpretation of
+Results}\label{interpretation-of-results}
 
-\subsection{Implications of the Study}\label{implications-of-the-study}
+\subsubsection{Implications of the
+Study}\label{implications-of-the-study}
 
-\subsection{Limitations}\label{limitations}
+\subsubsection{Limitations}\label{limitations}
 
-\subsection{Recommendations}\label{recommendations}
+\subsubsection{Recommendations}\label{recommendations}
 
-\subsection{Summary of Key Findings}\label{summary-of-key-findings}
+\subsubsection{Summary of Key Findings}\label{summary-of-key-findings}
 
-\subsection{Final Thoughts}\label{final-thoughts}
+\subsubsection{Final Thoughts}\label{final-thoughts}
 
-\section{Appendix}\label{appendix}
+\subsection{Appendix}\label{appendix}
 
 
 
