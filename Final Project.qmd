@@ -474,25 +474,27 @@ edu_q_cols_sorted <- mixedsort(edu_q_cols)
 Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)]
 ```
 
-## Abstract
+# Abstract
 
-## Introduction
+# Introduction
 
-### Purpose of project
+## Purpose of project
 
-### Study details
+## Study details
 
-## Data
+# Data
 
-### Data Description
+## Data Description
 
 Two separate surveys were administered to mutually exclusive groups: veterinary employers who have worked with students, and educators who have taught those students. There was no overlap between these groups—no evidence suggests that any surveyed student was both taught by an educator and later employed by a participating employer.
 
-The employer dataset consists of responses from 29 participants answering 40 questions, while the educator dataset includes 43 participants answering 34 questions.  Each group was asked a single qualifying question to determine eligibility on participation and nine questions which asked about the participants demographics or institution. Educators were then given 24 questions, employers 30 questions, that were focused on DVM student compentencies and professional sentiments regarding training in veterinarian medicine.
+The employer dataset consists of responses from 29 participants answering 40 questions, while the educator dataset includes 43 participants answering 34 questions. Each group was asked a single qualifying question to determine eligibility for participation, along with nine questions covering demographics and institutional context. Educators were then presented with 24 competency- and sentiment-based questions, while employers answered 30 such items focused on professional expectations and training in veterinary medicine.
 
-Survey questions can in several forms.  There were binary Yes/No responses; common among the demographic/institution questions.  "Select all that apply" responses which act as its names sake with no limit to the number of selections.  These were common in questions asking the participant to select all from a list of medical precedures at a practice. Many of these questions then were accompanied by Likert Scale question. The Likert Scale data was even-degreed with no neutral response.  We believe the lack of a non-neutrality option caused at least two participants to answer both "agree" and "disagree" to a survey question.  There were questions that offered an "other" response.  For these situations, the survey accomodated a text entry for the participant to elaborate on selecting "other".  Finally, there were some questions which ask participants to put in an interger when asked to give their account of a quantifiable value (i.e., hours worked, number of accredited veterinarians, etc.).  This interger was limitless regardless of the questions' context.  
+Survey questions took several forms. Some were binary (Yes/No), particularly those related to demographics and institutional affiliation. Others used a "select all that apply" format, commonly seen in questions asking respondents to identify procedures performed at their practice. Many of these questions were followed by Likert-scale items. The Likert scales were even-numbered and omitted a neutral option, which may have contributed to at least two instances where respondents selected both “agree” and “disagree” for the same item.
 
-Additionally, survey completion time differed between groups. Educators, on average, spent more time completing the survey than employers. While the survey did not ask participants to explain their response time, this difference may reflect greater engagement or the tendency for more elaborated responses among educators. These differences in response count might also lend credence to greater willingness among educators to engage with the survey. A box plot below illustrates the distribution of survey duration (in minutes) by group.
+Several questions offered an “Other” response with a text box for elaboration. A few required numeric input, such as estimates of hours worked or the number of practicing veterinarians. These integer fields were not restricted by any upper bound, regardless of contextual reasonableness.
+
+Survey completion time differed by group. Educators, on average, spent more time completing the survey than employers. While no follow-up question asked participants to explain their response time, this discrepancy may reflect greater engagement or a tendency for more elaborated responses among educators. It may also suggest a greater willingness among educators to participate more thoughtfully. The box plot below illustrates the distribution of survey duration (in minutes) by group.
 
 ```{r Data_Desc_01, echo=FALSE, fig.align='center'}
 #Average time for survey completion
@@ -545,31 +547,30 @@ ggplot(combined_progress, aes(x = progress, fill = group)) +
 
 ```
 
+```{r Data_Desc_03, eval=FALSE, fig.align='center'}
+#SPACER FOR MORE ANALYTICS
 From the educators dataset we could talk about:
 * Q27; How long have you been teaching DVM students in the clinical training portion of a DVM program?
 * Q28; Does your institution have a teaching hospital?
 * Q29; On average, how many dental procedures does your primary care service perform each week?
 
+
+```
+
+```{r Data_Desc_04, eval=FALSE, fig.align='center'}
+#SPACER FOR MORE ANALYTICS
+
 From the employers dataset we could talk about:
 * Q33; Which of the following best describes your job setting or organization?
 * Q36; On average, how many dental procedures does your practice/oganization/institution perform each week
 * Q37; Which of the following best describes the person who completed this survey?
-
-```{r Data_Desc_03, fig.align='center'}
-#SPACER FOR MORE ANALYTICS
 ```
 
-
-```{r Data_Desc_04, fig.align='center'}
-#SPACER FOR MORE ANALYTICS
-```
-
-
-### Data Source
+## Data Source
 
 Survey data were collected using Qualtrics, a cloud-based experience management platform commonly used for gathering feedback and sentiment across workforce domains. Participants were recruited via email invitation sent by the researcher, using pre-existing contact lists. Participation was voluntary and anonymized.
 
-### Preprocessing Description
+## Preprocessing Description
 
 Although the employer and educator datasets shared a similar structure, they were not identical. Most preprocessing steps were applied uniformly across both datasets, with minor deviations where needed.
 
@@ -591,28 +592,55 @@ Finally, we filtered out participants who answered less than half of the survey.
 
 After all preprocessing steps, the final cleaned datasets consisted of 13 employer participants and 30 educator participants.
 
+# Statistical Methods
 
-## Statistical Methods
+## Research Question Answered
 
-### Research Question Answered
+**How do small animal primary care employers (medical directors and practice owners) and primary care veterinary educators differ in regards to their expectations of early career veterinary graduates’ competencies in small animal dentistry?**
 
-### Method Description
+[Statistical Questions]{.underline}
 
-#### S1 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice? 
+***S1.*** Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
 
-#### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
+***S2.*** Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
 
-#### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
+***S3.*** Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
-#### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+***S4.*** Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
 
-#### S5 Is there difference between the instructional formats in dentistry reported by DVM programs  and the formats perceived by employers to have been completed by early career veterinarians?
+***S5.*** Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
 
-#### S6 Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
+***S6.*** Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
 
-In question #21 of the employers version of the survey, participants were asked, "Which of the following types of <u>*clinical instruction in dentistry*</u> do you think that DVM students should be required to complete as part of a <u>*DVM program*</u>?  Select one response for each of the instructional types listed below."  The analogue of this question for educators was survey question #17.  The educators survey question had a slight variation in phraseology.  It asked, "Which of the following types of <u>*instruction*</u> do you think DVM students should be required to complete as part of their <u>*clinical training*</u>?  Select one response for each type of instruction listed below.".
+***S7.*** Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
 
-This question is targeting how participants feel about what dental veterinarian medical programs are teaching and what topics should be required in their curriculum.  The research question asked if there was a difference in opinions on this matter.  To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test.  This test assumes mutual exclusivity between groups.
+***S8.*** Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
+
+## Method Description
+
+Statistical questions #1,3, 6, and 8 all deal with participants utilizing a likert scale to answer Strongly Agree, Agree, Disagree, or Strongly Disagree on a variety of skills and procedures. To analyze this data, we will use diverging stacked bar charts and tables for exploratory data analysis and the Mann-Whitney U Test for the formal hypothesis procedure. The Mann-Whitney U Test is a non-parametric test that does not rely on an assumption of normality. It does require independence between datasets and it is reasonable to assume that the educators and employers were independent from each other when taking the survey. The Mann-Whitney test particularly works well with these questions due to the ordinal (and therefore ranked) nature of the data.
+
+Statistical questions #2, 5, and 7 were all questions that asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. In this context, it is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+
+Statistical question #4 asks participants to enter numerical entries related to the number of dental procedures that should be completed during training in different areas. We plan to produce boxplots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
+
+# Results
+
+### S1 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
+
+### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
+
+### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
+
+### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+
+### S5 Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
+
+### S6 Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
+
+In question #21 of the employers version of the survey, participants were asked, "Which of the following types of <u>*clinical instruction in dentistry*</u> do you think that DVM students should be required to complete as part of a <u>*DVM program*</u>? Select one response for each of the instructional types listed below." The analogue of this question for educators was survey question #17. The educators survey question had a slight variation in phraseology. It asked, "Which of the following types of <u>*instruction*</u> do you think DVM students should be required to complete as part of their <u>*clinical training*</u>? Select one response for each type of instruction listed below.".
+
+This question is targeting how participants feel about what dental veterinarian medical programs are teaching and what topics should be required in their curriculum. The research question asked if there was a difference in opinions on this matter. To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between groups.
 
 ```{r S6, , echo=FALSE, warning=FALSE, fig.align='center'}
 educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
@@ -630,7 +658,7 @@ for (i in seq_along(educator_cols)) {
   edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
   emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
   
-  # Remove NAs
+  # Remove NAs.  Wilcoxin handles NA values automatically. 
   edu_vals <- edu_vals[!is.na(edu_vals)]
   emp_vals <- emp_vals[!is.na(emp_vals)]
   
@@ -652,7 +680,7 @@ for (i in seq_along(educator_cols)) {
   }
 }
 
-
+# This produces a table of 
 mw_df <- do.call(rbind, lapply(mw_results, as.data.frame))
 mw_df <- as.data.frame(mw_df)
 mw_df$p_value <- as.numeric(mw_df$p_value)
@@ -663,13 +691,57 @@ mw_df$significance <- cut(mw_df$p_value,
 print(mw_df)
 ```
 
-```{r}
+```{r TestSpace8, echo=FALSE, fig.align='center'}
+
 sapply(Educator_Data_Clean[ , educator_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
 sapply(Employer_Data_Clean[ , employer_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
 
 Employer_Data_Clean %>% select(starts_with("Q21"))
 
-# Create grouped labels for coloring
+
+# Count NAs for reference
+sapply(Educator_Data_Clean[ , educator_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
+sapply(Employer_Data_Clean[ , employer_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
+
+Employer_Data_Clean %>% select(starts_with("Q21"))
+
+# STEP 1: Create combined_mirrored data
+combined_mirrored <- bind_rows(
+  Educator_Data_Clean %>%
+    select(Q17_01, Q17_02, Q17_03) %>%
+    pivot_longer(everything(), names_to = "Question", values_to = "Response") %>%
+    mutate(
+      Group = "Educator",
+      Item = case_when(
+        Question == "Q17_01" ~ "Didactic",
+        Question == "Q17_02" ~ "Simulation",
+        Question == "Q17_03" ~ "Wet Lab"
+      )
+    ),
+  
+  Employer_Data_Clean %>%
+    select(Q21_01, Q21_02, Q21_03) %>%
+    pivot_longer(everything(), names_to = "Question", values_to = "Response") %>%
+    mutate(
+      Group = "Employer",
+      Item = case_when(
+        Question == "Q21_01" ~ "Didactic",
+        Question == "Q21_02" ~ "Simulation",
+        Question == "Q21_03" ~ "Wet Lab"
+      )
+    )
+) %>%
+  filter(!is.na(Response)) %>%
+  mutate(
+    Response = factor(Response, levels = 1:4, 
+                      labels = c("Strongly Disagree", "Disagree", "Agree", "Strongly Agree")),
+    Count = 1,
+    Direction = if_else(Group == "Employer", -1, 1)
+  ) %>%
+  group_by(Group, Item, Response) %>%
+  summarise(n = sum(Count) * unique(Direction), .groups = "drop")
+
+# STEP 2: Grouped labels and colors
 combined_mirrored <- combined_mirrored %>%
   mutate(
     Response_Grouped = paste(Response, Group, sep = " - "),
@@ -680,7 +752,6 @@ combined_mirrored <- combined_mirrored %>%
     ))
   )
 
-# Define custom colors: Reds for Educators, Blues for Employers
 custom_colors <- c(
   "Strongly Disagree - Educator" = "#d73027",
   "Disagree - Educator"          = "#f46d43",
@@ -692,7 +763,7 @@ custom_colors <- c(
   "Strongly Agree - Employer"    = "#e0f3f8"
 )
 
-# Plot with custom fill
+# STEP 3: Plot
 ggplot(combined_mirrored, aes(x = Item, y = n, fill = Response_Grouped)) +
   geom_bar(stat = "identity") +
   coord_flip() +
@@ -708,18 +779,55 @@ ggplot(combined_mirrored, aes(x = Item, y = n, fill = Response_Grouped)) +
   theme(legend.position = "bottom")
 
 
+library(tidyverse)
+
+educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
+employer_cols <- paste0("Q21_", sprintf("%02d", 1:7))
+
+mw_df <- map2_dfr(educator_cols, employer_cols, function(q_edu, q_emp) {
+  edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
+  emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
+
+  # Remove NAs
+  edu_vals <- edu_vals[!is.na(edu_vals)]
+  emp_vals <- emp_vals[!is.na(emp_vals)]
+
+  if (length(edu_vals) > 1 && length(emp_vals) > 1) {
+    test_result <- wilcox.test(edu_vals, emp_vals, exact = FALSE)
+    tibble(
+      question = q_edu,
+      W = test_result$statistic,
+      p_value = test_result$p.value
+    )
+  } else {
+    tibble(
+      question = q_edu,
+      W = NA_real_,
+      p_value = NA_real_
+    )
+  }
+})
+
+# Add significance stars
+mw_df <- mw_df %>%
+  mutate(significance = cut(p_value,
+                            breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+                            labels = c("***", "**", "*", ".", "ns")))
+
+print(mw_df)
+
+
 ```
 
+### S7 Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
 
-#### S7 Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
+### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
-#### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
+In question #26 of the employers version of the survey, participants were asked, "Which of the following skills do you think that DVM students should be required to practice/learn as part of the clinical training portion of a DVM program? Select one response for each of the skills listed below." The analogue of this question for educators was survey question #21
 
-In question #26 of the employers version of the survey, participants were asked, "Which of the following skills do you think that DVM students should be required to practice/learn as part of the clinical training portion of a DVM program?  Select one response for each of the skills listed below."  The analogue of this question for educators was survey question #21
+This question hits at the sentiment on what both groups think should be required practice/learnings for students. The research question asked if there was a difference in opinions on this matter. To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between groups.
 
-This question hits at the sentiment on what both groups think should be required practice/learnings for students.  The research question asked if there was a difference in opinions on this matter.  To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test.  This test assumes mutual exclusivity between groups.
-
-```{r S8, echo=FALSE, fig.align='center'}
+```{r S8, echo=FALSE, warning=FALSE, fig.align='center'}
 educator_cols <- paste0("Q21_", sprintf("%02d", 1:14))
 employer_cols  <- paste0("Q26_", sprintf("%02d", 1:14))
 
@@ -768,32 +876,27 @@ mw_df$significance <- cut(mw_df$p_value,
 print(mw_df)
 ```
 
-
 ```{r S8v2, fig.align='center'}
 view(Educator_Data_Clean %>% select(starts_with("Q17")))
 view(Employer_Data_Clean %>% select(starts_with("Q21")))
 ```
 
+## Findings
 
+## Statistical Analysis
 
-## Results
+# Discussion/Conclusion
 
-### Findings
+## Interpretation of Results
 
-### Statistical Analysis
+## Implications of the Study
 
-## Discussion/Conclusion
+## Limitations
 
-### Interpretation of Results
+## Recommendations
 
-### Implications of the Study
+## Summary of Key Findings
 
-### Limitations
+## Final Thoughts
 
-### Recommendations
-
-### Summary of Key Findings
-
-### Final Thoughts
-
-## Appendix
+# Appendix

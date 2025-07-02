@@ -43,6 +43,13 @@
 \makeatother
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+  
+\fi
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
@@ -217,17 +224,17 @@ Dentistry}
 \tableofcontents
 }
 
-\subsection{Abstract}\label{abstract}
+\section{Abstract}\label{abstract}
 
-\subsection{Introduction}\label{introduction}
+\section{Introduction}\label{introduction}
 
-\subsubsection{Purpose of project}\label{purpose-of-project}
+\subsection{Purpose of project}\label{purpose-of-project}
 
-\subsubsection{Study details}\label{study-details}
+\subsection{Study details}\label{study-details}
 
-\subsection{Data}\label{data}
+\section{Data}\label{data}
 
-\subsubsection{Data Description}\label{data-description}
+\subsection{Data Description}\label{data-description}
 
 Two separate surveys were administered to mutually exclusive groups:
 veterinary employers who have worked with students, and educators who
@@ -238,37 +245,35 @@ by an educator and later employed by a participating employer.
 The employer dataset consists of responses from 29 participants
 answering 40 questions, while the educator dataset includes 43
 participants answering 34 questions. Each group was asked a single
-qualifying question to determine eligibility on participation and nine
-questions which asked about the participants demographics or
-institution. Educators were then given 24 questions, employers 30
-questions, that were focused on DVM student compentencies and
-professional sentiments regarding training in veterinarian medicine.
+qualifying question to determine eligibility for participation, along
+with nine questions covering demographics and institutional context.
+Educators were then presented with 24 competency- and sentiment-based
+questions, while employers answered 30 such items focused on
+professional expectations and training in veterinary medicine.
 
-Survey questions can in several forms. There were binary Yes/No
-responses; common among the demographic/institution questions. ``Select
-all that apply'' responses which act as its names sake with no limit to
-the number of selections. These were common in questions asking the
-participant to select all from a list of medical precedures at a
-practice. Many of these questions then were accompanied by Likert Scale
-question. The Likert Scale data was even-degreed with no neutral
-response. We believe the lack of a non-neutrality option caused at least
-two participants to answer both ``agree'' and ``disagree'' to a survey
-question. There were questions that offered an ``other'' response. For
-these situations, the survey accomodated a text entry for the
-participant to elaborate on selecting ``other''. Finally, there were
-some questions which ask participants to put in an interger when asked
-to give their account of a quantifiable value (i.e., hours worked,
-number of accredited veterinarians, etc.). This interger was limitless
-regardless of the questions' context.
+Survey questions took several forms. Some were binary (Yes/No),
+particularly those related to demographics and institutional
+affiliation. Others used a ``select all that apply'' format, commonly
+seen in questions asking respondents to identify procedures performed at
+their practice. Many of these questions were followed by Likert-scale
+items. The Likert scales were even-numbered and omitted a neutral
+option, which may have contributed to at least two instances where
+respondents selected both ``agree'' and ``disagree'' for the same item.
 
-Additionally, survey completion time differed between groups. Educators,
-on average, spent more time completing the survey than employers. While
-the survey did not ask participants to explain their response time, this
-difference may reflect greater engagement or the tendency for more
-elaborated responses among educators. These differences in response
-count might also lend credence to greater willingness among educators to
-engage with the survey. A box plot below illustrates the distribution of
-survey duration (in minutes) by group.
+Several questions offered an ``Other'' response with a text box for
+elaboration. A few required numeric input, such as estimates of hours
+worked or the number of practicing veterinarians. These integer fields
+were not restricted by any upper bound, regardless of contextual
+reasonableness.
+
+Survey completion time differed by group. Educators, on average, spent
+more time completing the survey than employers. While no follow-up
+question asked participants to explain their response time, this
+discrepancy may reflect greater engagement or a tendency for more
+elaborated responses among educators. It may also suggest a greater
+willingness among educators to participate more thoughtfully. The box
+plot below illustrates the distribution of survey duration (in minutes)
+by group.
 
 \begin{center}
 \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_01-1.pdf}}
@@ -285,31 +290,28 @@ progress across groups.
 \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_02-1.pdf}}
 \end{center}
 
-From the educators dataset we could talk about: * Q27; How long have you
-been teaching DVM students in the clinical training portion of a DVM
-program? * Q28; Does your institution have a teaching hospital? * Q29;
-On average, how many dental procedures does your primary care service
-perform each week?
-
-From the employers dataset we could talk about: * Q33; Which of the
-following best describes your job setting or organization? * Q36; On
-average, how many dental procedures does your
-practice/oganization/institution perform each week * Q37; Which of the
-following best describes the person who completed this survey?
-
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#SPACER FOR MORE ANALYTICS}
+\NormalTok{From the educators dataset we could talk about}\SpecialCharTok{:}
+\ErrorTok{*}\NormalTok{ Q27; How long have you been teaching DVM students }\ControlFlowTok{in}\NormalTok{ the clinical training portion of a DVM program?}
+\SpecialCharTok{*}\NormalTok{ Q28; Does your institution have a teaching hospital?}
+\SpecialCharTok{*}\NormalTok{ Q29; On average, how many dental procedures does your primary care service perform each week?}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\#SPACER FOR MORE ANALYTICS}
+
+\NormalTok{From the employers dataset we could talk about}\SpecialCharTok{:}
+\ErrorTok{*}\NormalTok{ Q33; Which of the following best describes your job setting or organization?}
+\SpecialCharTok{*}\NormalTok{ Q36; On average, how many dental procedures does your practice}\SpecialCharTok{/}\NormalTok{oganization}\SpecialCharTok{/}\NormalTok{institution perform each week}
+\SpecialCharTok{*}\NormalTok{ Q37; Which of the following best describes the person who completed this survey?}
 \end{Highlighting}
 \end{Shaded}
 
-\subsubsection{Data Source}\label{data-source}
+\subsection{Data Source}\label{data-source}
 
 Survey data were collected using Qualtrics, a cloud-based experience
 management platform commonly used for gathering feedback and sentiment
@@ -317,8 +319,7 @@ across workforce domains. Participants were recruited via email
 invitation sent by the researcher, using pre-existing contact lists.
 Participation was voluntary and anonymized.
 
-\subsubsection{Preprocessing
-Description}\label{preprocessing-description}
+\subsection{Preprocessing Description}\label{preprocessing-description}
 
 Although the employer and educator datasets shared a similar structure,
 they were not identical. Most preprocessing steps were applied uniformly
@@ -377,42 +378,121 @@ survey. We also excluded:
 After all preprocessing steps, the final cleaned datasets consisted of
 13 employer participants and 30 educator participants.
 
-\subsection{Statistical Methods}\label{statistical-methods}
+\section{Statistical Methods}\label{statistical-methods}
 
-\subsubsection{Research Question
+\subsection{Research Question
 Answered}\label{research-question-answered}
 
-\subsubsection{Method Description}\label{method-description}
+\textbf{How do small animal primary care employers (medical directors
+and practice owners) and primary care veterinary educators differ in
+regards to their expectations of early career veterinary graduates'
+competencies in small animal dentistry?}
 
-\paragraph{S1 Are there significant differences between educators and
-practice owners in their belief that new graduates are competent in key
-dental skills on their first day of
+\ul{Statistical Questions}
+
+\textbf{\emph{S1.}} Are there significant differences between educators
+and practice owners in their belief that new graduates are competent in
+key dental skills on their first day of practice?
+
+\textbf{\emph{S2.}} Is there a difference between educators and practice
+owners in their reports (educators' actual teaching vs.~owners'
+perceptions) of which dental skills were taught in the pre-clinical DVM
+curriculum for recent graduates?
+
+\textbf{\emph{S3.}} Is there a difference between educators and practice
+owners in their level of agreement about whether specific dental skills
+should be taught pre-clinically?
+
+\textbf{\emph{S4.}} Do employers and educators differ in their
+expectations about how many dental procedures new graduates should
+complete during clinical training?
+
+\textbf{\emph{S5.}} Is there difference between the instructional
+formats in dentistry reported by DVM programs and the formats perceived
+by employers to have been completed by early career veterinarians?
+
+\textbf{\emph{S6.}} Do educators and employers differ in their views on
+which formats of clinical instruction in dentistry should be required
+for DVM students as part of their clinical training?
+
+\textbf{\emph{S7.}} Is there a difference between the clinical dentistry
+skills that educators report DVM students are learning during their
+clinical training and the skills that employers believe recent graduates
+have completed as part of their DVM program?
+
+\textbf{\emph{S8.}} Do educators and employers differ in their opinions
+about which clinical dentistry skills DVM students should be required to
+practice or learn during their clinical training?
+
+\subsection{Method Description}\label{method-description}
+
+Statistical questions \#1,3, 6, and 8 all deal with participants
+utilizing a likert scale to answer Strongly Agree, Agree, Disagree, or
+Strongly Disagree on a variety of skills and procedures. To analyze this
+data, we will use diverging stacked bar charts and tables for
+exploratory data analysis and the Mann-Whitney U Test for the formal
+hypothesis procedure. The Mann-Whitney U Test is a non-parametric test
+that does not rely on an assumption of normality. It does require
+independence between datasets and it is reasonable to assume that the
+educators and employers were independent from each other when taking the
+survey. The Mann-Whitney test particularly works well with these
+questions due to the ordinal (and therefore ranked) nature of the data.
+
+Statistical questions \#2, 5, and 7 were all questions that asked the
+participants to ``select all that apply'' as it relates to skills in
+pre-clinical curriculum, format of dental instruction, and skills for
+clinical training respectively. We will utilize frequency tables and bar
+plots to explore the data for these questions and use Fisher's Exact
+Test as a formal inference procedure for the comparison of the two
+groups. Fisher's Exact Test works with categorical data with independent
+samples, in this case educators and employers. In this context, it is
+preferred over Chi-Squared Tests due to the small sample size and
+therefore not meeting the expected count threshold that is required to
+proceed with Chi-Squared Tests. Given the small sample sizes, we
+acknowledge the limited power of these analyses and may consider post
+hoc power analyses for these tests.
+
+Statistical question \#4 asks participants to enter numerical entries
+related to the number of dental procedures that should be completed
+during training in different areas. We plan to produce boxplots and/or
+histograms to visually examine the data. Depending on the normality or
+lack thereof of the distributions, we will then conduct either a
+two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann
+Whitney U test is a non-parametric test that does not depend on the
+assumption of normality. If the assumption on normality is met, we can
+consider a two-sample t test for this analysis.
+
+\section{Results}\label{results}
+
+\subsubsection{S1 Are there significant differences between educators
+and practice owners in their belief that new graduates are competent in
+key dental skills on their first day of
 practice?}\label{s1-are-there-significant-differences-between-educators-and-practice-owners-in-their-belief-that-new-graduates-are-competent-in-key-dental-skills-on-their-first-day-of-practice}
 
-\paragraph{S2 Is there a difference between educators and practice
+\subsubsection{S2 Is there a difference between educators and practice
 owners in their reports (educators' actual teaching vs.~owners'
 perceptions) of which dental skills were taught in the pre-clinical DVM
 curriculum for recent
 graduates?}\label{s2-is-there-a-difference-between-educators-and-practice-owners-in-their-reports-educators-actual-teaching-vs.-owners-perceptions-of-which-dental-skills-were-taught-in-the-pre-clinical-dvm-curriculum-for-recent-graduates}
 
-\paragraph{S3 Is there a difference between educators and practice
+\subsubsection{S3 Is there a difference between educators and practice
 owners in their level of agreement about whether specific dental skills
 should be taught
 pre-clinically?}\label{s3-is-there-a-difference-between-educators-and-practice-owners-in-their-level-of-agreement-about-whether-specific-dental-skills-should-be-taught-pre-clinically}
 
-\paragraph{S4 Do employers and educators differ in their expectations
-about how many dental procedures new graduates should complete during
-clinical
+\subsubsection{S4 Do employers and educators differ in their
+expectations about how many dental procedures new graduates should
+complete during clinical
 training?}\label{s4-do-employers-and-educators-differ-in-their-expectations-about-how-many-dental-procedures-new-graduates-should-complete-during-clinical-training}
 
-\paragraph{S5 Is there difference between the instructional formats in
-dentistry reported by DVM programs and the formats perceived by
+\subsubsection{S5 Is there difference between the instructional formats
+in dentistry reported by DVM programs and the formats perceived by
 employers to have been completed by early career
 veterinarians?}\label{s5-is-there-difference-between-the-instructional-formats-in-dentistry-reported-by-dvm-programs-and-the-formats-perceived-by-employers-to-have-been-completed-by-early-career-veterinarians}
 
-\paragraph{S6 Do educators and employers differ in their views on which
-formats of clinical instruction in dentistry should be required for DVM
-students as part of their clinical
+\subsubsection{S6 Do educators and employers differ in their views on
+which formats of clinical instruction in dentistry should be required
+for DVM students as part of their clinical
 training?}\label{s6-do-educators-and-employers-differ-in-their-views-on-which-formats-of-clinical-instruction-in-dentistry-should-be-required-for-dvm-students-as-part-of-their-clinical-training}
 
 In question \#21 of the employers version of the survey, participants
@@ -435,11 +515,6 @@ Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between
 groups.
 
 \begin{verbatim}
-Warning: NAs introduced by coercion
-Warning: NAs introduced by coercion
-\end{verbatim}
-
-\begin{verbatim}
        question     W     p_value significance
 Q17_01   Q17_01 138.5 0.414724985           ns
 Q17_02   Q17_02 108.0 0.362883946           ns
@@ -450,12 +525,6 @@ Q17_06   Q17_06    NA          NA         <NA>
 Q17_07   Q17_07    NA          NA         <NA>
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{sapply}\NormalTok{(Educator\_Data\_Clean[ , educator\_cols[}\DecValTok{5}\SpecialCharTok{:}\DecValTok{7}\NormalTok{]], }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{sum}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(x))))}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{verbatim}
 Warning in FUN(X[[i]], ...): NAs introduced by coercion
 \end{verbatim}
@@ -465,12 +534,6 @@ Q17_05 Q17_06 Q17_07
      3      1      0 
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{sapply}\NormalTok{(Employer\_Data\_Clean[ , employer\_cols[}\DecValTok{5}\SpecialCharTok{:}\DecValTok{7}\NormalTok{]], }\ControlFlowTok{function}\NormalTok{(x) }\FunctionTok{sum}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{is.na}\NormalTok{(}\FunctionTok{as.numeric}\NormalTok{(x))))}
-\end{Highlighting}
-\end{Shaded}
-
 \begin{verbatim}
 Warning in FUN(X[[i]], ...): NAs introduced by coercion
 \end{verbatim}
@@ -479,12 +542,6 @@ Warning in FUN(X[[i]], ...): NAs introduced by coercion
 Q21_05 Q21_06 Q21_07 
      1      1      0 
 \end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{Employer\_Data\_Clean }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\FunctionTok{starts\_with}\NormalTok{(}\StringTok{"Q21"}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
 
 \begin{verbatim}
 # A tibble: 13 x 7
@@ -505,14 +562,76 @@ Q21_05 Q21_06 Q21_07
 13 3      3      4      4      <NA>   <NA>   <NA>                               
 \end{verbatim}
 
-\paragraph{S7 Is there a difference between the clinical dentistry
+\begin{verbatim}
+Warning in FUN(X[[i]], ...): NAs introduced by coercion
+\end{verbatim}
+
+\begin{verbatim}
+Q17_05 Q17_06 Q17_07 
+     3      1      0 
+\end{verbatim}
+
+\begin{verbatim}
+Warning in FUN(X[[i]], ...): NAs introduced by coercion
+\end{verbatim}
+
+\begin{verbatim}
+Q21_05 Q21_06 Q21_07 
+     1      1      0 
+\end{verbatim}
+
+\begin{verbatim}
+# A tibble: 13 x 7
+   Q21_01 Q21_02 Q21_03 Q21_04 Q21_05 Q21_06 Q21_07                             
+   <chr>  <chr>  <chr>  <chr>  <chr>  <chr>  <chr>                              
+ 1 3      3      4      4      <NA>   <NA>   <NA>                               
+ 2 4      3      4      4      <NA>   <NA>   <NA>                               
+ 3 4      4      4      4      <NA>   <NA>   <NA>                               
+ 4 3      3      4      4      <NA>   <NA>   <NA>                               
+ 5 4      <NA>   3      3      <NA>   <NA>   <NA>                               
+ 6 3      4      4      3      <NA>   <NA>   <NA>                               
+ 7 4      4      4      4      <NA>   <NA>   <NA>                               
+ 8 4      4      4      4      <NA>   <NA>   Repeated labs and exposure through~
+ 9 4      2      4      3      1      <NA>   <NA>                               
+10 4      4      4      3      <NA>   4      Live patient only if they are adop~
+11 4      4      4      4      <NA>   <NA>   <NA>                               
+12 3      2      4      3      <NA>   <NA>   <NA>                               
+13 3      3      4      4      <NA>   <NA>   <NA>                               
+\end{verbatim}
+
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/TestSpace8-1.pdf}}
+\end{center}
+
+\begin{verbatim}
+Warning in .f(.x[[i]], .y[[i]], ...): NAs introduced by coercion
+\end{verbatim}
+
+\begin{verbatim}
+Warning in .f(.x[[i]], .y[[i]], ...): NAs introduced by coercion
+\end{verbatim}
+
+\begin{verbatim}
+# A tibble: 7 x 4
+  question     W  p_value significance
+  <chr>    <dbl>    <dbl> <fct>       
+1 Q17_01    138.  0.415   ns          
+2 Q17_02    108   0.363   ns          
+3 Q17_03    162   0.713   ns          
+4 Q17_04    264.  0.00274 **          
+5 Q17_05     NA  NA       <NA>        
+6 Q17_06     NA  NA       <NA>        
+7 Q17_07     NA  NA       <NA>        
+\end{verbatim}
+
+\subsubsection{S7 Is there a difference between the clinical dentistry
 skills that educators report DVM students are learning during their
 clinical training and the skills that employers believe recent graduates
 have completed as part of their DVM
 program?}\label{s7-is-there-a-difference-between-the-clinical-dentistry-skills-that-educators-report-dvm-students-are-learning-during-their-clinical-training-and-the-skills-that-employers-believe-recent-graduates-have-completed-as-part-of-their-dvm-program}
 
-\paragraph{S8 Do educators and employers differ in their opinions about
-which clinical dentistry skills DVM students should be required to
+\subsubsection{S8 Do educators and employers differ in their opinions
+about which clinical dentistry skills DVM students should be required to
 practice or learn during their clinical
 training?}\label{s8-do-educators-and-employers-differ-in-their-opinions-about-which-clinical-dentistry-skills-dvm-students-should-be-required-to-practice-or-learn-during-their-clinical-training}
 
@@ -529,12 +648,6 @@ there was a difference in opinions on this matter. To infer from the
 data, we will use the Mann-Whitney U-Test, a non-parametric test also
 known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity
 between groups.
-
-\begin{verbatim}
-Warning: NAs introduced by coercion
-Warning: NAs introduced by coercion
-Warning: NAs introduced by coercion
-\end{verbatim}
 
 \begin{verbatim}
        question     W    p_value significance
@@ -561,29 +674,25 @@ Q21_14   Q21_14    NA         NA         <NA>
 \end{Highlighting}
 \end{Shaded}
 
-\subsection{Results}\label{results}
+\subsection{Findings}\label{findings}
 
-\subsubsection{Findings}\label{findings}
+\subsection{Statistical Analysis}\label{statistical-analysis}
 
-\subsubsection{Statistical Analysis}\label{statistical-analysis}
+\section{Discussion/Conclusion}\label{discussionconclusion}
 
-\subsection{Discussion/Conclusion}\label{discussionconclusion}
+\subsection{Interpretation of Results}\label{interpretation-of-results}
 
-\subsubsection{Interpretation of
-Results}\label{interpretation-of-results}
+\subsection{Implications of the Study}\label{implications-of-the-study}
 
-\subsubsection{Implications of the
-Study}\label{implications-of-the-study}
+\subsection{Limitations}\label{limitations}
 
-\subsubsection{Limitations}\label{limitations}
+\subsection{Recommendations}\label{recommendations}
 
-\subsubsection{Recommendations}\label{recommendations}
+\subsection{Summary of Key Findings}\label{summary-of-key-findings}
 
-\subsubsection{Summary of Key Findings}\label{summary-of-key-findings}
+\subsection{Final Thoughts}\label{final-thoughts}
 
-\subsubsection{Final Thoughts}\label{final-thoughts}
-
-\subsection{Appendix}\label{appendix}
+\section{Appendix}\label{appendix}
 
 
 
