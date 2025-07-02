@@ -478,17 +478,39 @@ Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)
 
 # Introduction
 
-## Purpose of project
+Dr. Mariea Ross-Estrada, a faculty member at North Carolina State University's College of Veterinary Medicine, is exploring whether there are differences between the expectations of small animal primary care veterinary employers and veterinary educators regarding new graduates' competencies in dentistry. Through her own professional experience and conversations with colleagues, Dr. Ross-Estrada observed that many veterinarians must rely on on-the-job training to gain the skills necessary in small animal dentistry. These shared experiences prompted her to investigate whether there is a misalignment in what is taught in veterinary programs and what is expected in clinical practice. 
 
-## Study details
+To explore this question, Dr. Ross-Estrada distributed two surveys: one to medical directors and private practice owners and the other to primary care veterinary educators. Both surveys included similar questions regarding what early-career veterinarians are expected to have learned during their education and the skills they are expected to perform in practice.
+
+## Research Question
+
+How do small animal primary care employers (medical directors and practice owners) and primary care veterinary educators differ in regards to their expectations of early career veterinary graduates’ competencies in small animal dentistry?
+
+## Statistical Questions
+
+1. Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice? 
+
+2. Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
+
+3. Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
+
+4. Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+
+5. Is there difference between the instructional formats in dentistry reported by DVM programs  and the formats perceived by employers to have been completed by early career veterinarians?
+
+6. Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
+
+7. Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
+
+8. Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
 # Data
 
 ## Data Description
 
-Two separate surveys were administered to mutually exclusive groups: veterinary employers who have worked with students, and educators who have taught those students. There was no overlap between these groups—no evidence suggests that any surveyed student was both taught by an educator and later employed by a participating employer.
+Two separate surveys were administered to mutually exclusive groups: veterinary employers who have worked with students, and educators who have taught students. There was no overlap between these groups and they can be assumed to be independent.
 
-The employer dataset consists of responses from 29 participants answering 40 questions, while the educator dataset includes 43 participants answering 34 questions. Each group was asked a single qualifying question to determine eligibility for participation, along with nine questions covering demographics and institutional context. Educators were then presented with 24 competency- and sentiment-based questions, while employers answered 30 such items focused on professional expectations and training in veterinary medicine.
+The employer data set consists of responses from 29 participants answering 40 questions, while the educator data set includes 43 participants answering 34 questions. Each group was asked a single qualifying question to determine eligibility for participation, along with nine questions covering demographics and institutional context. Educators were then presented with 24 competency and sentiment-based questions, while employers answered 30 such items focused on professional expectations and training in veterinary medicine.
 
 Survey questions took several forms. Some were binary (Yes/No), particularly those related to demographics and institutional affiliation. Others used a "select all that apply" format, commonly seen in questions asking respondents to identify procedures performed at their practice. Many of these questions were followed by Likert-scale items. The Likert scales were even-numbered and omitted a neutral option, which may have contributed to at least two instances where respondents selected both “agree” and “disagree” for the same item.
 
@@ -568,13 +590,13 @@ From the employers dataset we could talk about:
 
 ## Data Source
 
-Survey data were collected using Qualtrics, a cloud-based experience management platform commonly used for gathering feedback and sentiment across workforce domains. Participants were recruited via email invitation sent by the researcher, using pre-existing contact lists. Participation was voluntary and anonymized.
+Survey data were collected using Qualtrics, a cloud-based experience management platform commonly used for gathering feedback and sentiment across workforce domains. Participants from the educator survey were recruited via email invitation sent by the researcher, using pre-existing contact lists. Dr. Ross-Estrada distributed the employer survey to her personal and professional networks online. Participation was voluntary and anonymous. There was no incentive offered for completing the survey.
 
 ## Preprocessing Description
 
-Although the employer and educator datasets shared a similar structure, they were not identical. Most preprocessing steps were applied uniformly across both datasets, with minor deviations where needed.
+Although the employer and educator data sets shared a similar structure, they were not identical. Most pre-processing steps were applied uniformly across both data sets, with minor deviations where needed.
 
-The datasets were imported into the RStudio environment (version 2024.04.1 Build 748). A new variable was created to label the data source ("Educator" or "Employer") for later grouping and visualization. The existing respondent_id column served as a unique identifier and was treated as the primary key.
+The data sets were imported into the RStudio environment (version 2024.04.1 Build 748). A new variable was created to label the data source ("Educator" or "Employer") for later grouping and visualization. The existing respondent_id column served as a unique identifier and was treated as the primary key.
 
 Initial cleaning involved removing extraneous metadata included by Qualtrics—such as survey start and end times, IP addresses, geolocation data, and question display logic—all of which were irrelevant to the analysis. These columns were trimmed to streamline the dataset for subsequent transformation and statistical work.
 
@@ -594,35 +616,13 @@ After all preprocessing steps, the final cleaned datasets consisted of 13 employ
 
 # Statistical Methods
 
-## Research Question Answered
-
-**How do small animal primary care employers (medical directors and practice owners) and primary care veterinary educators differ in regards to their expectations of early career veterinary graduates’ competencies in small animal dentistry?**
-
-## Statistical Questions
-
-***S1.*** Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
-
-***S2.*** Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
-
-***S3.*** Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
-
-***S4.*** Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
-
-***S5.*** Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
-
-***S6.*** Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
-
-***S7.*** Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
-
-***S8.*** Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
-
 ## Method Description
 
-Statistical questions #1,3, 6, and 8 all deal with participants utilizing a likert scale to answer Strongly Agree, Agree, Disagree, or Strongly Disagree on a variety of skills and procedures. To analyze this data, we will use diverging stacked bar charts and tables for exploratory data analysis and the Mann-Whitney U Test for the formal hypothesis procedure. The Mann-Whitney U Test is a non-parametric test that does not rely on an assumption of normality. It does require independence between datasets and it is reasonable to assume that the educators and employers were independent from each other when taking the survey. The Mann-Whitney test particularly works well with these questions due to the ordinal (and therefore ranked) nature of the data.
+Likert scale questions (statistical questions #1,3, 6, and 8): These questions utilize a likert scale to answer Strongly Agree, Agree, Disagree, or Strongly Disagree on a variety of skills and procedures. To analyze this data, we will use diverging stacked bar charts and tables for exploratory data analysis and the Mann-Whitney U Test for the formal hypothesis procedure. The Mann-Whitney U Test is a non-parametric test that does not rely on an assumption of normality. It does require independence between datasets and it is reasonable to assume that the educators and employers were independent from each other when taking the survey. The Mann-Whitney test particularly works well with these questions due to the ordinal (and therefore ranked) nature of the data.
 
-Statistical questions #2, 5, and 7 were all questions that asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. In this context, it is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+Select all that apply questions (statistical questions #2, 5, and 7): These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. In this context, it is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
 
-Statistical question #4 asks participants to enter numerical entries related to the number of dental procedures that should be completed during training in different areas. We plan to produce boxplots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
+Numerical entry questions: (statistical question #4): This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
 
 # Results
 
