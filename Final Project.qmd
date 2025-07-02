@@ -18,6 +18,7 @@ format:
     keep-tex: true
     linkcolor: blue
 ---
+
 ```{r package_load, warning=FALSE, include=FALSE}
 library(ggplot2)
 library(tidyverse)
@@ -259,8 +260,6 @@ emp_q_cols_sorted <- mixedsort(emp_q_cols)
 Employer_Data_Clean <- Employer_Data_Clean[, c(emp_meta_cols, emp_q_cols_sorted)]
 ```
 
-
-
 ```{r Educator Data load, echo=FALSE, message=FALSE, warning=FALSE, results="hide",include=FALSE, error=FALSE}
 #############################################
 ## Connect, Import, group and primary key. ##
@@ -475,21 +474,25 @@ edu_q_cols_sorted <- mixedsort(edu_q_cols)
 Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)]
 ```
 
-
 ## Abstract
 
 ## Introduction
 
 ### Purpose of project
+
 ### Study details
 
+## Data
 
-## Data 
 ### Data Description
 
-Researcher collected two datasets; an employer dataset for practices who have worked with dental veterinarian students, or educators who taught those students.  These are mutually exclusive groups in that there was no indication student(s) were the subject of the same survey (i.e., the same student was taught by an educator and hired or completed work with the employer).  The employer dataset contained 29 survey participants.  
+Two separate surveys were administered to mutually exclusive groups: veterinary employers who have worked with students, and educators who have taught those students. There was no overlap between these groups—no evidence suggests that any surveyed student was both taught by an educator and later employed by a participating employer.
 
-```{r datadescvis_1_emp}
+The employer dataset consists of responses from 29 participants, while the educator dataset includes 43 participants. This difference in response count suggests greater willingness among educators to engage with the survey.
+
+Additionally, survey completion time differed between groups. Educators, on average, spent more time completing the survey than employers. While the survey did not ask participants to explain their response time, this difference may reflect greater engagement or the tendency for more elaborated responses among educators. A box plot below illustrates the distribution of survey duration (in minutes) by group.
+
+```{r Data_Desc_01, echo=FALSE, fig.align='center'}
 #Average time for survey completion
 # Convert and clean both datasets
 clean_employer <- Employer_Data[-c(1,2), ] %>%
@@ -521,9 +524,11 @@ ggplot() +
     y = "Duration (minutes)"
   ) +
   theme_minimal()
+```
 
+Regarding the proportion of the survey completed, employer responses were more variable—spanning the full range from partial to full completion. In contrast, educators tended to complete more of the survey, with a concentration near full completion and a less pronounced left tail. The density plot below visualizes these differences in survey progress across groups.
 
-
+```{r Data_Desc_02, echo=FALSE, fig.align='center'}
 #Average percent of survey completed
 combined_progress <- bind_rows(
   Employer_Data[-c(1,2), ] %>% mutate(group = "Employer"),
@@ -536,38 +541,79 @@ ggplot(combined_progress, aes(x = progress, fill = group)) +
   labs(title = "Survey Progress Density by Group", x = "Progress (%)", y = "Density") +
   theme_minimal()
 
+```
 
-#Contingency Supervised/Observed student
+From the educators dataset we could talk about:
+* Q27; How long have you been teaching DVM students in the clinical training portion of a DVM program?
+* Q28; Does your institution have a teaching hospital?
+* Q29; On average, how many dental procedures does your primary care service perform each week?
 
+From the employers dataset we could talk about:
+* Q33; Which of the following best describes your job setting or organization?
+* Q36; On average, how many dental procedures does your practice/oganization/institution perform each week
+* Q37; Which of the following best describes the person who completed this survey?
+
+```{r Data_Desc_03, fig.align='center'}
 
 ```
 
+
+```{r Data_Desc_04, fig.align='center'}
+
+```
+
+
 ### Data Source
 
-Survey data was collected using Qualtrics, an experience management cloud company, who specializes in gathering human sentiment in all areas of the workforce.  Participants were sent an inventation to volunteer to take the survey from the researcher from a contact.
+Survey data were collected using Qualtrics, a cloud-based experience management platform commonly used for gathering feedback and sentiment across workforce domains. Participants were recruited via email invitation sent by the researcher, using pre-existing contact lists. Participation was voluntary and anonymized.
 
 ### Preprocessing Description
 
-Both datasets were similar, yet not identical.  Many of the preprocessing steps were the same for both datasets except where I mention the differences in the instructions to follow.  
+Although the employer and educator datasets shared a similar structure, they were not identical. Most preprocessing steps were applied uniformly across both datasets, with minor deviations where needed.
 
-Datasets were imported into the R Studio environment (2024.04.1 Build 748).  Immediately a column to identify the data source (Educator or Employer) was created to keep both sets separate and a primary key was created out of the column *respondent_id* that already exist.  This made the most sense since this column was already unique.
+The datasets were imported into the RStudio environment (version 2024.04.1 Build 748). A new variable was created to label the data source ("Educator" or "Employer") for later grouping and visualization. The existing respondent_id column served as a unique identifier and was treated as the primary key.
 
-Both datasets had a lot of noise that needed trimming. Included in Qualtrics survey output was metadata that was not helpful for analysis.  
+Initial cleaning involved removing extraneous metadata included by Qualtrics—such as survey start and end times, IP addresses, geolocation data, and question display logic—all of which were irrelevant to the analysis. These columns were trimmed to streamline the dataset for subsequent transformation and statistical work.
+
+Column names in the original Qualtrics export were alphanumeric but often ambiguous and misleading. Many variable names did not match the corresponding survey question numbers. Our team manually mapped the exported column names to their corresponding survey questions and responses by referencing adjacent metadata fields and using deductive reasoning. This process allowed us to build an index-based column naming structure, which greatly improved the manageability and interpretability of the dataset.
+
+Before diving into question-specific analysis, we first identified the subset of survey questions relevant to our research objectives. All unrelated or out-of-scope items were removed. This step reduced the employer dataset from 176 columns to 100, and the educator dataset from 171 columns to 102.
+
+Several formatting inconsistencies also needed to be resolved. Some multi-select questions appeared in the form of comma-separated text responses within a single column, while others were exported into multiple binary columns. Additionally, for certain questions, a response option that received zero selections was dropped entirely by Qualtrics. To standardize these issues, we implemented a script to “explode” comma-separated responses into individual binary columns. For dropped columns, we manually reintroduced them as zero-filled dummy variables to preserve the full response structure.
+
+Finally, we filtered out participants who answered less than half of the survey. We also excluded:
+
+-   Employers who responded “No” to the question: “Do you work with early career veterinarians (someone who has graduated from a DVM program after May 2021)?”
+
+-   Educators who responded “No” to: “Do you teach in any capacity of the dental curriculum at your institution?”
+
+After all preprocessing steps, the final cleaned datasets consisted of 13 employer participants and 30 educator participants.
+
 
 ## Statistical Methods
+
 ### Research Question Answered
+
 ### Method Description
 
 ## Results
+
 ### Findings
+
 ### Statistical Analysis
 
 ## Discussion/Conclusion
+
 ### Interpretation of Results
+
 ### Implications of the Study
+
 ### Limitations
+
 ### Recommendations
+
 ### Summary of Key Findings
+
 ### Final Thoughts
 
 ## Appendix
