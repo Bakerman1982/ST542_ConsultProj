@@ -598,6 +598,184 @@ After all preprocessing steps, the final cleaned datasets consisted of 13 employ
 
 ### Method Description
 
+#### S1 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice? 
+
+#### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
+
+#### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
+
+#### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+
+#### S5 Is there difference between the instructional formats in dentistry reported by DVM programs  and the formats perceived by employers to have been completed by early career veterinarians?
+
+#### S6 Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
+
+In question #21 of the employers version of the survey, participants were asked, "Which of the following types of <u>*clinical instruction in dentistry*</u> do you think that DVM students should be required to complete as part of a <u>*DVM program*</u>?  Select one response for each of the instructional types listed below."  The analogue of this question for educators was survey question #17.  The educators survey question had a slight variation in phraseology.  It asked, "Which of the following types of <u>*instruction*</u> do you think DVM students should be required to complete as part of their <u>*clinical training*</u>?  Select one response for each type of instruction listed below.".
+
+This question is targeting how participants feel about what dental veterinarian medical programs are teaching and what topics should be required in their curriculum.  The research question asked if there was a difference in opinions on this matter.  To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test.  This test assumes mutual exclusivity between groups.
+
+```{r S6, , echo=FALSE, warning=FALSE, fig.align='center'}
+educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
+employer_cols  <- paste0("Q21_", sprintf("%02d", 1:7))
+
+# Initialize a results list
+mw_results <- list()
+
+# For loop that 
+for (i in seq_along(educator_cols)) {
+  q_edu <- educator_cols[i]
+  q_emp <- employer_cols[i]
+  
+  # Coerce to numeric
+  edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
+  emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
+  
+  # Remove NAs
+  edu_vals <- edu_vals[!is.na(edu_vals)]
+  emp_vals <- emp_vals[!is.na(emp_vals)]
+  
+  # Only run test if both groups have >1 value
+  if (length(edu_vals) > 1 && length(emp_vals) > 1) {
+    test_result <- wilcox.test(edu_vals, emp_vals, exact = FALSE)
+    
+    mw_results[[q_edu]] <- list(
+      question = q_edu,
+      W = test_result$statistic,
+      p_value = test_result$p.value
+    )
+  } else {
+    mw_results[[q_edu]] <- list(
+      question = q_edu,
+      W = NA,
+      p_value = NA
+    )
+  }
+}
+
+
+mw_df <- do.call(rbind, lapply(mw_results, as.data.frame))
+mw_df <- as.data.frame(mw_df)
+mw_df$p_value <- as.numeric(mw_df$p_value)
+mw_df$question <- rownames(mw_df)
+mw_df$significance <- cut(mw_df$p_value,
+                          breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+                          labels = c("***", "**", "*", ".", "ns"))
+print(mw_df)
+```
+
+```{r}
+sapply(Educator_Data_Clean[ , educator_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
+sapply(Employer_Data_Clean[ , employer_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
+
+Employer_Data_Clean %>% select(starts_with("Q21"))
+
+# Create grouped labels for coloring
+combined_mirrored <- combined_mirrored %>%
+  mutate(
+    Response_Grouped = paste(Response, Group, sep = " - "),
+    Response = factor(Response, levels = c("Strongly Disagree", "Disagree", "Agree", "Strongly Agree")),
+    Response_Grouped = factor(Response_Grouped, levels = c(
+      "Strongly Disagree - Educator", "Disagree - Educator", "Agree - Educator", "Strongly Agree - Educator",
+      "Strongly Disagree - Employer", "Disagree - Employer", "Agree - Employer", "Strongly Agree - Employer"
+    ))
+  )
+
+# Define custom colors: Reds for Educators, Blues for Employers
+custom_colors <- c(
+  "Strongly Disagree - Educator" = "#d73027",
+  "Disagree - Educator"          = "#f46d43",
+  "Agree - Educator"             = "#fdae61",
+  "Strongly Agree - Educator"    = "#fee090",
+  "Strongly Disagree - Employer" = "#4575b4",
+  "Disagree - Employer"          = "#74add1",
+  "Agree - Employer"             = "#abd9e9",
+  "Strongly Agree - Employer"    = "#e0f3f8"
+)
+
+# Plot with custom fill
+ggplot(combined_mirrored, aes(x = Item, y = n, fill = Response_Grouped)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_y_continuous(labels = abs) +
+  scale_fill_manual(values = custom_colors) +
+  labs(
+    title = "Back-to-Back Comparison of Educator vs Employer Responses",
+    x = "Instructional Method",
+    y = "Response Count",
+    fill = "Likert Response by Group"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+
+```
+
+
+#### S7 Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
+
+#### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
+
+In question #26 of the employers version of the survey, participants were asked, "Which of the following skills do you think that DVM students should be required to practice/learn as part of the clinical training portion of a DVM program?  Select one response for each of the skills listed below."  The analogue of this question for educators was survey question #21
+
+This question hits at the sentiment on what both groups think should be required practice/learnings for students.  The research question asked if there was a difference in opinions on this matter.  To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test.  This test assumes mutual exclusivity between groups.
+
+```{r S8, echo=FALSE, fig.align='center'}
+educator_cols <- paste0("Q21_", sprintf("%02d", 1:14))
+employer_cols  <- paste0("Q26_", sprintf("%02d", 1:14))
+
+# Initialize a results list
+mw_results <- list()
+
+# For loop that 
+for (i in 1:14) {
+  q_edu <- educator_cols[i]
+  q_emp <- employer_cols[i]
+  
+  # Coerce to numeric
+  edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
+  emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
+  
+  # Remove NAs
+  edu_vals <- edu_vals[!is.na(edu_vals)]
+  emp_vals <- emp_vals[!is.na(emp_vals)]
+  
+  # Only run test if both groups have >1 value
+  if (length(edu_vals) > 1 && length(emp_vals) > 1) {
+    test_result <- wilcox.test(edu_vals, emp_vals, exact = FALSE)
+    
+    mw_results[[q_edu]] <- list(
+      question = q_edu,
+      W = test_result$statistic,
+      p_value = test_result$p.value
+    )
+  } else {
+    mw_results[[q_edu]] <- list(
+      question = q_edu,
+      W = NA,
+      p_value = NA
+    )
+  }
+}
+
+
+mw_df <- do.call(rbind, lapply(mw_results, as.data.frame))
+mw_df <- as.data.frame(mw_df)
+mw_df$p_value <- as.numeric(mw_df$p_value)
+mw_df$question <- rownames(mw_df)
+mw_df$significance <- cut(mw_df$p_value,
+                          breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+                          labels = c("***", "**", "*", ".", "ns"))
+print(mw_df)
+```
+
+
+```{r S8v2, fig.align='center'}
+view(Educator_Data_Clean %>% select(starts_with("Q17")))
+view(Employer_Data_Clean %>% select(starts_with("Q21")))
+```
+
+
+
 ## Results
 
 ### Findings
