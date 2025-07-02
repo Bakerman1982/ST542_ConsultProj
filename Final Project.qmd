@@ -636,6 +636,86 @@ Numerical entry questions: (statistical question #4): This question asks partici
 
 ### S5 Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
 
+Both educators and employers were asked a question relating to the format of instruction during the clinical year.
+
+Employers were asked: "What format of clinical instruction in dentistry do you believe that the early career veterinarians (individuals who have graduated from a DVM program after May 2021) hired into your practice/organization/institution completed as part of their DVM training?  Select all that apply."
+
+Educators were asked: "What format of instruction in dentistry does your DVM program provide during the clinical year?  Select all that apply."
+
+Since the question was of the format "select all that apply," participants were able to select more than one response and percentages will not add to 100%. Results reported below are the percentages of their respective group (educators or employers) that selected the given format of instruction. Percentages were utilized due to the difference in sample size.
+
+Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (73.3% vs. 46.2%) and live patient training (93.3% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 16.7%) than educators. These differences suggest varying expectations or awareness between the two groups regarding dental training experiences of recent graduates.
+
+
+```{r echo=FALSE}
+#Add custom labels to final bar graph
+option_labels <- c(
+  "01" = "Didactic",
+  "02" = "Simulation",
+  "03" = "Wet Lab",
+  "04" = "Live Patient",
+  "05" = "None of these"
+)
+
+# Count total respondents per group
+n_employers <- nrow(Employer_Data_Clean)
+n_educators <- nrow(Educator_Data_Clean)
+
+#Employer data: calculate percentage of total dataset
+employer_percent <- Employer_Data_Clean %>%
+  select(Q20_01:Q20_05) %>%
+  summarise(across(everything(), ~ sum(. == 1, na.rm = TRUE))) %>%
+  pivot_longer(everything(), names_to = "option", values_to = "count") %>%
+  mutate(group = "Employer",
+         option = str_replace(option, "Q20_", ""),
+         percent = count / n_employers * 100)
+
+#Educator data: calculate percentage of total dataset
+educator_percent <- Educator_Data_Clean %>%
+  select(Q16_01:Q16_05) %>%
+  summarise(across(everything(), ~ sum(. == 1, na.rm = TRUE))) %>%
+  pivot_longer(everything(), names_to = "option", values_to = "count") %>%
+  mutate(group = "Educator",
+         option = str_replace(option, "Q16_", ""),
+         percent = count / n_educators * 100)
+
+#Combine
+combined_percent <- bind_rows(employer_percent, educator_percent) %>%
+  mutate(option = case_when(
+    option == "01" ~ "Didactic",
+    option == "02" ~ "Simulation",
+    option == "03" ~ "Wet Lab",
+    option == "04" ~ "Live Patient",
+    option == "05" ~ "None of These",
+    TRUE ~ option
+  ))
+
+#Keep the order of the bars as the order of the question
+combined_percent$option <- factor(combined_percent$option,
+                                  levels = c("Didactic", "Simulation", "Wet Lab", "Live Patient", "None of These"))
+
+#Plot percentages
+ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
+  geom_bar(stat = "identity", position = position_dodge()) +
+  labs(title ="Perceived Clinical Instruction Formats in Dentistry\nCompleted by Early Career Veterinarians",
+       x = "Format of Instruction",
+       y = "Percent of Respondents",
+       fill = "Group") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1)) +
+  ylim(0, max(combined_percent$percent) + 10) +
+  geom_text(aes(label = paste0(round(percent, 1), "%")), 
+          position = position_dodge(width = 0.9), 
+          vjust = -0.3, size = 3)
+
+
+
+
+
+```
+
+
+
 ### S6 Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
 
 In question #21 of the employers version of the survey, participants were asked, "Which of the following types of [*clinical instruction in dentistry*]{.underline} do you think that DVM students should be required to complete as part of a [*DVM program*]{.underline}? Select one response for each of the instructional types listed below." The analogue of this question for educators was survey question #17. We want to make a note that the educators survey question had a slight variation in phraseology. It asked, "Which of the following types of [*instruction*]{.underline} do you think DVM students should be required to complete as part of their [*clinical training*]{.underline}? Select one response for each type of instruction listed below.".
