@@ -69,6 +69,46 @@
 \fi
 \makeatother
 
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{241,243,245}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
@@ -195,17 +235,40 @@ have taught those students. There was no overlap between these
 groups---no evidence suggests that any surveyed student was both taught
 by an educator and later employed by a participating employer.
 
-The employer dataset consists of responses from 29 participants, while
-the educator dataset includes 43 participants. This difference in
-response count suggests greater willingness among educators to engage
-with the survey.
+The employer dataset consists of responses from 29 participants
+answering 40 questions, while the educator dataset includes 43
+participants answering 34 questions. Each group was asked a single
+qualifying question to determine eligibility on participation and nine
+questions which asked about the participants demographics or
+institution. Educators were then given 24 questions, employers 30
+questions, that were focused on DVM student compentencies and
+professional sentiments regarding training in veterinarian medicine.
+
+Survey questions can in several forms. There were binary Yes/No
+responses; common among the demographic/institution questions. ``Select
+all that apply'' responses which act as its names sake with no limit to
+the number of selections. These were common in questions asking the
+participant to select all from a list of medical precedures at a
+practice. Many of these questions then were accompanied by Likert Scale
+question. The Likert Scale data was even-degreed with no neutral
+response. We believe the lack of a non-neutrality option caused at least
+two participants to answer both ``agree'' and ``disagree'' to a survey
+question. There were questions that offered an ``other'' response. For
+these situations, the survey accomodated a text entry for the
+participant to elaborate on selecting ``other''. Finally, there were
+some questions which ask participants to put in an interger when asked
+to give their account of a quantifiable value (i.e., hours worked,
+number of accredited veterinarians, etc.). This interger was limitless
+regardless of the questions' context.
 
 Additionally, survey completion time differed between groups. Educators,
 on average, spent more time completing the survey than employers. While
 the survey did not ask participants to explain their response time, this
 difference may reflect greater engagement or the tendency for more
-elaborated responses among educators. A box plot below illustrates the
-distribution of survey duration (in minutes) by group.
+elaborated responses among educators. These differences in response
+count might also lend credence to greater willingness among educators to
+engage with the survey. A box plot below illustrates the distribution of
+survey duration (in minutes) by group.
 
 \begin{center}
 \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_01-1.pdf}}
@@ -233,6 +296,18 @@ following best describes your job setting or organization? * Q36; On
 average, how many dental procedures does your
 practice/oganization/institution perform each week * Q37; Which of the
 following best describes the person who completed this survey?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#SPACER FOR MORE ANALYTICS}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#SPACER FOR MORE ANALYTICS}
+\end{Highlighting}
+\end{Shaded}
 
 \subsection{Data Source}\label{data-source}
 
