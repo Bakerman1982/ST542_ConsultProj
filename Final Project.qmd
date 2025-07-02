@@ -598,7 +598,7 @@ After all preprocessing steps, the final cleaned datasets consisted of 13 employ
 
 **How do small animal primary care employers (medical directors and practice owners) and primary care veterinary educators differ in regards to their expectations of early career veterinary graduates’ competencies in small animal dentistry?**
 
-[Statistical Questions]{.underline}
+## Statistical Questions
 
 ***S1.*** Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
 
@@ -638,7 +638,7 @@ Statistical question #4 asks participants to enter numerical entries related to 
 
 ### S6 Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
 
-In question #21 of the employers version of the survey, participants were asked, "Which of the following types of <u>*clinical instruction in dentistry*</u> do you think that DVM students should be required to complete as part of a <u>*DVM program*</u>? Select one response for each of the instructional types listed below." The analogue of this question for educators was survey question #17. The educators survey question had a slight variation in phraseology. It asked, "Which of the following types of <u>*instruction*</u> do you think DVM students should be required to complete as part of their <u>*clinical training*</u>? Select one response for each type of instruction listed below.".
+In question #21 of the employers version of the survey, participants were asked, "Which of the following types of [*clinical instruction in dentistry*]{.underline} do you think that DVM students should be required to complete as part of a [*DVM program*]{.underline}? Select one response for each of the instructional types listed below." The analogue of this question for educators was survey question #17. We want to make a note that the educators survey question had a slight variation in phraseology. It asked, "Which of the following types of [*instruction*]{.underline} do you think DVM students should be required to complete as part of their [*clinical training*]{.underline}? Select one response for each type of instruction listed below.".
 
 This question is targeting how participants feel about what dental veterinarian medical programs are teaching and what topics should be required in their curriculum. The research question asked if there was a difference in opinions on this matter. To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between groups.
 
@@ -691,7 +691,7 @@ mw_df$significance <- cut(mw_df$p_value,
 print(mw_df)
 ```
 
-```{r TestSpace8, echo=FALSE, fig.align='center'}
+```{r TestSpace8, eval=FALSE, echo=FALSE, fig.align='center'}
 
 sapply(Educator_Data_Clean[ , educator_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
 sapply(Employer_Data_Clean[ , employer_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
