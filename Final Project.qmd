@@ -647,6 +647,8 @@ Since the question was of the format "select all that apply," participants were 
 Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (73.3% vs. 46.2%) and live patient training (93.3% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 16.7%) than educators. These differences suggest varying expectations or awareness between the two groups regarding dental training experiences of recent graduates.
 
 
+*Add here about people who entered a text response.
+
 ```{r echo=FALSE}
 #Add custom labels to final bar graph
 option_labels <- c(
@@ -707,12 +709,96 @@ ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
   geom_text(aes(label = paste0(round(percent, 1), "%")), 
           position = position_dodge(width = 0.9), 
           vjust = -0.3, size = 3)
+```
 
 
+The table below shows the percentages of each format selected (as seen in the bar graph above) and the p-value associated with performing Fisher's Exact Test on each format.
+
+Didactic instruction was selected by 53.3% of educators and 61.5% of employers, with no statistically significant difference between the groups (p=0.743). There was also no statistically significant difference in simulation (p=0.417) and wet lab instruction (p=0.162).
+
+On the other hand, live patient instruction was selected by 93.3% of educators, but only 38.5% of employers. This difference was found to be statistically significant with a p-value of 0.0003.
+
+*Don't know whether to talk about "none of the above" being significant.
 
 
+```{r echo = FALSE}
+# Total respondents per group
+n_employers <- nrow(Employer_Data_Clean)
+n_educators <- nrow(Educator_Data_Clean)
+
+# Function to get counts of selected responses
+get_counts <- function(data, vars, n_total) {
+  data %>%
+    select(all_of(vars)) %>%
+    summarise(across(everything(), ~ sum(. == 1, na.rm = TRUE))) %>%
+    pivot_longer(everything(), names_to = "option", values_to = "count") %>%
+    mutate(percent = count / n_total * 100,
+           option = str_replace(option, "Q[0-9]+_", ""))
+}
+
+# Get counts for each group
+employer_counts <- get_counts(Employer_Data_Clean, paste0("Q20_0", 1:5), n_employers)
+educator_counts <- get_counts(Educator_Data_Clean, paste0("Q16_0", 1:5), n_educators)
+
+# Merge counts by option
+combined_counts <- educator_counts %>%
+  rename(educator_count = count, educator_percent = percent) %>%
+  inner_join(
+    employer_counts %>% rename(employer_count = count, employer_percent = percent),
+    by = "option"
+  )
+
+# Map option codes to labels
+combined_counts <- combined_counts %>%
+  mutate(Format = case_when(
+    option == "01" ~ "Didactic",
+    option == "02" ~ "Simulation",
+    option == "03" ~ "Wet Lab",
+    option == "04" ~ "Live Patient",
+    option == "05" ~ "None of These"
+  ))
+
+# Calculate p-values using Fisher's Exact Test for each option
+combined_counts <- combined_counts %>%
+  rowwise() %>%
+  mutate(
+    p_value = {
+      a <- educator_count
+      b <- n_educators - a
+      c <- employer_count
+      d <- n_employers - c
+      contingency_matrix <- matrix(c(a, b, c, d), nrow = 2, byrow = TRUE)
+      fisher.test(contingency_matrix)$p.value
+    }
+  ) %>%
+  ungroup()
+
+# Select and arrange columns for output
+final_table <- combined_counts %>%
+  select(Format, educator_percent, employer_percent, p_value) %>%
+  arrange(match(Format, c("Didactic", "Simulation", "Wet Lab", "Live Patient", "None of These")))
+
+# Format percentages nicely
+final_table <- final_table %>%
+  mutate(
+    educator_percent = round(educator_percent, 1),
+    employer_percent = round(employer_percent, 1),
+    p_value = signif(p_value, 3)
+  ) %>%
+  rename(
+    `% of Educators Selected` = educator_percent,
+    `% of Employers Selected` = employer_percent,
+    `P-value` = p_value
+  )
+
+library(knitr)
+knitr::kable(final_table, col.names = c("Format", "% of Educators", "% of Employers", "P-value"))
 
 ```
+
+
+
+
 
 
 
