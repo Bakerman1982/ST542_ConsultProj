@@ -23,7 +23,7 @@
 \usepackage{lmodern}
 \ifPDFTeX\else  
     % xetex/luatex font selection
-  \setmainfont[]{Times New Roman}
+    \setmainfont[]{Times New Roman}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -43,18 +43,38 @@
 \makeatother
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
-\usepackage{soul}
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+  
+\fi
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
+\makeatletter
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
-  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
 \fi
 \ifx\subparagraph\undefined\else
   \let\oldsubparagraph\subparagraph
-  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
+\makeatother
 
 \usepackage{color}
 \usepackage{fancyvrb}
@@ -74,7 +94,7 @@
 \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
 \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
 \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
 \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
 \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
@@ -84,7 +104,7 @@
 \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
 \newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
 \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
 \newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
 \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
 \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
@@ -110,23 +130,21 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
 % Set default figure placement to htbp
-\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
 \KOMAoption{captions}{tableheading,figureheading}
-\makeatletter
-\makeatother
-\makeatletter
-\makeatother
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -163,23 +181,14 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \makeatother
 \makeatletter
+\makeatother
+\makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-\makeatletter
-\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
-\makeatother
-\makeatletter
-\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
-\makeatother
-\makeatletter
-\makeatother
-\makeatletter
-\makeatother
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+
+\usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
@@ -191,6 +200,7 @@
   citecolor={Blue},
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
+
 
 \title{Bridging the Gap:}
 \usepackage{etoolbox}
@@ -206,7 +216,6 @@ Dentistry}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, enhanced, boxrule=0pt, sharp corners, borderline west={3pt}{0pt}{shadecolor}, breakable, interior hidden]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -214,11 +223,10 @@ Dentistry}
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
-\hypertarget{abstract}{%
-\section{Abstract}\label{abstract}}
 
-\hypertarget{introduction}{%
-\section{Introduction}\label{introduction}}
+\section{Abstract}\label{abstract}
+
+\section{Introduction}\label{introduction}
 
 Dr.~Mariea Ross-Estrada, a faculty member at North Carolina State
 University's College of Veterinary Medicine, is exploring whether there
@@ -238,16 +246,14 @@ questions regarding what early-career veterinarians are expected to have
 learned during their education and the skills they are expected to
 perform in practice.
 
-\hypertarget{research-question}{%
-\subsection{Research Question}\label{research-question}}
+\subsection{Research Question}\label{research-question}
 
 How do small animal primary care employers (medical directors and
 practice owners) and primary care veterinary educators differ in regards
 to their expectations of early career veterinary graduates' competencies
 in small animal dentistry?
 
-\hypertarget{statistical-questions}{%
-\subsection{Statistical Questions}\label{statistical-questions}}
+\subsection{Statistical Questions}\label{statistical-questions}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -287,11 +293,9 @@ in small animal dentistry?
   or learn during their clinical training?
 \end{enumerate}
 
-\hypertarget{data}{%
-\section{Data}\label{data}}
+\section{Data}\label{data}
 
-\hypertarget{data-description}{%
-\subsection{Data Description}\label{data-description}}
+\subsection{Data Description}\label{data-description}
 
 Two separate surveys were administered to mutually exclusive groups:
 veterinary employers who have worked with students, and educators who
@@ -331,13 +335,9 @@ willingness among educators to participate more thoughtfully. The box
 plot below illustrates the distribution of survey duration (in minutes)
 by group.
 
-\begin{figure}[H]
-
-{\centering \includegraphics{Final-Project_files/figure-pdf/Data_Desc_01-1.pdf}
-
-}
-
-\end{figure}
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_01-1.pdf}}
+\end{center}
 
 Regarding the proportion of the survey completed, employer responses
 were more variable---spanning the full range from partial to full
@@ -346,13 +346,9 @@ survey, with a concentration near full completion and a less pronounced
 left tail. The density plot below visualizes these differences in survey
 progress across groups.
 
-\begin{figure}[H]
-
-{\centering \includegraphics{Final-Project_files/figure-pdf/Data_Desc_02-1.pdf}
-
-}
-
-\end{figure}
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_02-1.pdf}}
+\end{center}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -375,8 +371,7 @@ progress across groups.
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{data-source}{%
-\subsection{Data Source}\label{data-source}}
+\subsection{Data Source}\label{data-source}
 
 Survey data were collected using Qualtrics, a cloud-based experience
 management platform commonly used for gathering feedback and sentiment
@@ -387,8 +382,7 @@ survey to her personal and professional networks online. Participation
 was voluntary and anonymous. There was no incentive offered for
 completing the survey.
 
-\hypertarget{preprocessing-description}{%
-\subsection{Preprocessing Description}\label{preprocessing-description}}
+\subsection{Preprocessing Description}\label{preprocessing-description}
 
 Although the employer and educator data sets shared a similar structure,
 they were not identical. Most pre-processing steps were applied
@@ -447,11 +441,9 @@ survey. We also excluded:
 After all preprocessing steps, the final cleaned datasets consisted of
 13 employer participants and 30 educator participants.
 
-\hypertarget{statistical-methods}{%
-\section{Statistical Methods}\label{statistical-methods}}
+\section{Statistical Methods}\label{statistical-methods}
 
-\hypertarget{method-description}{%
-\subsection{Method Description}\label{method-description}}
+\subsection{Method Description}\label{method-description}
 
 Likert scale questions (statistical questions \#1,3, 6, and 8): These
 questions utilize a likert scale to answer Strongly Agree, Agree,
@@ -490,39 +482,33 @@ test that does not depend on the assumption of normality. If the
 assumption on normality is met, we can consider a two-sample t test for
 this analysis.
 
-\hypertarget{results}{%
-\section{Results}\label{results}}
+\section{Results}\label{results}
 
-\hypertarget{s1-are-there-significant-differences-between-educators-and-practice-owners-in-their-belief-that-new-graduates-are-competent-in-key-dental-skills-on-their-first-day-of-practice}{%
 \subsubsection{S1 Are there significant differences between educators
 and practice owners in their belief that new graduates are competent in
 key dental skills on their first day of
-practice?}\label{s1-are-there-significant-differences-between-educators-and-practice-owners-in-their-belief-that-new-graduates-are-competent-in-key-dental-skills-on-their-first-day-of-practice}}
+practice?}\label{s1-are-there-significant-differences-between-educators-and-practice-owners-in-their-belief-that-new-graduates-are-competent-in-key-dental-skills-on-their-first-day-of-practice}
 
-\hypertarget{s2-is-there-a-difference-between-educators-and-practice-owners-in-their-reports-educators-actual-teaching-vs.-owners-perceptions-of-which-dental-skills-were-taught-in-the-pre-clinical-dvm-curriculum-for-recent-graduates}{%
 \subsubsection{S2 Is there a difference between educators and practice
 owners in their reports (educators' actual teaching vs.~owners'
 perceptions) of which dental skills were taught in the pre-clinical DVM
 curriculum for recent
-graduates?}\label{s2-is-there-a-difference-between-educators-and-practice-owners-in-their-reports-educators-actual-teaching-vs.-owners-perceptions-of-which-dental-skills-were-taught-in-the-pre-clinical-dvm-curriculum-for-recent-graduates}}
+graduates?}\label{s2-is-there-a-difference-between-educators-and-practice-owners-in-their-reports-educators-actual-teaching-vs.-owners-perceptions-of-which-dental-skills-were-taught-in-the-pre-clinical-dvm-curriculum-for-recent-graduates}
 
-\hypertarget{s3-is-there-a-difference-between-educators-and-practice-owners-in-their-level-of-agreement-about-whether-specific-dental-skills-should-be-taught-pre-clinically}{%
 \subsubsection{S3 Is there a difference between educators and practice
 owners in their level of agreement about whether specific dental skills
 should be taught
-pre-clinically?}\label{s3-is-there-a-difference-between-educators-and-practice-owners-in-their-level-of-agreement-about-whether-specific-dental-skills-should-be-taught-pre-clinically}}
+pre-clinically?}\label{s3-is-there-a-difference-between-educators-and-practice-owners-in-their-level-of-agreement-about-whether-specific-dental-skills-should-be-taught-pre-clinically}
 
-\hypertarget{s4-do-employers-and-educators-differ-in-their-expectations-about-how-many-dental-procedures-new-graduates-should-complete-during-clinical-training}{%
 \subsubsection{S4 Do employers and educators differ in their
 expectations about how many dental procedures new graduates should
 complete during clinical
-training?}\label{s4-do-employers-and-educators-differ-in-their-expectations-about-how-many-dental-procedures-new-graduates-should-complete-during-clinical-training}}
+training?}\label{s4-do-employers-and-educators-differ-in-their-expectations-about-how-many-dental-procedures-new-graduates-should-complete-during-clinical-training}
 
-\hypertarget{s5-is-there-difference-between-the-instructional-formats-in-dentistry-reported-by-dvm-programs-and-the-formats-perceived-by-employers-to-have-been-completed-by-early-career-veterinarians}{%
 \subsubsection{S5 Is there difference between the instructional formats
 in dentistry reported by DVM programs and the formats perceived by
 employers to have been completed by early career
-veterinarians?}\label{s5-is-there-difference-between-the-instructional-formats-in-dentistry-reported-by-dvm-programs-and-the-formats-perceived-by-employers-to-have-been-completed-by-early-career-veterinarians}}
+veterinarians?}\label{s5-is-there-difference-between-the-instructional-formats-in-dentistry-reported-by-dvm-programs-and-the-formats-perceived-by-employers-to-have-been-completed-by-early-career-veterinarians}
 
 Both educators and employers were asked a question relating to the
 format of instruction during the clinical year.
@@ -554,19 +540,12 @@ vs.~16.7\%) than educators. These differences suggest varying
 expectations or awareness between the two groups regarding dental
 training experiences of recent graduates.
 
-\begin{figure}[H]
+\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/unnamed-chunk-1-1.pdf}}
 
-{\centering \includegraphics{Final-Project_files/figure-pdf/unnamed-chunk-1-1.pdf}
-
-}
-
-\end{figure}
-
-\hypertarget{s6-do-educators-and-employers-differ-in-their-views-on-which-formats-of-clinical-instruction-in-dentistry-should-be-required-for-dvm-students-as-part-of-their-clinical-training}{%
 \subsubsection{S6 Do educators and employers differ in their views on
 which formats of clinical instruction in dentistry should be required
 for DVM students as part of their clinical
-training?}\label{s6-do-educators-and-employers-differ-in-their-views-on-which-formats-of-clinical-instruction-in-dentistry-should-be-required-for-dvm-students-as-part-of-their-clinical-training}}
+training?}\label{s6-do-educators-and-employers-differ-in-their-views-on-which-formats-of-clinical-instruction-in-dentistry-should-be-required-for-dvm-students-as-part-of-their-clinical-training}
 
 In question \#21 of the employers version of the survey, participants
 were asked, ``Which of the following types of \ul{\emph{clinical
@@ -599,18 +578,16 @@ Q17_06   Q17_06    NA          NA         <NA>
 Q17_07   Q17_07    NA          NA         <NA>
 \end{verbatim}
 
-\hypertarget{s7-is-there-a-difference-between-the-clinical-dentistry-skills-that-educators-report-dvm-students-are-learning-during-their-clinical-training-and-the-skills-that-employers-believe-recent-graduates-have-completed-as-part-of-their-dvm-program}{%
 \subsubsection{S7 Is there a difference between the clinical dentistry
 skills that educators report DVM students are learning during their
 clinical training and the skills that employers believe recent graduates
 have completed as part of their DVM
-program?}\label{s7-is-there-a-difference-between-the-clinical-dentistry-skills-that-educators-report-dvm-students-are-learning-during-their-clinical-training-and-the-skills-that-employers-believe-recent-graduates-have-completed-as-part-of-their-dvm-program}}
+program?}\label{s7-is-there-a-difference-between-the-clinical-dentistry-skills-that-educators-report-dvm-students-are-learning-during-their-clinical-training-and-the-skills-that-employers-believe-recent-graduates-have-completed-as-part-of-their-dvm-program}
 
-\hypertarget{s8-do-educators-and-employers-differ-in-their-opinions-about-which-clinical-dentistry-skills-dvm-students-should-be-required-to-practice-or-learn-during-their-clinical-training}{%
 \subsubsection{S8 Do educators and employers differ in their opinions
 about which clinical dentistry skills DVM students should be required to
 practice or learn during their clinical
-training?}\label{s8-do-educators-and-employers-differ-in-their-opinions-about-which-clinical-dentistry-skills-dvm-students-should-be-required-to-practice-or-learn-during-their-clinical-training}}
+training?}\label{s8-do-educators-and-employers-differ-in-their-opinions-about-which-clinical-dentistry-skills-dvm-students-should-be-required-to-practice-or-learn-during-their-clinical-training}
 
 In question \#26 of the employers version of the survey, participants
 were asked, ``Which of the following skills do you think that DVM
@@ -651,35 +628,26 @@ Q21_14   Q21_14    NA         NA         <NA>
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{findings}{%
-\subsection{Findings}\label{findings}}
+\subsection{Findings}\label{findings}
 
-\hypertarget{statistical-analysis}{%
-\subsection{Statistical Analysis}\label{statistical-analysis}}
+\subsection{Statistical Analysis}\label{statistical-analysis}
 
-\hypertarget{discussionconclusion}{%
-\section{Discussion/Conclusion}\label{discussionconclusion}}
+\section{Discussion/Conclusion}\label{discussionconclusion}
 
-\hypertarget{interpretation-of-results}{%
-\subsection{Interpretation of Results}\label{interpretation-of-results}}
+\subsection{Interpretation of Results}\label{interpretation-of-results}
 
-\hypertarget{implications-of-the-study}{%
-\subsection{Implications of the Study}\label{implications-of-the-study}}
+\subsection{Implications of the Study}\label{implications-of-the-study}
 
-\hypertarget{limitations}{%
-\subsection{Limitations}\label{limitations}}
+\subsection{Limitations}\label{limitations}
 
-\hypertarget{recommendations}{%
-\subsection{Recommendations}\label{recommendations}}
+\subsection{Recommendations}\label{recommendations}
 
-\hypertarget{summary-of-key-findings}{%
-\subsection{Summary of Key Findings}\label{summary-of-key-findings}}
+\subsection{Summary of Key Findings}\label{summary-of-key-findings}
 
-\hypertarget{final-thoughts}{%
-\subsection{Final Thoughts}\label{final-thoughts}}
+\subsection{Final Thoughts}\label{final-thoughts}
 
-\hypertarget{appendix}{%
-\section{Appendix}\label{appendix}}
+\section{Appendix}\label{appendix}
+
 
 
 
