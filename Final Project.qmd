@@ -569,12 +569,47 @@ ggplot(combined_progress, aes(x = progress, fill = group)) +
 
 ```
 
-```{r Data_Desc_03, eval=FALSE, fig.align='center'}
+```{r Data_Desc_03, eval=TRUE, fig.align='center'}
 #SPACER FOR MORE ANALYTICS
-From the educators dataset we could talk about:
-* Q27; How long have you been teaching DVM students in the clinical training portion of a DVM program?
-* Q28; Does your institution have a teaching hospital?
-* Q29; On average, how many dental procedures does your primary care service perform each week?
+#From the educators dataset we could talk about:
+#* Q27; How long have you been teaching DVM students in the clinical training portion of a DVM program?
+
+library(tidyverse)
+
+# Clean educator dataset: remove metadata rows
+Educator_Data_DESC03 <- Educator_Data[-c(1, 2), ]
+view(Educator_Data_DESC03)
+# Convert q27 to numeric
+Educator_Data_DESC03$q27 <- as.numeric(Educator_Data_DESC03$q27)
+
+# Plot
+ggplot(Educator_Data_DESC03, aes(x = q27)) +
+  geom_histogram(binwidth = 2, fill = "steelblue", color = "white") +
+  labs(
+    title = "Years Teaching DVM Students (Clinical Training)",
+    x = "Years Teaching",
+    y = "Number of Respondents"
+  ) +
+  theme_minimal()
+    
+
+#* Q29; On average, how many dental procedures does your primary care service perform each week?
+# Convert q41_1 to numeric
+Educator_Data_DESC03$q41_1 <- as.numeric(Educator_Data_DESC03$q41_1)
+
+# Plot
+library(ggplot2)
+
+Educator_Data_DESC03 %>%
+  filter(!is.na(q41_1)) %>%
+  ggplot(aes(x = q41_1)) +
+  geom_histogram(binwidth = 2, fill = "steelblue", color = "black") +
+  labs(
+    title = "Number of Dental Procedures per Week",
+    x = "Procedures per Week",
+    y = "Number of Educators"
+  ) +
+  theme_minimal()
 
 
 ```
@@ -649,7 +684,7 @@ Educators and employers differed in their perceptions of clinical dental instruc
 
 *Add here about people who entered a text response.
 
-```{r echo=FALSE}
+```{r question_5a, echo=FALSE}
 #Add custom labels to final bar graph
 option_labels <- c(
   "01" = "Didactic",
@@ -721,7 +756,7 @@ On the other hand, live patient instruction was selected by 93.3% of educators, 
 *Don't know whether to talk about "none of the above" being significant.
 
 
-```{r echo = FALSE}
+```{r question_5b, echo = FALSE}
 # Total respondents per group
 n_employers <- nrow(Employer_Data_Clean)
 n_educators <- nrow(Educator_Data_Clean)
@@ -808,7 +843,7 @@ In question #21 of the employers version of the survey, participants were asked,
 
 This question is targeting how participants feel about what dental veterinarian medical programs are teaching and what topics should be required in their curriculum. The research question asked if there was a difference in opinions on this matter. To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between groups.
 
-```{r S6, , echo=FALSE, warning=FALSE, fig.align='center'}
+```{r question_6a, , echo=FALSE, warning=FALSE, fig.align='center'}
 educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
 employer_cols  <- paste0("Q21_", sprintf("%02d", 1:7))
 
@@ -993,7 +1028,7 @@ In question #26 of the employers version of the survey, participants were asked,
 
 This question hits at the sentiment on what both groups think should be required practice/learnings for students. The research question asked if there was a difference in opinions on this matter. To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between groups.
 
-```{r S8, echo=FALSE, warning=FALSE, fig.align='center'}
+```{r question_8a, echo=FALSE, warning=FALSE, fig.align='center'}
 educator_cols <- paste0("Q21_", sprintf("%02d", 1:14))
 employer_cols  <- paste0("Q26_", sprintf("%02d", 1:14))
 
