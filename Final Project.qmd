@@ -10,13 +10,19 @@ format:
     toc: true
     toc-depth: 2
     number-sections: true
+    fig-caption: true
+    number-depth: 2
     fig-align: center
-    fig-cap-location: top
+    fig-cap-location: bottom
     fig-pos: 'H'
     geometry: margin=1in
     fontsize: 11pt
     keep-tex: true
     linkcolor: blue
+editor_options: 
+  chunk_output_type: console
+header-includes:
+  - \numberwithin{figure}{section}
 ---
 
 ```{r package_load, warning=FALSE, include=FALSE}
@@ -25,6 +31,9 @@ library(tidyverse)
 library(janitor)
 library(gtools)
 library(naniar)
+library(patchwork)
+library(maps)
+library(knitr)
 ```
 
 ```{r Employer Data load, echo=FALSE, message=FALSE, warning=FALSE, results="hide",include=FALSE, error=FALSE}
@@ -478,7 +487,7 @@ Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)
 
 # Introduction
 
-Dr. Mariea Ross-Estrada, a faculty member at North Carolina State University's College of Veterinary Medicine, is exploring whether there are differences between the expectations of small animal primary care veterinary employers and veterinary educators regarding new graduates' competencies in dentistry. Through her own professional experience and conversations with colleagues, Dr. Ross-Estrada observed that many veterinarians must rely on on-the-job training to gain the skills necessary in small animal dentistry. These shared experiences prompted her to investigate whether there is a misalignment in what is taught in veterinary programs and what is expected in clinical practice. 
+Dr. Mariea Ross-Estrada, a faculty member at North Carolina State University's College of Veterinary Medicine, is exploring whether there are differences between the expectations of small animal primary care veterinary employers and veterinary educators regarding new graduates' competencies in dentistry. Through her own professional experience and conversations with colleagues, Dr. Ross-Estrada observed that many veterinarians must rely on on-the-job training to gain the skills necessary in small animal dentistry. These shared experiences prompted her to investigate whether there is a misalignment in what is taught in veterinary programs and what is expected in clinical practice.
 
 To explore this question, Dr. Ross-Estrada distributed two surveys: one to medical directors and private practice owners and the other to primary care veterinary educators. Both surveys included similar questions regarding what early-career veterinarians are expected to have learned during their education and the skills they are expected to perform in practice.
 
@@ -488,21 +497,21 @@ How do small animal primary care employers (medical directors and practice owner
 
 ## Statistical Questions
 
-1. Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice? 
+1.  Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
 
-2. Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
+2.  Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
 
-3. Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
+3.  Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
-4. Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+4.  Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
 
-5. Is there difference between the instructional formats in dentistry reported by DVM programs  and the formats perceived by employers to have been completed by early career veterinarians?
+5.  Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
 
-6. Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
+6.  Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
 
-7. Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
+7.  Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
 
-8. Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
+8.  Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
 # Data
 
@@ -516,9 +525,14 @@ Survey questions took several forms. Some were binary (Yes/No), particularly tho
 
 Several questions offered an “Other” response with a text box for elaboration. A few required numeric input, such as estimates of hours worked or the number of practicing veterinarians. These integer fields were not restricted by any upper bound, regardless of contextual reasonableness.
 
-Survey completion time differed by group. Educators, on average, spent more time completing the survey than employers. While no follow-up question asked participants to explain their response time, this discrepancy may reflect greater engagement or a tendency for more elaborated responses among educators. It may also suggest a greater willingness among educators to participate more thoughtfully. The box plot below illustrates the distribution of survey duration (in minutes) by group.
+#### Global survey session metrics
 
-```{r Data_Desc_01, echo=FALSE, fig.align='center'}
+```{r}
+#| label: Data_Desc_01
+#| fig-cap: "Assessing survey elapsed time distribution via box plots to understand engagement by survey group."
+#| echo: false
+#| fig-align: center
+
 #Average time for survey completion
 # Convert and clean both datasets
 clean_employer <- Employer_Data[-c(1,2), ] %>%
@@ -552,9 +566,14 @@ ggplot() +
   theme_minimal()
 ```
 
-Regarding the proportion of the survey completed, employer responses were more variable—spanning the full range from partial to full completion. In contrast, educators tended to complete more of the survey, with a concentration near full completion and a less pronounced left tail. The density plot below visualizes these differences in survey progress across groups.
+Survey completion time differed by group. Educators, on average, spent more time completing the survey than employers. While no follow-up question asked participants to explain their response time, this discrepancy may reflect greater engagement or a tendency for more elaborated responses among educators. It may also suggest a greater willingness among educators to participate more thoughtfully. The box plot below illustrates the distribution of survey duration (in minutes) by group.
 
-```{r Data_Desc_02, echo=FALSE, fig.align='center'}
+```{r}
+#| label: Data_Desc_02
+#| fig-cap: "Assessing survey completion as a density curve to understand engagement by survey group."
+#| echo: false
+#| fig-align: center
+
 #Average percent of survey completed
 combined_progress <- bind_rows(
   Employer_Data[-c(1,2), ] %>% mutate(group = "Employer"),
@@ -569,59 +588,285 @@ ggplot(combined_progress, aes(x = progress, fill = group)) +
 
 ```
 
-```{r Data_Desc_03, eval=TRUE, fig.align='center'}
-#SPACER FOR MORE ANALYTICS
-#From the educators dataset we could talk about:
-#* Q27; How long have you been teaching DVM students in the clinical training portion of a DVM program?
+Regarding the proportion of the survey completed, employer responses were more variable—spanning the full range from partial to full completion. In contrast, educators tended to complete more of the survey, with a concentration near full completion and a less pronounced left tail. The density plot below visualizes these differences in survey progress across groups.
 
-library(tidyverse)
 
-# Clean educator dataset: remove metadata rows
-Educator_Data_DESC03 <- Educator_Data[-c(1, 2), ]
-view(Educator_Data_DESC03)
-# Convert q27 to numeric
-Educator_Data_DESC03$q27 <- as.numeric(Educator_Data_DESC03$q27)
+```{r}
+#| label: Data_Desc_06
+#| fig-cap: "Geographic distribution of survey respondents across the United States."
+#| echo: false
+#| fig-align: center
+
+# Clean Employer Data
+Employer_Clean <- Employer_Data %>%
+  slice(-c(1,2)) %>%
+  mutate(
+    latitude = as.numeric(location_latitude),
+    longitude = as.numeric(location_longitude)
+  ) %>%
+  filter(!is.na(latitude) & !is.na(longitude)) %>%
+  mutate(group = "Employer")
+
+# Clean Educator Data
+Educator_Clean <- Educator_Data %>%
+  slice(-c(1,2)) %>%
+  mutate(
+    latitude = as.numeric(location_latitude),
+    longitude = as.numeric(location_longitude)
+  ) %>%
+  filter(!is.na(latitude) & !is.na(longitude)) %>%
+  filter(
+    between(latitude, 24, 50),
+    between(longitude, -125, -65)
+  ) %>%
+  mutate(group = "Educator")
+
+# Combine datasets
+All_Locations <- bind_rows(Employer_Clean, Educator_Clean)
+
+# Remove the specific outliers
+All_Locations <- All_Locations %>%
+  filter(!(
+    (abs(latitude - 43.5204) < 1e-6 & abs(longitude + 80.2245) < 1e-6) |  
+    (abs(latitude - 35.6339) < 1e-6 & abs(longitude - 140.0391) < 1e-6) | 
+    (abs(latitude + 5.2521) < 1e-6 & abs(longitude - 39.7633) < 1e-6)     
+  ))
+
+# Get US map data
+us_map <- map_data("state")
 
 # Plot
-ggplot(Educator_Data_DESC03, aes(x = q27)) +
-  geom_histogram(binwidth = 2, fill = "steelblue", color = "white") +
+ggplot() +
+  geom_polygon(data = us_map, aes(x = long, y = lat, group = group), 
+               fill = "gray90", color = "white") +
+  geom_point(data = All_Locations, aes(x = longitude, y = latitude, color = group), 
+             size = 2, alpha = 0.7) +
+  coord_fixed(1.3) +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    plot.title = element_text(hjust = 0.5)
+  ) +
+  labs(title = "Geographic Distribution of Survey Respondents",
+       color = "Group")
+```
+
+Since our analysis focused on the representativeness of the United States, we identified three sets of coordinates in the educator dataset corresponding to international institutions: the University of Guelph in Ontario, Canada; Zanzibar University in Chake, Tanzania; and Chiba University in Chiba, Japan. Employer survey participants were predominantly sampled from locations along the eastern seaboard of the United States, while educators were more widely distributed across the country. We highlight this to illustrate that perceptions of veterinary dental students—particularly among employers—may differ for individuals located far from the regions where most participants were sampled. Additionally, because many of the responses came from major metropolitan areas, our findings may underrepresent opinions regarding student knowledge gaps in more rural settings.
+
+#### Educator metrics
+
+```{r}
+#| label: Data_Desc_03
+#| fig-cap: "Educator contextualized background information about teaching and procedures."
+#| echo: false
+#| fig-align: center
+
+# Remove metadata rows
+Educator_Data_DESC03 <- Educator_Data[-c(1, 2), ]
+
+# Ensure q27 is numeric and remove NA values
+Educator_Data_DESC03$q27 <- as.numeric(Educator_Data_DESC03$q27)
+Educator_Data_DESC03 <- Educator_Data_DESC03 %>% filter(!is.na(q27))
+
+# Ensure q41_1 is numeric and remove NA values
+Educator_Data_DESC03$q41_1 <- as.numeric(Educator_Data_DESC03$q41_1)
+Educator_Data_DESC03 <- Educator_Data_DESC03 %>% filter(!is.na(q41_1) | !is.na(q27))
+
+# Create ceiling-binned versions
+Educator_Data_DESC03 <- Educator_Data_DESC03 %>%
+  mutate(
+    q27_binned = ceiling(q27),
+    q41_1_binned = ceiling(q41_1)
+  )
+
+# Compute max y values for neat y-axis limits
+max_count_p1 <- Educator_Data_DESC03 %>%
+  count(q27_binned) %>%
+  pull(n) %>%
+  max(na.rm = TRUE)
+
+max_count_p2 <- Educator_Data_DESC03 %>%
+  count(q41_1_binned) %>%
+  pull(n) %>%
+  max(na.rm = TRUE)
+
+# Plot 1: Years Teaching (with ceiling bins and clean y-axis)
+p1 <- ggplot(Educator_Data_DESC03, aes(x = q27_binned)) +
+  geom_bar(
+    fill = "#4C72B0",
+    color = "white"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, max(Educator_Data_DESC03$q27_binned, na.rm = TRUE), by = 1)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, max(max_count_p1 + 2, 2), by = 2)
+  ) +
   labs(
-    title = "Years Teaching DVM Students (Clinical Training)",
-    x = "Years Teaching",
+    title = "Years Teaching DVM Students",
+    x = "Years Teaching (Rounded Up)",
     y = "Number of Respondents"
   ) +
-  theme_minimal()
-    
+  theme_minimal() +
+  theme(
+    panel.grid.major = element_line(color = "grey85", linetype = "dashed"),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold", size = 12),
+    axis.title = element_text(size = 10)
+  )
 
-#* Q29; On average, how many dental procedures does your primary care service perform each week?
-# Convert q41_1 to numeric
-Educator_Data_DESC03$q41_1 <- as.numeric(Educator_Data_DESC03$q41_1)
-
-# Plot
-library(ggplot2)
-
-Educator_Data_DESC03 %>%
-  filter(!is.na(q41_1)) %>%
-  ggplot(aes(x = q41_1)) +
-  geom_histogram(binwidth = 2, fill = "steelblue", color = "black") +
+# Plot 2: Procedures per Week (with ceiling bins and clean y-axis)
+p2 <- ggplot(Educator_Data_DESC03, aes(x = q41_1_binned)) +
+  geom_bar(
+    fill = "#DD8452",
+    color = "white"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, max(Educator_Data_DESC03$q41_1_binned, na.rm = TRUE), by = 1)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, max(max_count_p2 + 2, 2), by = 2)
+  ) +
   labs(
-    title = "Number of Dental Procedures per Week",
-    x = "Procedures per Week",
+    title = "Dental Procedures per Week",
+    x = "Procedures per Week (Rounded Up)",
     y = "Number of Educators"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(
+    panel.grid.major = element_line(color = "grey85", linetype = "dashed"),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold", size = 12),
+    axis.title = element_text(size = 10)
+  )
+
+# Combine plots side by side
+p1 + p2 + plot_layout(widths = c(1, 1))
+```
+
+Figure 3.3 provides an overview of the survey participants and their institutions. Most respondents reported having between 2 and 4 years of experience teaching veterinary students in clinical training. The distribution of years taught appears approximately normal, with fewer educators at the lower and upper ends of the experience range. Respondents also reported the number of dental procedures performed by their primary care service each week. While some outliers from busier institutions reported higher volumes, most educators estimated performing between 1 and 8 procedures per week.
+
+#### Employer metrics
+
+```{r}
+#| label: Data_Desc_04
+#| fig-cap: ""
+#| echo: false
+#| warning: false
+#| fig-align: center
+
+#* Q33; Which of the following best describes your job setting or organization?
+# Mapping vector
+q33_labels <- c(
+  "1" = "Independently owned single veterinary practice",
+  "2" = "Independently owned group veterinary practice",
+  "3" = "Group corporate veterinary practice",
+  "4" = "Institution (e.g., aquarium, shelter, zoo, etc.)",
+  "5" = "Industry/commercial",
+  "6" = "Government (local, state, federal)",
+  "7" = "Uniformed services",
+  "8" = "Other"
+)
+
+# Clean and map responses, remove first two metadata rows
+q33_clean <- Employer_Data[["q33"]] %>%
+  .[-c(1,2)] %>%                          # Remove first two metadata rows
+  na.omit() %>%
+  as.character() %>%
+  recode(!!!q33_labels)
+
+# Create counts and percentages
+q33_table <- as.data.frame(table(q33_clean)) %>%
+  rename(`Job Setting` = q33_clean, `Count` = Freq) %>%
+  mutate(Percentage = round(Count / sum(Count) * 100, 1))
+
+# Pretty table
+kable(q33_table, caption = "Job Setting or Organization: Counts and Percentages", align = "lrr", booktabs = TRUE)
+
+
+#* Q37; Which of the following best describes the person who completed this survey?
+# Mapping vector for Q37
+q37_labels <- c(
+  "1" = "Practice owner",
+  "2" = "Practice manager/HR representative",
+  "3" = "Associate veterinarian",
+  "4" = "Other"
+)
+
+# Clean and map responses for Q37
+q37_clean <- Employer_Data[["q37"]] %>%
+  .[-c(1,2)] %>%             # Remove metadata rows
+  na.omit() %>%
+  as.character() %>%
+  recode(!!!q37_labels)
+
+# Create counts and percentages for Q37
+q37_table <- as.data.frame(table(q37_clean)) %>%
+  rename(`Respondent Role` = q37_clean, `Count` = Freq) %>%
+  mutate(Percentage = round(Count / sum(Count) * 100, 1))
+
+# Display table for Q37
+kable(q37_table, caption = "Respondent Role: Counts and Percentages", align = "lrr", booktabs = TRUE)
 
 
 ```
 
-```{r Data_Desc_04, eval=FALSE, fig.align='center'}
-#SPACER FOR MORE ANALYTICS
+Table 1 and Table 2 provide additional context about the survey respondents. The majority of respondents work in privately owned veterinary practices, and most identified themselves as the owners of those practices.
 
-From the employers dataset we could talk about:
-* Q33; Which of the following best describes your job setting or organization?
-* Q36; On average, how many dental procedures does your practice/oganization/institution perform each week
-* Q37; Which of the following best describes the person who completed this survey?
+```{r}
+#| label: Data_Desc_05
+#| fig-cap: "Average dental procedures employer survey participants indicated they performed each week."
+#| echo: false
+#| warning: false
+#| fig-align: center
+#* Q36; On average, how many dental procedures does your practice/oganization/institution perform each week
+
+
+# Clean and prepare data
+Employer_Clean <- Employer_Data %>%
+  slice(-c(1,2)) %>%                       # remove metadata rows
+  mutate(q36_1 = as.numeric(q36_1)) %>%
+  filter(!is.na(q36_1)) %>%
+  mutate(q36_1_binned = ceiling(q36_1))   # binning like p2
+
+# Calculate max count for y-axis scaling
+max_count_p36_1 <- Employer_Clean %>%
+  count(q36_1_binned) %>%
+  pull(n) %>%
+  max(na.rm = TRUE)
+
+# Plot similar to p2
+p_q36_1 <- ggplot(Employer_Clean, aes(x = q36_1_binned)) +
+  geom_bar(
+    fill = "#DD8452",
+    color = "white"
+  ) +
+  scale_x_continuous(
+    breaks = seq(0, max(Employer_Clean$q36_1_binned, na.rm = TRUE), by = 1)
+  ) +
+  scale_y_continuous(
+    breaks = seq(0, max(max_count_p36_1 + 2, 2), by = 2)
+  ) +
+  labs(
+    title = "Individual Dental Procedures per Week",
+    x = "Procedures per Week (Rounded Up)",
+    y = "Number of Respondents"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid.major = element_line(color = "grey85", linetype = "dashed"),
+    panel.grid.minor = element_blank(),
+    plot.title = element_text(face = "bold", size = 12),
+    axis.title = element_text(size = 10)
+  )
+
+p_q36_1
 ```
+
+Figure 3.5 shows that procedure counts tend to be lower in the employer group compared to the educator group, although the overall distribution shapes are similar. In both groups, the data exhibit a right-skewed pattern, with most respondents reporting lower procedure counts and a few outliers representing higher volumes. This pattern aligns with the intuitive understanding that while some practices or institutions have greater clinical demands on veterinarians, these cases are less common—at least based on the survey responses.
 
 ## Data Source
 
@@ -673,16 +918,15 @@ Numerical entry questions: (statistical question #4): This question asks partici
 
 Both educators and employers were asked a question relating to the format of instruction during the clinical year.
 
-Employers were asked: "What format of clinical instruction in dentistry do you believe that the early career veterinarians (individuals who have graduated from a DVM program after May 2021) hired into your practice/organization/institution completed as part of their DVM training?  Select all that apply."
+Employers were asked: "What format of clinical instruction in dentistry do you believe that the early career veterinarians (individuals who have graduated from a DVM program after May 2021) hired into your practice/organization/institution completed as part of their DVM training? Select all that apply."
 
-Educators were asked: "What format of instruction in dentistry does your DVM program provide during the clinical year?  Select all that apply."
+Educators were asked: "What format of instruction in dentistry does your DVM program provide during the clinical year? Select all that apply."
 
 Since the question was of the format "select all that apply," participants were able to select more than one response and percentages will not add to 100%. Results reported below are the percentages of their respective group (educators or employers) that selected the given format of instruction. Percentages were utilized due to the difference in sample size.
 
 Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (73.3% vs. 46.2%) and live patient training (93.3% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 16.7%) than educators. These differences suggest varying expectations or awareness between the two groups regarding dental training experiences of recent graduates.
 
-
-*Add here about people who entered a text response.
+\*Add here about people who entered a text response.
 
 ```{r question_5a, echo=FALSE}
 #Add custom labels to final bar graph
@@ -746,15 +990,13 @@ ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
           vjust = -0.3, size = 3)
 ```
 
-
 The table below shows the percentages of each format selected (as seen in the bar graph above) and the p-value associated with performing Fisher's Exact Test on each format.
 
 Didactic instruction was selected by 53.3% of educators and 61.5% of employers, with no statistically significant difference between the groups (p=0.743). There was also no statistically significant difference in simulation (p=0.417) and wet lab instruction (p=0.162).
 
 On the other hand, live patient instruction was selected by 93.3% of educators, but only 38.5% of employers. This difference was found to be statistically significant with a p-value of 0.0003.
 
-*Don't know whether to talk about "none of the above" being significant.
-
+\*Don't know whether to talk about "none of the above" being significant.
 
 ```{r question_5b, echo = FALSE}
 # Total respondents per group
@@ -830,12 +1072,6 @@ library(knitr)
 knitr::kable(final_table, col.names = c("Format", "% of Educators", "% of Employers", "P-value"))
 
 ```
-
-
-
-
-
-
 
 ### S6 Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
 
@@ -1111,8 +1347,6 @@ ggplot(combined_percent, aes(x = percent, y = Label, color = Group)) +
 
 ```
 
-
-
 ```{r echo = FALSE}
 # Define labels for each of the 13 skills
 option_labels <- c(
@@ -1197,7 +1431,6 @@ final_table <- combined_counts %>%
 # Print a clean table
 knitr::kable(final_table, col.names = c("Skill", "% of Educators", "% of Employers", "P-value"))
 ```
-
 
 ### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
