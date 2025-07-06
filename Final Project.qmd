@@ -10,6 +10,7 @@ format:
     toc: true
     toc-depth: 2
     number-sections: true
+    number-figures: true
     fig-caption: true
     number-depth: 2
     fig-align: center
@@ -918,17 +919,22 @@ Numerical entry questions: (statistical question #4): This question asks partici
 
 Both educators and employers were asked a question relating to the format of instruction during the clinical year.
 
-Employers were asked: "What format of clinical instruction in dentistry do you believe that the early career veterinarians (individuals who have graduated from a DVM program after May 2021) hired into your practice/organization/institution completed as part of their DVM training? Select all that apply."
+On question 20 of their survey, employers were asked: "What format of clinical instruction in dentistry do you believe that the early career veterinarians (individuals who have graduated from a DVM program after May 2021) hired into your practice/organization/institution completed as part of their DVM training? Select all that apply."
 
-Educators were asked: "What format of instruction in dentistry does your DVM program provide during the clinical year? Select all that apply."
+On question 16 of their survey, educators were asked: "What format of instruction in dentistry does your DVM program provide during the clinical year? Select all that apply."
 
 Since the question was of the format "select all that apply," participants were able to select more than one response and percentages will not add to 100%. Results reported below are the percentages of their respective group (educators or employers) that selected the given format of instruction. Percentages were utilized due to the difference in sample size.
 
+Educators and employers were also given the option to enter their own responses to the question. One employer opted to write in "Cadaver." Two educators entered their own responses with one saying "rounds" and the other saying "topic seminars do occur with some rotations during case rounds when dental cases are chosen to present."
+
 Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (73.3% vs. 46.2%) and live patient training (93.3% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 16.7%) than educators. These differences suggest varying expectations or awareness between the two groups regarding dental training experiences of recent graduates.
 
-\*Add here about people who entered a text response.
-
-```{r question_5a, echo=FALSE}
+```{r}
+#| label: formatgraph
+#| echo: false
+#| warning: false
+#| fig-cap: "Perceived Clinical Instruction Formats in Dentistry Completed by Early Career Veterinarians"
+#| fig-align: center
 #Add custom labels to final bar graph
 option_labels <- c(
   "01" = "Didactic",
@@ -978,7 +984,7 @@ combined_percent$option <- factor(combined_percent$option,
 #Plot percentages
 ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
   geom_bar(stat = "identity", position = position_dodge()) +
-  labs(title ="Perceived Clinical Instruction Formats in Dentistry\nCompleted by Early Career Veterinarians",
+  labs(title ="Dentistry Formats",
        x = "Format of Instruction",
        y = "Percent of Respondents",
        fill = "Group") +
@@ -990,15 +996,20 @@ ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
           vjust = -0.3, size = 3)
 ```
 
-The table below shows the percentages of each format selected (as seen in the bar graph above) and the p-value associated with performing Fisher's Exact Test on each format.
+Figure 5.1 shows the percentages of each format selected and Table 3 shows the p-value associated with performing Fisher's Exact Test on each format.
 
 Didactic instruction was selected by 53.3% of educators and 61.5% of employers, with no statistically significant difference between the groups (p=0.743). There was also no statistically significant difference in simulation (p=0.417) and wet lab instruction (p=0.162).
 
 On the other hand, live patient instruction was selected by 93.3% of educators, but only 38.5% of employers. This difference was found to be statistically significant with a p-value of 0.0003.
 
-\*Don't know whether to talk about "none of the above" being significant.
+"None of these" was also found to be statistically significant at the 5% level. No educators selected that none of these formats were used, but 23.1% of employers selected that none of the formats were believed to be utilized in the clinical year.
 
-```{r question_5b, echo = FALSE}
+```{r}
+#| label: question_5b
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
 # Total respondents per group
 n_employers <- nrow(Employer_Data_Clean)
 n_educators <- nrow(Educator_Data_Clean)
@@ -1055,7 +1066,8 @@ final_table <- combined_counts %>%
   select(Format, educator_percent, employer_percent, p_value) %>%
   arrange(match(Format, c("Didactic", "Simulation", "Wet Lab", "Live Patient", "None of These")))
 
-# Format percentages nicely
+
+#Format percentages nicely
 final_table <- final_table %>%
   mutate(
     educator_percent = round(educator_percent, 1),
@@ -1068,8 +1080,20 @@ final_table <- final_table %>%
     `P-value` = p_value
   )
 
-library(knitr)
-knitr::kable(final_table, col.names = c("Format", "% of Educators", "% of Employers", "P-value"))
+# Add significance stars
+final_table <- final_table %>%
+  mutate(
+    Significance = case_when(
+      `P-value` < 0.001 ~ "***",
+      `P-value` < 0.01  ~ "**",
+      `P-value` < 0.05  ~ "*",
+      TRUE              ~ ""
+    ),
+    `P-value` = paste0(`P-value`, " ", Significance)
+  ) %>%
+  select(-Significance)  # Optional: remove extra column if not needed
+
+kable(final_table, caption = "Perceived Formats of Clinical Dental Instruction in DVM Programs", align = "lrr", booktabs=TRUE)
 
 ```
 
@@ -1266,8 +1290,23 @@ On question 20 of their survey, educators were asked: "Which of the following sk
 
 Since the question was of the format "select all that apply," participants were able to select more than one response and percentages will not add to 100%. Results reported below are the percentages of their respective group (educators or employers) that selected the given format of instruction. Percentages were utilized due to the difference in sample size.
 
-```{r, echo = FALSE, fig.width=10, fig.height=7}
+Educators and employers were also given the option to enter their own responses to the question. No employers entered any text responses. Six educators entered text responses of the following:
 
+* "OvaVet gel application, Crown amputation, Sealant application for UCF, oral tumor biopsy and excision, orthodontia"
+* "Nerve blocks, barrier sealant and bonded sealant application, jaw fracture repair, root canals"
+* "Often- bonded sealants; Sometimes-  root canals, restorations, jaw fracture repair"
+* "Oral biopsy, root planning, bonded sealants"
+* "extractions only if performed on that patient"
+* "Not all students see all types of extractions"
+
+```{r}
+#| label: question_7a
+#| echo: false
+#| warning: false
+#| fig-cap: "Clinical Training Skills Perceived by Educators vs Employers in DVM Programs"
+#| fig-align: center
+#| fig.width: 10
+#| fig.height: 7
 # Labels for each skill
 option_labels <- c(
   "01" = "Oral Exam/Charting",
@@ -1330,7 +1369,7 @@ ggplot(combined_percent, aes(x = percent, y = Label, color = Group)) +
   labs(
     x = "% of respondents in respective groups",
     y = NULL,
-    title = "Clinical Training Skills Perceived by Educators vs Employers",
+    title = "Clinical Training Skills",
     subtitle = "Each dot shows percent of Eduactors or Employers who selected each skill",
     color = NULL
   ) +
@@ -1347,7 +1386,12 @@ ggplot(combined_percent, aes(x = percent, y = Label, color = Group)) +
 
 ```
 
-```{r echo = FALSE}
+```{r}
+#| label: question_7b
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
 # Define labels for each of the 13 skills
 option_labels <- c(
   "01" = "Oral Exam/Charting",
@@ -1429,7 +1473,7 @@ final_table <- combined_counts %>%
   arrange(match(Skill, option_labels))
 
 # Print a clean table
-knitr::kable(final_table, col.names = c("Skill", "% of Educators", "% of Employers", "P-value"))
+kable(final_table, caption = "Perceived Skills Learned of Clinical Dental Instruction in DVM Programs", align = "lrr", booktabs=TRUE)
 ```
 
 ### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
