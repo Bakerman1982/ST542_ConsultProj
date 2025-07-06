@@ -207,7 +207,7 @@ Dentistry}
 
 \begin{document}
 \maketitle
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, frame hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, enhanced, sharp corners, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, interior hidden, sharp corners, breakable, frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
 
 \renewcommand*\contentsname{Table of contents}
 {
@@ -556,8 +556,11 @@ After all preprocessing steps, the final cleaned datasets consisted of
 \hypertarget{method-description}{%
 \subsection{Method Description}\label{method-description}}
 
-Likert scale questions (statistical questions \#1,3, 6, and 8): These
-questions utilize a likert scale to answer Strongly Agree, Agree,
+\hypertarget{likert-scale-questions-statistical-questions-13-6-and-8}{%
+\paragraph{Likert scale questions (statistical questions \#1,3, 6, and
+8)}\label{likert-scale-questions-statistical-questions-13-6-and-8}}
+
+These questions utilize a likert scale to answer Strongly Agree, Agree,
 Disagree, or Strongly Disagree on a variety of skills and procedures. To
 analyze this data, we will use diverging stacked bar charts and tables
 for exploratory data analysis and the Mann-Whitney U Test for the formal
@@ -568,30 +571,92 @@ educators and employers were independent from each other when taking the
 survey. The Mann-Whitney test particularly works well with these
 questions due to the ordinal (and therefore ranked) nature of the data.
 
-Select all that apply questions (statistical questions \#2, 5, and 7):
+\hypertarget{select-all-that-apply-questions-statistical-questions-2-5-and-7}{%
+\paragraph{Select all that apply questions (statistical questions \#2,
+5, and
+7)}\label{select-all-that-apply-questions-statistical-questions-2-5-and-7}}
+
 These questions asked the participants to ``select all that apply'' as
 it relates to skills in pre-clinical curriculum, format of dental
 instruction, and skills for clinical training respectively. We will
 utilize frequency tables and bar plots to explore the data for these
 questions and use Fisher's Exact Test as a formal inference procedure
-for the comparison of the two groups. Fisher's Exact Test works with
-categorical data with independent samples, in this case educators and
-employers. In this context, it is preferred over Chi-Squared Tests due
-to the small sample size and therefore not meeting the expected count
-threshold that is required to proceed with Chi-Squared Tests. Given the
-small sample sizes, we acknowledge the limited power of these analyses
-and may consider post hoc power analyses for these tests.
+for the comparison of the two groups. Dot plots will also be utilized
+for questions with many options to avoid crowding in bar graphs.
 
-Numerical entry questions: (statistical question \#4): This question
-asks participants to enter a number related to the number of dental
-procedures that should be completed during training in different areas.
-We plan to produce box plots and/or histograms to visually examine the
-data. Depending on the normality or lack thereof of the distributions,
-we will then conduct either a two-sample t-test or a Mann-Whitney U
-Test. As mentioned above, the Mann Whitney U test is a non-parametric
-test that does not depend on the assumption of normality. If the
-assumption on normality is met, we can consider a two-sample t test for
-this analysis.
+Fisher's Exact Test works with categorical data with independent
+samples, in this case educators and employers. Based on the survey
+design from the client, it is reasonable to assume that these two groups
+are independent. In this context, Fisher's Exact Test is preferred over
+Chi-Squared Tests due to the small sample size and therefore not meeting
+the expected count threshold that is required to proceed with
+Chi-Squared Tests. Given the small sample sizes, we acknowledge the
+limited power of these analyses and may consider post hoc power analyses
+for these tests.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3288}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2192}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2055}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2466}}@{}}
+\caption{Fisher's Exact 2×2 Contingency Table}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Group
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Outcome.Present
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Outcome.Absent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Row.Totals
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Group
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Outcome.Present
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Outcome.Absent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Row.Totals
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Group 1 (ex: Educators) & a & b & a + b \\
+Group 2 (ex: Employers) & c & d & c + d \\
+Column Totals & a + c & b + d & n = a + b + c + d \\
+\end{longtable}
+
+Fisher's Exact Test operates under the null hypothesis that there is no
+association between the two variables. The alternative hypothesis is
+that there is an association. The p-value for the test is computed using
+the following formula:
+
+{[} p =
+\frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}
+{]}
+
+P-values are then computed for each skill, format, etc. between the two
+groups (educators and employers) depending on the statistical question
+to be analyzed.
+
+\hypertarget{numerical-entry-questions-statistical-question-4}{%
+\paragraph{Numerical entry questions: (statistical question
+\#4)}\label{numerical-entry-questions-statistical-question-4}}
+
+This question asks participants to enter a number related to the number
+of dental procedures that should be completed during training in
+different areas. We plan to produce box plots and/or histograms to
+visually examine the data. Depending on the normality or lack thereof of
+the distributions, we will then conduct either a two-sample t-test or a
+Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a
+non-parametric test that does not depend on the assumption of normality.
+If the assumption on normality is met, we can consider a two-sample t
+test for this analysis.
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
@@ -831,10 +896,10 @@ DVM Programs}
 \end{figure}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.5581}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1744}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1744}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.0930}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.5393}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1685}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1685}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1236}}@{}}
 \caption{Perceived Skills Learned of Clinical Dental Instruction in DVM
 Programs}\tabularnewline
 \toprule\noalign{}
@@ -863,22 +928,58 @@ P-value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Oral Exam/Charting & 86.7 & 69.2 & 0.21700 \\
-Radiographic Positioning & 93.3 & 69.2 & 0.05760 \\
-Radiographic Interpretation & 90.0 & 76.9 & 0.34500 \\
-Scaling & 90.0 & 61.5 & 0.04150 \\
-Polishing & 76.7 & 30.8 & 0.00672 \\
-Canine Closed Extraction & 76.7 & 38.5 & 0.03390 \\
-Feline Closed Extraction & 76.7 & 38.5 & 0.03390 \\
-Canine Open Extraction - Single Root & 76.7 & 38.5 & 0.03390 \\
-Feline Open Extraction - Single Root & 80.0 & 46.2 & 0.03670 \\
-Canine Open Extraction - Canines/Multiple Roots & 80.0 & 46.2 &
-0.03670 \\
-Feline Open Extraction - Canines/Multiple Roots & 23.3 & 30.8 &
-0.70900 \\
-Fluoride Treatment & 6.7 & 15.4 & 0.57200 \\
-None of These & 20.0 & 0.0 & 0.15500 \\
+Oral Exam/Charting & 86.7 & 69.2 & 0.217 \\
+Radiographic Positioning & 93.3 & 69.2 & 0.0576 \\
+Radiographic Interpretation & 90.0 & 76.9 & 0.345 \\
+Scaling & 90.0 & 61.5 & 0.0415 * \\
+Polishing & 76.7 & 30.8 & 0.00672 ** \\
+Canine Closed Extraction & 76.7 & 38.5 & 0.0339 * \\
+Feline Closed Extraction & 76.7 & 38.5 & 0.0339 * \\
+Canine Open Extraction - Single Root & 76.7 & 38.5 & 0.0339 * \\
+Feline Open Extraction - Single Root & 80.0 & 46.2 & 0.0367 * \\
+Canine Open Extraction - Canines/Multiple Roots & 80.0 & 46.2 & 0.0367
+* \\
+Feline Open Extraction - Canines/Multiple Roots & 23.3 & 30.8 & 0.709 \\
+Fluoride Treatment & 6.7 & 15.4 & 0.572 \\
+None of These & 20.0 & 0.0 & 0.155 \\
 \end{longtable}
+
+Figure 5.2 shows the percentage of employers and educators who selected
+the given skills and Table 4 shows the p-values associated with Fisher's
+Exact Test and their significance.
+
+For eleven of the thirteen skills, educators reported a higher
+percentage of selection. The two skills for which employers reported
+higher perceived learning were feline open extraction - canines/multiple
+roots and fluoride treatment.
+
+At the 5\% significance level, the difference in skill selection between
+employers and educators was found to be significant for seven skills:
+
+\begin{itemize}
+\tightlist
+\item
+  Scaling
+\item
+  Polishing
+\item
+  Canine Closed Extraction
+\item
+  Feline Closed Extraction
+\item
+  Canine Open Extraction - Single Root
+\item
+  Feline Open Extraction - Single Root
+\item
+  Canine Open Extraction - Canines/Multiple Roots
+\end{itemize}
+
+For all skills with statistically significant differences, educators
+reported higher percentages than employers.
+
+The most significant difference was found in polishing. Educators
+selected this skill 76.7\% of the time, while employers selected this
+skill only 30.8\% of the time. The resulting p-value was 0.00672.
 
 \hypertarget{s8-do-educators-and-employers-differ-in-their-opinions-about-which-clinical-dentistry-skills-dvm-students-should-be-required-to-practice-or-learn-during-their-clinical-training}{%
 \subsubsection{S8 Do educators and employers differ in their opinions

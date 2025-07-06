@@ -899,11 +899,76 @@ After all preprocessing steps, the final cleaned datasets consisted of 13 employ
 
 ## Method Description
 
-Likert scale questions (statistical questions #1,3, 6, and 8): These questions utilize a likert scale to answer Strongly Agree, Agree, Disagree, or Strongly Disagree on a variety of skills and procedures. To analyze this data, we will use diverging stacked bar charts and tables for exploratory data analysis and the Mann-Whitney U Test for the formal hypothesis procedure. The Mann-Whitney U Test is a non-parametric test that does not rely on an assumption of normality. It does require independence between datasets and it is reasonable to assume that the educators and employers were independent from each other when taking the survey. The Mann-Whitney test particularly works well with these questions due to the ordinal (and therefore ranked) nature of the data.
+#### Likert scale questions (statistical questions #1,3, 6, and 8)
 
-Select all that apply questions (statistical questions #2, 5, and 7): These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. In this context, it is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+These questions use a Likert scale with response options: Strongly Agree, Agree, Disagree, and Strongly Disagree across a variety of skills and procedures. Given the ordinal nature of these responses, we use diverging stacked bar charts and summary tables for exploratory data analysis, followed by a Mann-Whitney U Test for formal hypothesis testing.
 
-Numerical entry questions: (statistical question #4): This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
+The Mann-Whitney U Test is a non-parametric test used to assess whether there is a statistically significant difference in the distributions of ordinal or continuous variables between two independent groups. In this case, educators and employers are assumed to be independent, consistent with the survey design.
+
+This test is appropriate for Likert-scale data because:
+
+*It does not assume normality (unlike the t-test),
+*It respects the ordinal (ranked) structure of the data,
+*It retains statistical power in small samples.
+
+```{r}
+#| label: mannwhitneytable
+#| echo: false
+#| warning: false
+#| fig-cap: "Mann-Whitney U test logic for comparing ranked data"
+#| fig-align: center
+
+# Create a visual summary table
+mw_data <- data.frame(
+  Group = c("Group 1 (e.g., Educators)", "Group 2 (e.g., Employers)"),
+  `Sample Size` = c("n₁", "n₂"),
+  `Sum of Ranks` = c("R₁", "R₂"),
+  `Mean Rank` = c("R₁ / n₁", "R₂ / n₂")
+)
+
+kable(mw_data, align = "lrrr", caption = "Mann-Whitney U Rank Summary Table", booktabs = TRUE)
+
+```
+
+
+
+
+#### Select all that apply questions (statistical questions #2, 5, and 7)
+These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Dot plots will also be utilized for questions with many options to avoid crowding in bar graphs. 
+
+Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+
+
+```{r}
+#| label: fishertable
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
+
+# Create the generic table
+table_data <- data.frame(
+  Group = c("Group 1 (ex: Educators)", "Group 2 (ex: Employers)", "Column Totals"),
+  `Outcome Present` = c("a", "c", "a + c"),
+  `Outcome Absent` = c("b", "d", "b + d"),
+  `Row Totals` = c("a + b", "c + d", "n = a + b + c + d"))
+  
+# Print the table
+kable(table_data, align = "lrr", caption = "Fisher's Exact 2×2 Contingency Table", booktabs=TRUE)
+
+```
+
+Fisher's Exact Test operates under the null hypothesis that there is no association between the two variables. The alternative hypothesis is that there is an association. The p-value for the test is computed using the following formula: 
+
+\[
+p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}
+\]
+
+P-values are then computed for each skill, format, etc. between the two groups (educators and employers) depending on the statistical question to be analyzed.
+
+#### Numerical entry questions: (statistical question #4)
+
+This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
 
 # Results
 
@@ -1472,9 +1537,42 @@ final_table <- combined_counts %>%
   ) %>%
   arrange(match(Skill, option_labels))
 
+# Add significance stars
+final_table <- final_table %>%
+  mutate(
+    Significance = case_when(
+      `P-value` < 0.001 ~ "***",
+      `P-value` < 0.01  ~ "**",
+      `P-value` < 0.05  ~ "*",
+      TRUE              ~ ""
+    ),
+    `P-value` = paste0(`P-value`, " ", Significance)
+  ) %>%
+  select(-Significance)  # Optional: remove extra column if not needed
+
+
 # Print a clean table
 kable(final_table, caption = "Perceived Skills Learned of Clinical Dental Instruction in DVM Programs", align = "lrr", booktabs=TRUE)
 ```
+
+Figure 5.2 shows the percentage of employers and educators who selected the given skills and Table 4 shows the p-values associated with Fisher's Exact Test and their significance. 
+
+For eleven of the thirteen skills, educators reported a higher percentage of selection. The two skills for which employers reported higher perceived learning were feline open extraction - canines/multiple roots and fluoride treatment. 
+
+At the 5% significance level, the difference in skill selection between employers and educators was found to be significant for seven skills:
+
+* Scaling
+* Polishing
+* Canine Closed Extraction
+* Feline Closed Extraction 
+* Canine Open Extraction - Single Root
+* Feline Open Extraction - Single Root
+* Canine Open Extraction - Canines/Multiple Roots
+
+For all skills with statistically significant differences, educators reported higher percentages than employers.
+
+The most significant difference was found in polishing. Educators selected this skill 76.7% of the time, while employers selected this skill only 30.8% of the time. The resulting p-value was 0.00672.
+
 
 ### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
