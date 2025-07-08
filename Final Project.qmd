@@ -942,7 +942,12 @@ kable(mw_data, align = "lrrr", caption = "Mann-Whitney U Rank Summary Table", bo
 
 ```
 
+In order to calculate the test statistic and p-value for a Mann-Whitney U Test:
 
+* All observations are ranked together
+* The sum of the ranks for each group is calculated ($R_1$ and $R_2$)
+* The test statistic U is then calculated as the minimum of $U_1$ and $U_2$ where $U_1$ and $U_2$ are the following: $U_1 = R_1 - \frac{n_1(n_1 + 1)}{2},  U_2 = R_2 - \frac{n_2(n_2 + 1)}{2}$ 
+* Then the p-value is calculated from the U distribution or normal approximation.
 
 
 #### Select all that apply questions (statistical questions #2, 5, and 7)
