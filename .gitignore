@@ -1,2 +1,8 @@
 *.pdf
 *.tex
+*.html
+*.docx
+*.Rhistory
+*.RData
+*.Rproj
+.Rproj.user/
