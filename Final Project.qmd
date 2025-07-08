@@ -1239,7 +1239,88 @@ kable(test_results,
 
 ### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
+
+To assess whether educators and employers differ in their beliefs about which dental skills should be included in the pre-clinical DVM curriculum, we analyzed responses to parallel Likert-scale questions: Q13 (educators) and Q17 (employers). Both groups rated the importance of teaching 12 specific dentistry skills using a 4-point Likert scale ranging from 1 (Strongly Disagree) to 4 (Strongly Agree). Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually.
+
+The results showed statistically significant differences in opinion for two of the twelve skills. Employers were significantly more likely than educators to agree that feline open extractions involving multiple roots or canines (Skill_11, p = 0.003) and fluoride treatment (Skill_12, p = 0.013) should be included in the pre-clinical curriculum. For all other skills, there were no statistically significant differences between groups (all p > 0.10), and the median rating for most skills was 4 (“Strongly Agree”) in both groups. These findings suggest general alignment between educators and employers on most skills, but highlight a few areas—particularly more advanced feline extractions and fluoride use—where employer expectations may exceed what educators currently prioritize for pre-clinical training.
+
+
+
+
+```{r}
+#| label: question_3prep
+#| echo: false
+#| warning: false
+#| message: false
+#| include: false
+# Load required packages
+library(dplyr)
+library(tidyr)
+library(gt)
+
+# 1. Select relevant Q13 (educators) and Q17 (employers) columns
+q13_vars <- paste0("Q13_", sprintf("%02d", 1:12))  # Educators
+q17_vars <- paste0("Q17_", sprintf("%02d", 1:12))  # Employers
+
+educator_q13 <- Educator_Data_Clean %>%
+  select(all_of(q13_vars)) %>%
+  mutate(group = "Educator")
+
+employer_q17 <- Employer_Data_Clean %>%
+  select(all_of(q17_vars)) %>%
+  mutate(group = "Employer")
+
+# 2. Combine and standardize column names
+colnames(educator_q13)[1:12] <- paste0("Skill_", sprintf("%02d", 1:12))
+colnames(employer_q17)[1:12] <- paste0("Skill_", sprintf("%02d", 1:12))
+
+combined_data <- bind_rows(educator_q13, employer_q17)
+
+# 3. Reshape to long format
+q3_long <- combined_data %>%
+  pivot_longer(
+    cols = starts_with("Skill_"),
+    names_to = "Skill",
+    values_to = "Rating_num"
+  ) %>%
+  mutate(Rating_num = as.numeric(Rating_num)) %>%
+  filter(!is.na(Rating_num))
+
+# 4. Run Mann-Whitney U tests
+q3_results <- q3_long %>%
+  group_by(Skill) %>%
+  summarise(
+    p_value = wilcox.test(Rating_num ~ group)$p.value,
+    median_educator = median(Rating_num[group == "Educator"], na.rm = TRUE),
+    median_employer = median(Rating_num[group == "Employer"], na.rm = TRUE),
+    n_educator = sum(group == "Educator"),
+    n_employer = sum(group == "Employer"),
+    .groups = "drop"
+  ) %>%
+  arrange(p_value)
+
+# 5. Clean column names
+q3_results_clean <- q3_results %>%
+  rename(
+    `p-value` = p_value,
+    `Median (Educator)` = median_educator,
+    `Median (Employer)` = median_employer,
+    `n (Educator)` = n_educator,
+    `n (Employer)` = n_employer
+  )
+
+# 6. Display results as table
+q3_results_clean %>%
+  gt() %>%
+  tab_header(
+    title = "Mann-Whitney U Test: Pre-Clinical Skill Training Beliefs"
+  ) %>%
+  fmt_number(columns = c(`p-value`), decimals = 3)
+
+```
+
 ### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+
 
 ### S5 Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
 
