@@ -980,16 +980,59 @@ use the Mann-Whitney U-Test, a non-parametric test also known as
 Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between
 groups.
 
-\begin{verbatim}
-       question     W     p_value significance
-Q17_01   Q17_01 138.5 0.414724985           ns
-Q17_02   Q17_02 108.0 0.362883946           ns
-Q17_03   Q17_03 162.0 0.712880664           ns
-Q17_04   Q17_04 263.5 0.002740855           **
-Q17_05   Q17_05    NA          NA         <NA>
-Q17_06   Q17_06    NA          NA         <NA>
-Q17_07   Q17_07    NA          NA         <NA>
-\end{verbatim}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0875}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2250}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1625}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1125}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1750}}
+  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2375}}@{}}
+\caption{Mann-Whitney U-Test Results for Instruction
+Types}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Instruction\_Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+W\_Statistic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+P\_Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Significance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Notes
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Instruction\_Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+W\_Statistic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+P\_Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Significance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Notes
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Q17\_01 & Didactic & 138.5 & 0.415 & ns & Test performed \\
+Q17\_02 & Simulation & 108 & 0.363 & ns & Test performed \\
+Q17\_03 & Wet Lab & 162 & 0.713 & ns & Test performed \\
+Q17\_04 & Live Patient & 263.5 & 0.003 & ** & Test performed \\
+Q17\_05 & None of these & - & - & - & Insufficient data \\
+Q17\_06 & Other & - & - & - & Insufficient data \\
+Q17\_07 & Other & - & - & - & Insufficient data \\
+\end{longtable}
+
+\begin{center}
+\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/question_6a, -1.pdf}}
+\end{center}
 
 \subsubsection{S7 Is there a difference between the clinical dentistry
 skills that educators report DVM students are learning during their
@@ -1157,21 +1200,36 @@ known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity
 between groups.
 
 \begin{verbatim}
-       question     W    p_value significance
-Q21_01   Q21_01 139.0 0.62171592           ns
-Q21_02   Q21_02 157.0 0.71723375           ns
-Q21_03   Q21_03 126.5 0.19379896           ns
-Q21_04   Q21_04 156.0 0.76158684           ns
-Q21_05   Q21_05 148.5 1.00000000           ns
-Q21_06   Q21_06 127.5 0.32836731           ns
-Q21_07   Q21_07 104.5 0.04863265            *
-Q21_08   Q21_08 104.5 0.04892603            *
-Q21_09   Q21_09 115.5 0.07564530            .
-Q21_10   Q21_10 115.5 0.07587786            .
-Q21_11   Q21_11  54.0 0.20728866           ns
-Q21_12   Q21_12    NA         NA         <NA>
-Q21_13   Q21_13    NA         NA         <NA>
-Q21_14   Q21_14    NA         NA         <NA>
+                                              question     W    p_value
+Q21_07                        Feline closed extraction 104.5 0.04863265
+Q21_08            Canine open extraction - Single root 104.5 0.04892603
+Q21_09            Feline open extraction - Single root 115.5 0.07564530
+Q21_10 Canine open extraction - Canines/multiple roots 115.5 0.07587786
+Q21_03                     Radiographic interpretation 126.5 0.19379896
+Q21_11 Feline open extraction - Canines/multiple roots  54.0 0.20728866
+Q21_06                        Canine closed extraction 127.5 0.32836731
+Q21_01                              Oral exam/charting 139.0 0.62171592
+Q21_02                        Radiographic positioning 157.0 0.71723375
+Q21_04                                         Scaling 156.0 0.76158684
+Q21_05                                       Polishing 148.5 1.00000000
+Q21_12                              Fluoride treatment    NA         NA
+Q21_13                                            None    NA         NA
+Q21_14                          Other: Please describe    NA         NA
+       significance
+Q21_07            *
+Q21_08            *
+Q21_09            .
+Q21_10            .
+Q21_03           ns
+Q21_11           ns
+Q21_06           ns
+Q21_01           ns
+Q21_02           ns
+Q21_04           ns
+Q21_05           ns
+Q21_12         <NA>
+Q21_13         <NA>
+Q21_14         <NA>
 \end{verbatim}
 
 \begin{Shaded}
@@ -1188,6 +1246,22 @@ Q21_14   Q21_14    NA         NA         <NA>
 \section{Discussion/Conclusion}\label{discussionconclusion}
 
 \subsection{Interpretation of Results}\label{interpretation-of-results}
+
+In statistical question six, when asked, ``Which of the following types
+of clinical instruction in dentistry/instruction do you think that DVM
+students should be required to complete as part o a DVM program/Clinical
+training?'', we found that there was no statistical difference between
+groups on the medical procedures ``Didactic'', ``Simulation'' or ``Wet
+Lab''. There was a statistically significant difference on sentiments of
+whether a student or recent graduate should be taught on ``Live
+Patients''. The survey gave the option of ``None of These'' or
+``Other''; however, not enough data was present to make viable
+comparisons on these groups.
+
+Statistical question eight asked, ``Which of the following skills do you
+think that DVM students should be required to practice/learn as part of
+the clinical trainingportion of a DVM program? Select one response for
+each of the skills listed below.''
 
 \subsection{Implications of the Study}\label{implications-of-the-study}
 
