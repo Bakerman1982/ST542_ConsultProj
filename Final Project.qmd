@@ -961,7 +961,7 @@ kable(table_data, align = "lrr", caption = "Fisher's Exact 2×2 Contingency Tabl
 Fisher's Exact Test operates under the null hypothesis that there is no association between the two variables. The alternative hypothesis is that there is an association. The p-value for the test is computed using the following formula: 
 
 \[
-p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}
+$p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}$
 \]
 
 P-values are then computed for each skill, format, etc. between the two groups (educators and employers) depending on the statistical question to be analyzed.
