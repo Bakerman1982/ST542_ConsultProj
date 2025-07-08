@@ -1080,29 +1080,38 @@ In question #21 of the employers version of the survey, participants were asked,
 This question is targeting how participants feel about what dental veterinarian medical programs are teaching and what topics should be required in their curriculum. The research question asked if there was a difference in opinions on this matter. To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between groups.
 
 ```{r question_6a, , echo=FALSE, warning=FALSE, fig.align='center'}
+# Define the matching question columns
 educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
 employer_cols  <- paste0("Q21_", sprintf("%02d", 1:7))
 
-# Initialize a results list
+# Create human-friendly labels
+instruction_labels <- c(
+  "Q17_01" = "Didactic",       "Q21_01" = "Didactic",
+  "Q17_02" = "Simulation",     "Q21_02" = "Simulation",
+  "Q17_03" = "Wet Lab",        "Q21_03" = "Wet Lab",
+  "Q17_04" = "Live Patient",   "Q21_04" = "Live Patient",
+  "Q17_05" = "None of these",  "Q21_05" = "None of these",
+  "Q17_06" = "Other",          "Q21_06" = "Other",
+  "Q17_07" = "Other",          "Q21_07" = "Other"
+)
+
+
+
+# Initialize an empty list to store results
 mw_results <- list()
 
-# For loop that 
 for (i in seq_along(educator_cols)) {
   q_edu <- educator_cols[i]
   q_emp <- employer_cols[i]
   
-  # Coerce to numeric
   edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
   emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
   
-  # Remove NAs.  Wilcoxin handles NA values automatically. 
   edu_vals <- edu_vals[!is.na(edu_vals)]
   emp_vals <- emp_vals[!is.na(emp_vals)]
   
-  # Only run test if both groups have >1 value
   if (length(edu_vals) > 1 && length(emp_vals) > 1) {
     test_result <- wilcox.test(edu_vals, emp_vals, exact = FALSE)
-    
     mw_results[[q_edu]] <- list(
       question = q_edu,
       W = test_result$statistic,
@@ -1117,144 +1126,85 @@ for (i in seq_along(educator_cols)) {
   }
 }
 
-# This produces a table of 
-mw_df <- do.call(rbind, lapply(mw_results, as.data.frame))
-mw_df <- as.data.frame(mw_df)
+# Create mw_df
+mw_df <- do.call(rbind, lapply(mw_results, as.data.frame)) %>% as.data.frame()
 mw_df$p_value <- as.numeric(mw_df$p_value)
+mw_df$W <- as.numeric(mw_df$W)
 mw_df$question <- rownames(mw_df)
 mw_df$significance <- cut(mw_df$p_value,
                           breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
                           labels = c("***", "**", "*", ".", "ns"))
-print(mw_df)
-```
 
-```{r TestSpace8, eval=FALSE, echo=FALSE, fig.align='center'}
-
-sapply(Educator_Data_Clean[ , educator_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
-sapply(Employer_Data_Clean[ , employer_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
-
-Employer_Data_Clean %>% select(starts_with("Q21"))
-
-
-# Count NAs for reference
-sapply(Educator_Data_Clean[ , educator_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
-sapply(Employer_Data_Clean[ , employer_cols[5:7]], function(x) sum(!is.na(as.numeric(x))))
-
-Employer_Data_Clean %>% select(starts_with("Q21"))
-
-# STEP 1: Create combined_mirrored data
-combined_mirrored <- bind_rows(
-  Educator_Data_Clean %>%
-    select(Q17_01, Q17_02, Q17_03) %>%
-    pivot_longer(everything(), names_to = "Question", values_to = "Response") %>%
-    mutate(
-      Group = "Educator",
-      Item = case_when(
-        Question == "Q17_01" ~ "Didactic",
-        Question == "Q17_02" ~ "Simulation",
-        Question == "Q17_03" ~ "Wet Lab"
-      )
-    ),
-  
-  Employer_Data_Clean %>%
-    select(Q21_01, Q21_02, Q21_03) %>%
-    pivot_longer(everything(), names_to = "Question", values_to = "Response") %>%
-    mutate(
-      Group = "Employer",
-      Item = case_when(
-        Question == "Q21_01" ~ "Didactic",
-        Question == "Q21_02" ~ "Simulation",
-        Question == "Q21_03" ~ "Wet Lab"
-      )
-    )
-) %>%
-  filter(!is.na(Response)) %>%
+# Build display table with readable names
+mw_table <- mw_df %>%
   mutate(
-    Response = factor(Response, levels = 1:4, 
-                      labels = c("Strongly Disagree", "Disagree", "Agree", "Strongly Agree")),
-    Count = 1,
-    Direction = if_else(Group == "Employer", -1, 1)
+    Instruction_Type = recode(question, !!!instruction_labels),
+    W_Statistic = ifelse(is.na(W), "-", round(W, 1)),
+    P_Value = ifelse(is.na(p_value), "-", round(p_value, 3)),
+    Significance = ifelse(is.na(significance), "-", as.character(significance)),
+    Notes = ifelse(P_Value == "-", "Insufficient data", "Test performed")
   ) %>%
-  group_by(Group, Item, Response) %>%
-  summarise(n = sum(Count) * unique(Direction), .groups = "drop")
+  select(Instruction_Type, W_Statistic, P_Value, Significance, Notes)
 
-# STEP 2: Grouped labels and colors
-combined_mirrored <- combined_mirrored %>%
-  mutate(
-    Response_Grouped = paste(Response, Group, sep = " - "),
-    Response = factor(Response, levels = c("Strongly Disagree", "Disagree", "Agree", "Strongly Agree")),
-    Response_Grouped = factor(Response_Grouped, levels = c(
-      "Strongly Disagree - Educator", "Disagree - Educator", "Agree - Educator", "Strongly Agree - Educator",
-      "Strongly Disagree - Employer", "Disagree - Employer", "Agree - Employer", "Strongly Agree - Employer"
-    ))
-  )
+# Render with kable
+kable(mw_table, caption = "Mann-Whitney U-Test Results for Instruction Types", align = "c")
 
-custom_colors <- c(
-  "Strongly Disagree - Educator" = "#d73027",
-  "Disagree - Educator"          = "#f46d43",
-  "Agree - Educator"             = "#fdae61",
-  "Strongly Agree - Educator"    = "#fee090",
-  "Strongly Disagree - Employer" = "#4575b4",
-  "Disagree - Employer"          = "#74add1",
-  "Agree - Employer"             = "#abd9e9",
-  "Strongly Agree - Employer"    = "#e0f3f8"
-)
+# ====================
+# Now the Plot Section
+# ====================
 
-# STEP 3: Plot
-ggplot(combined_mirrored, aes(x = Item, y = n, fill = Response_Grouped)) +
-  geom_bar(stat = "identity") +
+# Educator data (remove Q17_05 and Q17_06)
+educator_long <- Educator_Data_Clean %>%
+  select(starts_with("Q17_")) %>%
+  select(-Q17_05, -Q17_06) %>%
+  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
+  mutate(group = "Educator")
+
+# Employer data (remove Q21_05 and Q21_06)
+employer_long <- Employer_Data_Clean %>%
+  select(starts_with("Q21_")) %>%
+  select(-Q21_05, -Q21_06) %>%
+  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
+  mutate(group = "Employer")
+
+
+# Combine and apply instruction labels
+plot_data <- bind_rows(educator_long, employer_long) %>%
+  mutate(response = as.numeric(response)) %>%
+  filter(!is.na(response)) %>%
+  mutate(question = recode(question, !!!instruction_labels))
+
+desired_order <- c("Live Patient", "Wet Lab", "Didactic", "Simulation")
+plot_data <- plot_data %>%
+  filter(question %in% desired_order) %>%
+  mutate(question = factor(question, levels = desired_order))
+
+
+plot_summary <- plot_data %>%
+  group_by(question, response, group) %>%
+  summarize(count = n(), .groups = "drop") %>%
+  # Make counts negative for one group to diverge left
+  mutate(count_signed = ifelse(group == "Employer", -count, count))
+
+# Plot horizontal diverging bars
+ggplot(plot_summary, aes(x = factor(response), y = count_signed, fill = group)) +
+  geom_bar(stat = "identity", color = "black", width = 0.7) +
   coord_flip() +
-  scale_y_continuous(labels = abs) +
-  scale_fill_manual(values = custom_colors) +
+  facet_wrap(~ question, ncol = 2) +
+  scale_y_continuous(
+    breaks = scales::pretty_breaks(),
+    labels = abs
+  ) +
   labs(
-    title = "Back-to-Back Comparison of Educator vs Employer Responses",
-    x = "Instructional Method",
-    y = "Response Count",
-    fill = "Likert Response by Group"
+    title = "Horizontal Diverging Bar Chart: Educator vs Employer Responses",
+    x = "Response Level",
+    y = "Count",
+    fill = "Group"
   ) +
   theme_minimal() +
-  theme(legend.position = "bottom")
-
-
-library(tidyverse)
-
-educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
-employer_cols <- paste0("Q21_", sprintf("%02d", 1:7))
-
-mw_df <- map2_dfr(educator_cols, employer_cols, function(q_edu, q_emp) {
-  edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
-  emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
-
-  # Remove NAs
-  edu_vals <- edu_vals[!is.na(edu_vals)]
-  emp_vals <- emp_vals[!is.na(emp_vals)]
-
-  if (length(edu_vals) > 1 && length(emp_vals) > 1) {
-    test_result <- wilcox.test(edu_vals, emp_vals, exact = FALSE)
-    tibble(
-      question = q_edu,
-      W = test_result$statistic,
-      p_value = test_result$p.value
-    )
-  } else {
-    tibble(
-      question = q_edu,
-      W = NA_real_,
-      p_value = NA_real_
-    )
-  }
-})
-
-# Add significance stars
-mw_df <- mw_df %>%
-  mutate(significance = cut(p_value,
-                            breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
-                            labels = c("***", "**", "*", ".", "ns")))
-
-print(mw_df)
-
-
+  scale_fill_manual(values = c("Educator" = "#1f77b4", "Employer" = "#ff7f0e"))
 ```
+
 
 ### S7 Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
 
@@ -1442,48 +1392,67 @@ This question hits at the sentiment on what both groups think should be required
 educator_cols <- paste0("Q21_", sprintf("%02d", 1:14))
 employer_cols  <- paste0("Q26_", sprintf("%02d", 1:14))
 
+# Create mapping vector
+procedure_labels <- c(
+  "Oral exam/charting",
+  "Radiographic positioning",
+  "Radiographic interpretation",
+  "Scaling",
+  "Polishing",
+  "Canine closed extraction",
+  "Feline closed extraction",
+  "Canine open extraction - Single root",
+  "Feline open extraction - Single root",
+  "Canine open extraction - Canines/multiple roots",
+  "Feline open extraction - Canines/multiple roots",
+  "Fluoride treatment",
+  "None",
+  "Other: Please describe"
+)
+
+names(procedure_labels) <- educator_cols
+
 # Initialize a results list
 mw_results <- list()
 
-# For loop that 
 for (i in 1:14) {
   q_edu <- educator_cols[i]
   q_emp <- employer_cols[i]
   
-  # Coerce to numeric
   edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
   emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
   
-  # Remove NAs
   edu_vals <- edu_vals[!is.na(edu_vals)]
   emp_vals <- emp_vals[!is.na(emp_vals)]
   
-  # Only run test if both groups have >1 value
   if (length(edu_vals) > 1 && length(emp_vals) > 1) {
     test_result <- wilcox.test(edu_vals, emp_vals, exact = FALSE)
     
     mw_results[[q_edu]] <- list(
-      question = q_edu,
+      question = procedure_labels[[q_edu]],
       W = test_result$statistic,
       p_value = test_result$p.value
     )
   } else {
     mw_results[[q_edu]] <- list(
-      question = q_edu,
+      question = procedure_labels[[q_edu]],
       W = NA,
       p_value = NA
     )
   }
 }
 
-
 mw_df <- do.call(rbind, lapply(mw_results, as.data.frame))
 mw_df <- as.data.frame(mw_df)
 mw_df$p_value <- as.numeric(mw_df$p_value)
-mw_df$question <- rownames(mw_df)
+
+# Optional: sort by p-value
+mw_df <- mw_df[order(mw_df$p_value), ]
+
 mw_df$significance <- cut(mw_df$p_value,
                           breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
                           labels = c("***", "**", "*", ".", "ns"))
+
 print(mw_df)
 ```
 
@@ -1499,6 +1468,11 @@ view(Employer_Data_Clean %>% select(starts_with("Q21")))
 # Discussion/Conclusion
 
 ## Interpretation of Results
+
+In statistical question six, when asked, "Which of the following types of clinical instruction in dentistry/instruction do you think that DVM students should be required to complete as part o a DVM program/Clinical training?", we found that there was no statistical difference between groups on the medical procedures "Didactic", "Simulation" or "Wet Lab".  There was a statistically significant difference on sentiments of whether a student or recent graduate should be taught on "Live Patients".  The survey gave the option of "None of These" or "Other"; however, not enough data was present to make viable comparisons on these groups. 
+
+Statistical question eight asked, "Which of the following skills do you think that DVM students should be required to practice/learn as part of the clinical trainingportion of a DVM program? Select one response for each of the skills listed below."  
+
 
 ## Implications of the Study
 
