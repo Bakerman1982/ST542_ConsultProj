@@ -913,21 +913,21 @@ After all preprocessing steps, the final cleaned datasets consisted of 13 employ
 
 #### Likert scale questions (statistical questions #1,3, 6, and 8)
 
-These questions use a Likert scale with response options: Strongly Agree, Agree, Disagree, and Strongly Disagree across a variety of skills and procedures. Given the ordinal nature of these responses, we use diverging stacked bar charts and summary tables for exploratory data analysis, followed by a Mann-Whitney U Test for formal hypothesis testing.
+These questions use a Likert scale with response options: Strongly Agree, Agree, Disagree, and Strongly Disagree across a variety of skills and procedures. Given the ordinal nature of these responses, we will use diverging stacked bar charts and summary tables to visually explore the data, followed by a Mann-Whitney U Test for formal hypothesis testing.
 
 The Mann-Whitney U Test is a non-parametric test used to assess whether there is a statistically significant difference in the distributions of ordinal or continuous variables between two independent groups. In this case, educators and employers are assumed to be independent, consistent with the survey design.
 
 This test is appropriate for Likert-scale data because:
 
-*It does not assume normality (unlike the t-test),
-*It respects the ordinal (ranked) structure of the data,
-*It retains statistical power in small samples.
+* It does not assume normality (unlike the t-test),
+* It respects the ordinal (ranked) structure of the data,
+* It retains statistical power in small samples.
 
 ```{r}
 #| label: mannwhitneytable
 #| echo: false
 #| warning: false
-#| fig-cap: "Mann-Whitney U test logic for comparing ranked data"
+#| fig-cap: " "
 #| fig-align: center
 
 # Create a visual summary table
@@ -949,11 +949,12 @@ In order to calculate the test statistic and p-value for a Mann-Whitney U Test:
 * The test statistic U is then calculated as the minimum of $U_1$ and $U_2$ where $U_1$ and $U_2$ are the following: $U_1 = R_1 - \frac{n_1(n_1 + 1)}{2},  U_2 = R_2 - \frac{n_2(n_2 + 1)}{2}$ 
 * Then the p-value is calculated from the U distribution or normal approximation.
 
+P-values will be utilized for each statistical question listed above in order to formally analyze the data.
 
 #### Select all that apply questions (statistical questions #2, 5, and 7)
 These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Dot plots will also be utilized for questions with many options to avoid crowding in bar graphs. 
 
-Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is again reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
 
 
 ```{r}
@@ -977,9 +978,7 @@ kable(table_data, align = "lrr", caption = "Fisher's Exact 2×2 Contingency Tabl
 
 Fisher's Exact Test operates under the null hypothesis that there is no association between the two variables. The alternative hypothesis is that there is an association. The p-value for the test is computed using the following formula: 
 
-\[
-$p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}$
-\]
+$$p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}$$
 
 P-values are then computed for each skill, format, etc. between the two groups (educators and employers) depending on the statistical question to be analyzed.
 
