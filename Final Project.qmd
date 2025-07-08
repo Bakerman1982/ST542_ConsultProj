@@ -971,10 +971,255 @@ P-values are then computed for each skill, format, etc. between the two groups (
 This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
 
 # Results
+ 
 
 ### S1 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
+ 
+ 
+To assess whether there are differences in perceptions of new graduate competence in dentistry, educators and employers were asked a parallel question (Q4). Employers were asked to rate their expectation that early career veterinarians can competently perform 12 specific dental skills on their first day of employment. Educators were asked to rate whether they believe new graduates can perform those same skills competently. Responses were recorded on a 4-point Likert scale from 1 (Strongly Disagree) to 4 (Strongly Agree).
+
+
+We used the Mann-Whitney U test to compare the responses between educators and employers for each skill. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. Median scores and group sizes were also reported to support interpretation of the findings.
+
+
+The results showed no statistically significant differences between educators and employers for most skills, indicating general agreement about which dental competencies new graduates possess. The only skill approaching significance was interpreting dental radiographs (p = 0.064), where employers appeared slightly more confident than educators. While this difference is subtle (both groups had a median rating of 3), it may warrant further exploration in future studies. Overall, the findings suggest alignment between educational preparation and employer expectations regarding small animal dentistry skills.
+
+
+```{r}
+#| label: setup_mw_test
+#| echo: false
+#| warning: false
+#| message: false
+#| include: false
+
+library(dplyr)
+library(tidyr)
+library(purrr)
+
+# Add group identifiers
+educator_cleaned <- Educator_Data_Clean %>%
+  mutate(group = "Educator")
+
+employer_cleaned <- Employer_Data_Clean %>%
+  mutate(group = "Employer")
+
+# Define Q4 variable names
+q4_vars <- paste0("Q04_", sprintf("%02d", 1:12))
+
+# Subset and label
+educator_q4 <- educator_cleaned %>%
+  select(all_of(q4_vars)) %>%
+  mutate(group = "Educator")
+
+employer_q4 <- employer_cleaned %>%
+  select(all_of(q4_vars)) %>%
+  mutate(group = "Employer")
+
+# Combine and reshape
+combined_data <- bind_rows(educator_q4, employer_q4)
+
+q4_long <- combined_data %>%
+  pivot_longer(
+    cols = starts_with("Q04_"),
+    names_to = "Skill",
+    values_to = "Rating_num"
+  ) %>%
+  mutate(Rating_num = as.numeric(Rating_num)) %>%
+  filter(!is.na(Rating_num))
+
+# Mann-Whitney test
+mw_results <- q4_long %>%
+  group_by(Skill) %>%
+  summarise(
+    p_value = wilcox.test(Rating_num ~ group)$p.value,
+    median_educator = median(Rating_num[group == "Educator"]),
+    median_employer = median(Rating_num[group == "Employer"]),
+    n_educator = sum(group == "Educator"),
+    n_employer = sum(group == "Employer"),
+    .groups = "drop"
+  ) %>%
+  arrange(p_value)
+
+# Clean column names
+mw_results_clean <- mw_results %>%
+  rename(
+    `Skill` = Skill,
+    `p-value` = p_value,
+    `Median (Educator)` = median_educator,
+    `Median (Employer)` = median_employer,
+    `n (Educator)` = n_educator,
+    `n (Employer)` = n_employer
+  )
+
+library(gt)
+```
+
+
+
+```{r}
+#| label: question_1
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
+
+mw_results_clean %>%
+  gt() %>%
+  tab_header(
+    title = "Mann-Whitney U Test Results by Skill"
+  ) %>%
+  fmt_number(columns = c(`p-value`), decimals = 3)
+
+```
+
 
 ### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
+
+To evaluate whether differences exist between DVM educators and employers in their understanding of which dental skills are taught in the pre-clinical curriculum, we analyzed responses to parallel survey questions. Educators were asked to indicate which of seven core dentistry skills are taught as part of their pre-clinical courses (Q12), while employers were asked which skills they believe recent graduates were taught prior to clinical training (Q16). Since the two groups answered different question numbers about the same underlying skills, we first aligned the datasets by renaming employer variables to match educator labels. This harmonization allowed for direct comparison of responses skill-by-skill across the two groups.
+
+After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. One skill item was excluded due to all responses being missing, and approximately 70% of employer data for Q16 items were incomplete, limiting the strength of some comparisons.
+
+The results of the Fisher’s tests revealed no statistically significant differences between educators and employers for any of the seven aligned skills (all p-values > 0.32). Both groups reported similar proportions of skills being taught, with educator endorsement rates ranging from approximately 53% to 77%, and employer endorsement ranging from 54% to 92%. These findings suggest general agreement between what educators report teaching and what employers believe early career veterinarians have been taught in the pre-clinical phase of training. The overall consistency supports the idea that pre-clinical dental training expectations are reasonably aligned between academic programs and employer perceptions.
+
+```{r}
+#| label: question_2prep
+#| echo: false
+#| warning: false
+#| message: false
+#| include: false
+library(dplyr)
+library(tidyr)
+
+# 1. Educator Q12 data (Q12_01 to Q12_07)
+educator_q12 <- Educator_Data_Clean %>%
+  select(Q12_01:Q12_07) %>%
+  mutate(group = "Educator")
+
+colnames(educator_q12)[1:7] <- paste0("Q12_", sprintf("%02d", 1:7))
+
+# 2. Employer Q16 data (only Q16_01 to Q16_10)
+employer_q16 <- Employer_Data_Clean %>%
+  select(Q16_01:Q16_10) %>%  # select only first 10 Q16 columns
+  mutate(group = "Employer")
+
+colnames(employer_q16)[1:10] <- paste0("Q16_", sprintf("%02d", 1:10))
+
+# 3. Combine datasets
+combined_raw <- bind_rows(educator_q12, employer_q16)
+
+# 4. Convert Q columns to character to avoid pivot issues
+combined_raw_clean <- combined_raw %>%
+  mutate(across(starts_with("Q"), as.character))
+
+# 5. Pivot longer
+combined_long <- combined_raw_clean %>%
+  pivot_longer(
+    cols = starts_with("Q"),
+    names_to = "Skill_Format",
+    values_to = "Taught_raw"
+  ) %>%
+  mutate(
+    Taught = na_if(Taught_raw, "N/A"),
+    Taught = na_if(Taught, ""),
+    Taught = as.numeric(Taught)
+  ) %>%
+  select(Skill_Format, group, Taught)
+
+# 6. Confirm columns included
+combined_long %>%
+  filter(grepl("^Q16_", Skill_Format)) %>%
+  distinct(Skill_Format)
+
+
+
+
+combined_long %>%
+  filter(grepl("^Q16_", Skill_Format)) %>%
+  group_by(Skill_Format) %>%
+  summarise(
+    total_responses = n(),
+    missing = sum(is.na(Taught)),
+    non_missing = total_responses - missing,
+    prop_non_missing = non_missing / total_responses
+  )
+
+# 1. Rename employer Q16 columns to Q12 labels for matching skills
+employer_q16 <- Employer_Data_Clean %>%
+  select(Q16_01:Q16_07) %>%
+  rename_with(~ paste0("Q12_", sprintf("%02d", 1:7)), .cols = everything()) %>%
+  mutate(group = "Employer")
+
+# 2. Select educator Q12 columns and label group
+educator_q12 <- Educator_Data_Clean %>%
+  select(Q12_01:Q12_07) %>%
+  mutate(group = "Educator")
+
+# 3. Combine the two datasets
+combined_q12_q16 <- bind_rows(educator_q12, employer_q16)
+
+# 4. Convert Q columns to character (to avoid pivot issues)
+combined_raw_clean <- combined_q12_q16 %>%
+  mutate(across(starts_with("Q12_"), as.character))
+
+# 5. Pivot to long format
+combined_long <- combined_raw_clean %>%
+  pivot_longer(
+    cols = starts_with("Q12_"),
+    names_to = "Skill_Format",
+    values_to = "Taught_raw"
+  ) %>%
+  mutate(
+    Taught = na_if(Taught_raw, "N/A"),
+    Taught = na_if(Taught, ""),
+    Taught = as.numeric(Taught)
+  ) %>%
+  filter(!is.na(Taught), group %in% c("Educator", "Employer"))
+
+# 6. Run Fisher's exact test on valid 2x2 tables
+test_results <- combined_long %>%
+  group_by(Skill_Format) %>%
+  summarise(
+    tab = list(table(group, Taught)),
+    .groups = "drop"
+  ) %>%
+  rowwise() %>%
+  mutate(
+    dims = list(dim(tab)),
+    is_valid = !is.null(dims[[1]]) && all(dims[[1]] >= 2)
+  ) %>%
+  filter(is_valid) %>%
+  mutate(
+    p_value = tryCatch(fisher.test(tab)$p.value, error = function(e) NA_real_),
+    n_educator = if ("Educator" %in% rownames(tab)) sum(tab["Educator", ]) else NA_integer_,
+    n_employer = if ("Employer" %in% rownames(tab)) sum(tab["Employer", ]) else NA_integer_,
+    prop_educator = if ("Educator" %in% rownames(tab) && "1" %in% colnames(tab)) {
+      tab["Educator", "1"] / sum(tab["Educator", ])
+    } else NA_real_,
+    prop_employer = if ("Employer" %in% rownames(tab) && "1" %in% colnames(tab)) {
+      tab["Employer", "1"] / sum(tab["Employer", ])
+    } else NA_real_
+  ) %>%
+  ungroup() %>%
+  select(-tab, -is_valid, -dims) %>%
+  arrange(p_value)
+
+```
+
+
+```{r}
+#| label: question_2
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
+
+kable(test_results, 
+      digits = 3,
+      caption = "Fisher's Exact Test Results by Skill",
+      format = "markdown")  # use "latex" for PDF, "html" for HTML output
+
+```
+
 
 ### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 

@@ -130,20 +130,25 @@
 \makesavenoteenv{longtable}
 \usepackage{graphicx}
 \makeatletter
-\newsavebox\pandoc@box
-\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
-  \sbox\pandoc@box{#1}%
-  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
-  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
-  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
-  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
-  \else\usebox{\pandoc@box}%
-  \fi%
-}
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 % Set default figure placement to htbp
+\makeatletter
 \def\fps@figure{htbp}
 \makeatother
 
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{anyfontsize}
+\usepackage{multirow}
 \KOMAoption{captions}{tableheading}
 \numberwithin{figure}{section}
 \makeatletter
@@ -188,6 +193,9 @@
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
 \usepackage{bookmark}
 
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
@@ -332,7 +340,7 @@ metrics}\label{global-survey-session-metrics}
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_01-1.pdf}}
+{\centering \includegraphics{Final-Project_files/figure-pdf/Data_Desc_01-1.pdf}
 
 }
 
@@ -352,7 +360,7 @@ by group.
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_02-1.pdf}}
+{\centering \includegraphics{Final-Project_files/figure-pdf/Data_Desc_02-1.pdf}
 
 }
 
@@ -370,7 +378,7 @@ progress across groups.
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_06-1.pdf}}
+{\centering \includegraphics{Final-Project_files/figure-pdf/Data_Desc_06-1.pdf}
 
 }
 
@@ -397,7 +405,7 @@ student knowledge gaps in more rural settings.
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_03-1.pdf}}
+{\centering \includegraphics{Final-Project_files/figure-pdf/Data_Desc_03-1.pdf}
 
 }
 
@@ -461,7 +469,7 @@ those practices.
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/Data_Desc_05-1.pdf}}
+{\centering \includegraphics{Final-Project_files/figure-pdf/Data_Desc_05-1.pdf}
 
 }
 
@@ -616,10 +624,10 @@ limited power of these analyses and may consider post hoc power analyses
 for these tests.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3288}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2192}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2055}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2466}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3288}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2192}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2055}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.2466}}@{}}
 \caption{Fisher's Exact 2×2 Contingency Table}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -685,11 +693,148 @@ and practice owners in their belief that new graduates are competent in
 key dental skills on their first day of
 practice?}\label{s1-are-there-significant-differences-between-educators-and-practice-owners-in-their-belief-that-new-graduates-are-competent-in-key-dental-skills-on-their-first-day-of-practice}
 
+To assess whether there are differences in perceptions of new graduate
+competence in dentistry, educators and employers were asked a parallel
+question (Q4). Employers were asked to rate their expectation that early
+career veterinarians can competently perform 12 specific dental skills
+on their first day of employment. Educators were asked to rate whether
+they believe new graduates can perform those same skills competently.
+Responses were recorded on a 4-point Likert scale from 1 (Strongly
+Disagree) to 4 (Strongly Agree).
+
+We used the Mann-Whitney U test to compare the responses between
+educators and employers for each skill. This non-parametric test is
+appropriate for comparing ordinal data between two independent groups,
+especially when the assumptions for parametric tests may not hold.
+Ratings were reshaped into long format and analyzed skill-by-skill.
+Median scores and group sizes were also reported to support
+interpretation of the findings.
+
+The results showed no statistically significant differences between
+educators and employers for most skills, indicating general agreement
+about which dental competencies new graduates possess. The only skill
+approaching significance was interpreting dental radiographs (p =
+0.064), where employers appeared slightly more confident than educators.
+While this difference is subtle (both groups had a median rating of 3),
+it may warrant further exploration in future studies. Overall, the
+findings suggest alignment between educational preparation and employer
+expectations regarding small animal dentistry skills.
+
+\begin{table}
+\caption*{
+{\large Mann-Whitney U Test Results by Skill}
+} 
+\fontsize{12.0pt}{14.4pt}\selectfont
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr}
+\toprule
+Skill & p-value & Median (Educator) & Median (Employer) & n (Educator) & n (Employer) \\ 
+\midrule\addlinespace[2.5pt]
+Q04\_03 & 0.064 & 3 & 3.0 & 30 & 12 \\ 
+Q04\_10 & 0.242 & 2 & 3.0 & 30 & 13 \\ 
+Q04\_05 & 0.260 & 3 & 3.0 & 30 & 13 \\ 
+Q04\_06 & 0.396 & 3 & 3.0 & 30 & 13 \\ 
+Q04\_02 & 0.485 & 3 & 2.5 & 29 & 12 \\ 
+Q04\_04 & 0.492 & 4 & 4.0 & 29 & 13 \\ 
+Q04\_09 & 0.533 & 2 & 2.0 & 29 & 13 \\ 
+Q04\_08 & 0.728 & 3 & 3.0 & 30 & 13 \\ 
+Q04\_01 & 0.872 & 4 & 4.0 & 30 & 13 \\ 
+Q04\_07 & 0.955 & 3 & 3.0 & 30 & 13 \\ 
+Q04\_11 & 1.000 & 1 & 1.0 & 8 & 4 \\ 
+Q04\_12 & 1.000 & 3 & 4.0 & 2 & 1 \\ 
+\bottomrule
+\end{tabular*}
+\end{table}
+
 \subsubsection{S2 Is there a difference between educators and practice
 owners in their reports (educators' actual teaching vs.~owners'
 perceptions) of which dental skills were taught in the pre-clinical DVM
 curriculum for recent
 graduates?}\label{s2-is-there-a-difference-between-educators-and-practice-owners-in-their-reports-educators-actual-teaching-vs.-owners-perceptions-of-which-dental-skills-were-taught-in-the-pre-clinical-dvm-curriculum-for-recent-graduates}
+
+To evaluate whether differences exist between DVM educators and
+employers in their understanding of which dental skills are taught in
+the pre-clinical curriculum, we analyzed responses to parallel survey
+questions. Educators were asked to indicate which of seven core
+dentistry skills are taught as part of their pre-clinical courses (Q12),
+while employers were asked which skills they believe recent graduates
+were taught prior to clinical training (Q16). Since the two groups
+answered different question numbers about the same underlying skills, we
+first aligned the datasets by renaming employer variables to match
+educator labels. This harmonization allowed for direct comparison of
+responses skill-by-skill across the two groups.
+
+After cleaning and reshaping the data into long format, we filtered out
+invalid or missing entries and conducted Fisher's Exact Tests for each
+skill. This non-parametric test is appropriate for evaluating
+categorical (yes/no) outcomes in small samples, especially when
+comparing proportions between two independent groups. Only skills for
+which both groups provided non-missing responses were included in the
+final analysis. One skill item was excluded due to all responses being
+missing, and approximately 70\% of employer data for Q16 items were
+incomplete, limiting the strength of some comparisons.
+
+The results of the Fisher's tests revealed no statistically significant
+differences between educators and employers for any of the seven aligned
+skills (all p-values \textgreater{} 0.32). Both groups reported similar
+proportions of skills being taught, with educator endorsement rates
+ranging from approximately 53\% to 77\%, and employer endorsement
+ranging from 54\% to 92\%. These findings suggest general agreement
+between what educators report teaching and what employers believe early
+career veterinarians have been taught in the pre-clinical phase of
+training. The overall consistency supports the idea that pre-clinical
+dental training expectations are reasonably aligned between academic
+programs and employer perceptions.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1831}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1127}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1549}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1549}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1972}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1972}}@{}}
+\caption{Fisher's Exact Test Results by Skill}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Skill\_Format
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p\_value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_educator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_employer
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+prop\_educator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+prop\_employer
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Skill\_Format
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p\_value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_educator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_employer
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+prop\_educator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+prop\_employer
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Q12\_03 & 0.324 & 30 & 13 & 0.700 & 0.538 \\
+Q12\_01 & 0.400 & 30 & 13 & 0.767 & 0.923 \\
+Q12\_05 & 0.485 & 30 & 13 & 0.733 & 0.615 \\
+Q12\_07 & 0.736 & 30 & 13 & 0.633 & 0.538 \\
+Q12\_02 & 0.743 & 30 & 13 & 0.533 & 0.615 \\
+Q12\_06 & 0.747 & 30 & 13 & 0.600 & 0.538 \\
+Q12\_04 & 1.000 & 30 & 13 & 0.633 & 0.615 \\
+\end{longtable}
 
 \subsubsection{S3 Is there a difference between educators and practice
 owners in their level of agreement about whether specific dental skills
@@ -744,7 +889,7 @@ training experiences of recent graduates.
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/formatgraph-1.pdf}}
+{\centering \includegraphics{Final-Project_files/figure-pdf/formatgraph-1.pdf}
 
 }
 
@@ -772,10 +917,10 @@ but 23.1\% of employers selected that none of the formats were believed
 to be utilized in the clinical year.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1867}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3200}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3200}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1733}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1867}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3200}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.3200}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1733}}@{}}
 \caption{Perceived Formats of Clinical Dental Instruction in DVM
 Programs}\tabularnewline
 \toprule\noalign{}
@@ -898,7 +1043,7 @@ educators entered text responses of the following:
 
 \begin{figure}[H]
 
-{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/question_7a-1.pdf}}
+{\centering \includegraphics{Final-Project_files/figure-pdf/question_7a-1.pdf}
 
 }
 
@@ -908,10 +1053,10 @@ DVM Programs}
 \end{figure}%
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.5393}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1685}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1685}}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1236}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.5393}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1685}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1685}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 6\tabcolsep) * \real{0.1236}}@{}}
 \caption{Perceived Skills Learned of Clinical Dental Instruction in DVM
 Programs}\tabularnewline
 \toprule\noalign{}
