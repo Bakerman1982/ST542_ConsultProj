@@ -487,6 +487,17 @@ Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)
 
 # Abstract
 
+Authors of each section
+
+Introduction - Taylor Cesarski
+Data - Brock Akerman
+Methods - Taylor Cesarski
+Results - All
+
+* Questions 1-4 -  Hanan Ali
+* Questions 5,7 - Taylor Cesarski
+* Questions 6,8 - Brock Akerman
+
 # Introduction
 
 Dr. Mariea Ross-Estrada, a faculty member at North Carolina State University's College of Veterinary Medicine, is exploring whether there are differences between the expectations of small animal primary care veterinary employers and veterinary educators regarding new graduates' competencies in dentistry. Through her own professional experience and conversations with colleagues, Dr. Ross-Estrada observed that many veterinarians must rely on on-the-job training to gain the skills necessary in small animal dentistry. These shared experiences prompted her to investigate whether there is a misalignment in what is taught in veterinary programs and what is expected in clinical practice.
