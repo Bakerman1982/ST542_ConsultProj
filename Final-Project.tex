@@ -144,6 +144,13 @@
 \def\fps@figure{htbp}
 \makeatother
 
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{colortbl}
+\usepackage{array}
+\usepackage{anyfontsize}
+\usepackage{multirow}
 \KOMAoption{captions}{tableheading}
 \numberwithin{figure}{section}
 \makeatletter
@@ -553,42 +560,130 @@ After all preprocessing steps, the final cleaned datasets consisted of
 
 \subsection{Method Description}\label{method-description}
 
-Likert scale questions (statistical questions \#1,3, 6, and 8): These
-questions utilize a likert scale to answer Strongly Agree, Agree,
-Disagree, or Strongly Disagree on a variety of skills and procedures. To
-analyze this data, we will use diverging stacked bar charts and tables
-for exploratory data analysis and the Mann-Whitney U Test for the formal
-hypothesis procedure. The Mann-Whitney U Test is a non-parametric test
-that does not rely on an assumption of normality. It does require
-independence between datasets and it is reasonable to assume that the
-educators and employers were independent from each other when taking the
-survey. The Mann-Whitney test particularly works well with these
-questions due to the ordinal (and therefore ranked) nature of the data.
+\paragraph{Likert scale questions (statistical questions \#1,3, 6, and
+8)}\label{likert-scale-questions-statistical-questions-13-6-and-8}
 
-Select all that apply questions (statistical questions \#2, 5, and 7):
+These questions use a Likert scale with response options: Strongly
+Agree, Agree, Disagree, and Strongly Disagree across a variety of skills
+and procedures. Given the ordinal nature of these responses, we use
+diverging stacked bar charts and summary tables for exploratory data
+analysis, followed by a Mann-Whitney U Test for formal hypothesis
+testing.
+
+The Mann-Whitney U Test is a non-parametric test used to assess whether
+there is a statistically significant difference in the distributions of
+ordinal or continuous variables between two independent groups. In this
+case, educators and employers are assumed to be independent, consistent
+with the survey design.
+
+This test is appropriate for Likert-scale data because:
+
+\emph{It does not assume normality (unlike the t-test), }It respects the
+ordinal (ranked) structure of the data, *It retains statistical power in
+small samples.
+
+\begin{longtable}[]{@{}lrrr@{}}
+\caption{Mann-Whitney U Rank Summary Table}\tabularnewline
+\toprule\noalign{}
+Group & Sample.Size & Sum.of.Ranks & Mean.Rank \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Group & Sample.Size & Sum.of.Ranks & Mean.Rank \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Group 1 (e.g., Educators) & n₁ & R₁ & R₁ / n₁ \\
+Group 2 (e.g., Employers) & n₂ & R₂ & R₂ / n₂ \\
+\end{longtable}
+
+Mann-Whitney U test logic for comparing ranked data
+
+\paragraph{Select all that apply questions (statistical questions \#2,
+5, and
+7)}\label{select-all-that-apply-questions-statistical-questions-2-5-and-7}
+
 These questions asked the participants to ``select all that apply'' as
 it relates to skills in pre-clinical curriculum, format of dental
 instruction, and skills for clinical training respectively. We will
 utilize frequency tables and bar plots to explore the data for these
 questions and use Fisher's Exact Test as a formal inference procedure
-for the comparison of the two groups. Fisher's Exact Test works with
-categorical data with independent samples, in this case educators and
-employers. In this context, it is preferred over Chi-Squared Tests due
-to the small sample size and therefore not meeting the expected count
-threshold that is required to proceed with Chi-Squared Tests. Given the
-small sample sizes, we acknowledge the limited power of these analyses
-and may consider post hoc power analyses for these tests.
+for the comparison of the two groups. Dot plots will also be utilized
+for questions with many options to avoid crowding in bar graphs.
 
-Numerical entry questions: (statistical question \#4): This question
-asks participants to enter a number related to the number of dental
-procedures that should be completed during training in different areas.
-We plan to produce box plots and/or histograms to visually examine the
-data. Depending on the normality or lack thereof of the distributions,
-we will then conduct either a two-sample t-test or a Mann-Whitney U
-Test. As mentioned above, the Mann Whitney U test is a non-parametric
-test that does not depend on the assumption of normality. If the
-assumption on normality is met, we can consider a two-sample t test for
-this analysis.
+Fisher's Exact Test works with categorical data with independent
+samples, in this case educators and employers. Based on the survey
+design from the client, it is reasonable to assume that these two groups
+are independent. In this context, Fisher's Exact Test is preferred over
+Chi-Squared Tests due to the small sample size and therefore not meeting
+the expected count threshold that is required to proceed with
+Chi-Squared Tests. Given the small sample sizes, we acknowledge the
+limited power of these analyses and may consider post hoc power analyses
+for these tests.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3288}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2192}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2055}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.2466}}@{}}
+\caption{Fisher's Exact 2×2 Contingency Table}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Group
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Outcome.Present
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Outcome.Absent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Row.Totals
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Group
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Outcome.Present
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Outcome.Absent
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Row.Totals
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Group 1 (ex: Educators) & a & b & a + b \\
+Group 2 (ex: Employers) & c & d & c + d \\
+Column Totals & a + c & b + d & n = a + b + c + d \\
+\end{longtable}
+
+Fisher's Exact Test operates under the null hypothesis that there is no
+association between the two variables. The alternative hypothesis is
+that there is an association. The p-value for the test is computed using
+the following formula:
+
+{[}
+\(p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}\)
+{]}
+
+P-values are then computed for each skill, format, etc. between the two
+groups (educators and employers) depending on the statistical question
+to be analyzed.
+
+\paragraph{Numerical entry questions: (statistical question
+\#4)}\label{numerical-entry-questions-statistical-question-4}
+
+This question asks participants to enter a number related to the number
+of dental procedures that should be completed during training in
+different areas. We plan to produce box plots and/or histograms to
+visually examine the data. Depending on the normality or lack thereof of
+the distributions, we will then conduct either a two-sample t-test or a
+Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a
+non-parametric test that does not depend on the assumption of normality.
+If the assumption on normality is met, we can consider a two-sample t
+test for this analysis.
 
 \section{Results}\label{results}
 
@@ -597,11 +692,148 @@ and practice owners in their belief that new graduates are competent in
 key dental skills on their first day of
 practice?}\label{s1-are-there-significant-differences-between-educators-and-practice-owners-in-their-belief-that-new-graduates-are-competent-in-key-dental-skills-on-their-first-day-of-practice}
 
+To assess whether there are differences in perceptions of new graduate
+competence in dentistry, educators and employers were asked a parallel
+question (Q4). Employers were asked to rate their expectation that early
+career veterinarians can competently perform 12 specific dental skills
+on their first day of employment. Educators were asked to rate whether
+they believe new graduates can perform those same skills competently.
+Responses were recorded on a 4-point Likert scale from 1 (Strongly
+Disagree) to 4 (Strongly Agree).
+
+We used the Mann-Whitney U test to compare the responses between
+educators and employers for each skill. This non-parametric test is
+appropriate for comparing ordinal data between two independent groups,
+especially when the assumptions for parametric tests may not hold.
+Ratings were reshaped into long format and analyzed skill-by-skill.
+Median scores and group sizes were also reported to support
+interpretation of the findings.
+
+The results showed no statistically significant differences between
+educators and employers for most skills, indicating general agreement
+about which dental competencies new graduates possess. The only skill
+approaching significance was interpreting dental radiographs (p =
+0.064), where employers appeared slightly more confident than educators.
+While this difference is subtle (both groups had a median rating of 3),
+it may warrant further exploration in future studies. Overall, the
+findings suggest alignment between educational preparation and employer
+expectations regarding small animal dentistry skills.
+
+\begin{table}
+\caption*{
+{\large Mann-Whitney U Test Results by Skill}
+} 
+\fontsize{12.0pt}{14.4pt}\selectfont
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr}
+\toprule
+Skill & p-value & Median (Educator) & Median (Employer) & n (Educator) & n (Employer) \\ 
+\midrule\addlinespace[2.5pt]
+Q04\_03 & 0.064 & 3 & 3.0 & 30 & 12 \\ 
+Q04\_10 & 0.242 & 2 & 3.0 & 30 & 13 \\ 
+Q04\_05 & 0.260 & 3 & 3.0 & 30 & 13 \\ 
+Q04\_06 & 0.396 & 3 & 3.0 & 30 & 13 \\ 
+Q04\_02 & 0.485 & 3 & 2.5 & 29 & 12 \\ 
+Q04\_04 & 0.492 & 4 & 4.0 & 29 & 13 \\ 
+Q04\_09 & 0.533 & 2 & 2.0 & 29 & 13 \\ 
+Q04\_08 & 0.728 & 3 & 3.0 & 30 & 13 \\ 
+Q04\_01 & 0.872 & 4 & 4.0 & 30 & 13 \\ 
+Q04\_07 & 0.955 & 3 & 3.0 & 30 & 13 \\ 
+Q04\_11 & 1.000 & 1 & 1.0 & 8 & 4 \\ 
+Q04\_12 & 1.000 & 3 & 4.0 & 2 & 1 \\ 
+\bottomrule
+\end{tabular*}
+\end{table}
+
 \subsubsection{S2 Is there a difference between educators and practice
 owners in their reports (educators' actual teaching vs.~owners'
 perceptions) of which dental skills were taught in the pre-clinical DVM
 curriculum for recent
 graduates?}\label{s2-is-there-a-difference-between-educators-and-practice-owners-in-their-reports-educators-actual-teaching-vs.-owners-perceptions-of-which-dental-skills-were-taught-in-the-pre-clinical-dvm-curriculum-for-recent-graduates}
+
+To evaluate whether differences exist between DVM educators and
+employers in their understanding of which dental skills are taught in
+the pre-clinical curriculum, we analyzed responses to parallel survey
+questions. Educators were asked to indicate which of seven core
+dentistry skills are taught as part of their pre-clinical courses (Q12),
+while employers were asked which skills they believe recent graduates
+were taught prior to clinical training (Q16). Since the two groups
+answered different question numbers about the same underlying skills, we
+first aligned the datasets by renaming employer variables to match
+educator labels. This harmonization allowed for direct comparison of
+responses skill-by-skill across the two groups.
+
+After cleaning and reshaping the data into long format, we filtered out
+invalid or missing entries and conducted Fisher's Exact Tests for each
+skill. This non-parametric test is appropriate for evaluating
+categorical (yes/no) outcomes in small samples, especially when
+comparing proportions between two independent groups. Only skills for
+which both groups provided non-missing responses were included in the
+final analysis. One skill item was excluded due to all responses being
+missing, and approximately 70\% of employer data for Q16 items were
+incomplete, limiting the strength of some comparisons.
+
+The results of the Fisher's tests revealed no statistically significant
+differences between educators and employers for any of the seven aligned
+skills (all p-values \textgreater{} 0.32). Both groups reported similar
+proportions of skills being taught, with educator endorsement rates
+ranging from approximately 53\% to 77\%, and employer endorsement
+ranging from 54\% to 92\%. These findings suggest general agreement
+between what educators report teaching and what employers believe early
+career veterinarians have been taught in the pre-clinical phase of
+training. The overall consistency supports the idea that pre-clinical
+dental training expectations are reasonably aligned between academic
+programs and employer perceptions.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1831}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1127}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1549}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1549}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1972}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1972}}@{}}
+\caption{Fisher's Exact Test Results by Skill}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Skill\_Format
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p\_value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_educator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_employer
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+prop\_educator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+prop\_employer
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Skill\_Format
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p\_value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_educator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n\_employer
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+prop\_educator
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+prop\_employer
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Q12\_03 & 0.324 & 30 & 13 & 0.700 & 0.538 \\
+Q12\_01 & 0.400 & 30 & 13 & 0.767 & 0.923 \\
+Q12\_05 & 0.485 & 30 & 13 & 0.733 & 0.615 \\
+Q12\_07 & 0.736 & 30 & 13 & 0.633 & 0.538 \\
+Q12\_02 & 0.743 & 30 & 13 & 0.533 & 0.615 \\
+Q12\_06 & 0.747 & 30 & 13 & 0.600 & 0.538 \\
+Q12\_04 & 1.000 & 30 & 13 & 0.633 & 0.615 \\
+\end{longtable}
 
 \subsubsection{S3 Is there a difference between educators and practice
 owners in their level of agreement about whether specific dental skills
@@ -621,15 +853,15 @@ veterinarians?}\label{s5-is-there-difference-between-the-instructional-formats-i
 Both educators and employers were asked a question relating to the
 format of instruction during the clinical year.
 
-Employers were asked: ``What format of clinical instruction in dentistry
-do you believe that the early career veterinarians (individuals who have
-graduated from a DVM program after May 2021) hired into your
-practice/organization/institution completed as part of their DVM
-training? Select all that apply.''
+On question 20 of their survey, employers were asked: ``What format of
+clinical instruction in dentistry do you believe that the early career
+veterinarians (individuals who have graduated from a DVM program after
+May 2021) hired into your practice/organization/institution completed as
+part of their DVM training? Select all that apply.''
 
-Educators were asked: ``What format of instruction in dentistry does
-your DVM program provide during the clinical year? Select all that
-apply.''
+On question 16 of their survey, educators were asked: ``What format of
+instruction in dentistry does your DVM program provide during the
+clinical year? Select all that apply.''
 
 Since the question was of the format ``select all that apply,''
 participants were able to select more than one response and percentages
@@ -637,6 +869,12 @@ will not add to 100\%. Results reported below are the percentages of
 their respective group (educators or employers) that selected the given
 format of instruction. Percentages were utilized due to the difference
 in sample size.
+
+Educators and employers were also given the option to enter their own
+responses to the question. One employer opted to write in ``Cadaver.''
+Two educators entered their own responses with one saying ``rounds'' and
+the other saying ``topic seminars do occur with some rotations during
+case rounds when dental cases are chosen to present.''
 
 Educators and employers differed in their perceptions of clinical dental
 instruction formats completed by early career veterinarians. While a
@@ -648,13 +886,20 @@ vs.~16.7\%) than educators. These differences suggest varying
 expectations or awareness between the two groups regarding dental
 training experiences of recent graduates.
 
-*Add here about people who entered a text response.
+\begin{figure}[H]
 
-\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/question_5a-1.pdf}}
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/formatgraph-1.pdf}}
 
-The table below shows the percentages of each format selected (as seen
-in the bar graph above) and the p-value associated with performing
-Fisher's Exact Test on each format.
+}
+
+\caption{Perceived Clinical Instruction Formats in Dentistry Completed
+by Early Career Veterinarians}
+
+\end{figure}%
+
+Figure 5.1 shows the percentages of each format selected and Table 3
+shows the p-value associated with performing Fisher's Exact Test on each
+format.
 
 Didactic instruction was selected by 53.3\% of educators and 61.5\% of
 employers, with no statistically significant difference between the
@@ -665,33 +910,49 @@ On the other hand, live patient instruction was selected by 93.3\% of
 educators, but only 38.5\% of employers. This difference was found to be
 statistically significant with a p-value of 0.0003.
 
-*Don't know whether to talk about ``none of the above'' being
-significant.
+``None of these'' was also found to be statistically significant at the
+5\% level. No educators selected that none of these formats were used,
+but 23.1\% of employers selected that none of the formats were believed
+to be utilized in the clinical year.
 
-\begin{verbatim}
-Warning in attr(x, "align"): 'xfun::attr()' is deprecated.
-Use 'xfun::attr2()' instead.
-See help("Deprecated")
-\end{verbatim}
-
-\begin{verbatim}
-Warning in attr(x, "format"): 'xfun::attr()' is deprecated.
-Use 'xfun::attr2()' instead.
-See help("Deprecated")
-\end{verbatim}
-
-\begin{longtable}[]{@{}lrrr@{}}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1867}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3200}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3200}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1733}}@{}}
+\caption{Perceived Formats of Clinical Dental Instruction in DVM
+Programs}\tabularnewline
 \toprule\noalign{}
-Format & \% of Educators & \% of Employers & P-value \\
+\begin{minipage}[b]{\linewidth}\raggedright
+Format
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% of Educators Selected
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% of Employers Selected
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P-value
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Format
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% of Educators Selected
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% of Employers Selected
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P-value
+\end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Didactic & 53.3 & 61.5 & 0.743000 \\
-Simulation & 16.7 & 30.8 & 0.417000 \\
-Wet Lab & 73.3 & 46.2 & 0.162000 \\
-Live Patient & 93.3 & 38.5 & 0.000303 \\
-None of These & 0.0 & 23.1 & 0.023200 \\
+Didactic & 53.3 & 61.5 & 0.743 \\
+Simulation & 16.7 & 30.8 & 0.417 \\
+Wet Lab & 73.3 & 46.2 & 0.162 \\
+Live Patient & 93.3 & 38.5 & 0.000303 *** \\
+None of These & 0.0 & 23.1 & 0.0232 * \\
 \end{longtable}
 
 \subsubsection{S6 Do educators and employers differ in their views on
@@ -799,25 +1060,47 @@ their respective group (educators or employers) that selected the given
 format of instruction. Percentages were utilized due to the difference
 in sample size.
 
-\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/unnamed-chunk-7-1.pdf}}
+Educators and employers were also given the option to enter their own
+responses to the question. No employers entered any text responses. Six
+educators entered text responses of the following:
 
-\begin{verbatim}
-Warning in attr(x, "align"): 'xfun::attr()' is deprecated.
-Use 'xfun::attr2()' instead.
-See help("Deprecated")
-\end{verbatim}
+\begin{itemize}
+\tightlist
+\item
+  ``OvaVet gel application, Crown amputation, Sealant application for
+  UCF, oral tumor biopsy and excision, orthodontia''
+\item
+  ``Nerve blocks, barrier sealant and bonded sealant application, jaw
+  fracture repair, root canals''
+\item
+  ``Often- bonded sealants; Sometimes- root canals, restorations, jaw
+  fracture repair''
+\item
+  ``Oral biopsy, root planning, bonded sealants''
+\item
+  ``extractions only if performed on that patient''
+\item
+  ``Not all students see all types of extractions''
+\end{itemize}
 
-\begin{verbatim}
-Warning in attr(x, "format"): 'xfun::attr()' is deprecated.
-Use 'xfun::attr2()' instead.
-See help("Deprecated")
-\end{verbatim}
+\begin{figure}[H]
+
+{\centering \pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/question_7a-1.pdf}}
+
+}
+
+\caption{Clinical Training Skills Perceived by Educators vs Employers in
+DVM Programs}
+
+\end{figure}%
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.5581}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1744}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1744}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.0930}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.5393}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1685}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1685}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1236}}@{}}
+\caption{Perceived Skills Learned of Clinical Dental Instruction in DVM
+Programs}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 Skill
@@ -825,29 +1108,77 @@ Skill
 \% of Educators
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 \% of Employers
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+P-value
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Skill
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% of Educators
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\% of Employers
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 P-value
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Oral Exam/Charting & 86.7 & 69.2 & 0.21700 \\
-Radiographic Positioning & 93.3 & 69.2 & 0.05760 \\
-Radiographic Interpretation & 90.0 & 76.9 & 0.34500 \\
-Scaling & 90.0 & 61.5 & 0.04150 \\
-Polishing & 76.7 & 30.8 & 0.00672 \\
-Canine Closed Extraction & 76.7 & 38.5 & 0.03390 \\
-Feline Closed Extraction & 76.7 & 38.5 & 0.03390 \\
-Canine Open Extraction - Single Root & 76.7 & 38.5 & 0.03390 \\
-Feline Open Extraction - Single Root & 80.0 & 46.2 & 0.03670 \\
-Canine Open Extraction - Canines/Multiple Roots & 80.0 & 46.2 &
-0.03670 \\
-Feline Open Extraction - Canines/Multiple Roots & 23.3 & 30.8 &
-0.70900 \\
-Fluoride Treatment & 6.7 & 15.4 & 0.57200 \\
-None of These & 20.0 & 0.0 & 0.15500 \\
+Oral Exam/Charting & 86.7 & 69.2 & 0.217 \\
+Radiographic Positioning & 93.3 & 69.2 & 0.0576 \\
+Radiographic Interpretation & 90.0 & 76.9 & 0.345 \\
+Scaling & 90.0 & 61.5 & 0.0415 * \\
+Polishing & 76.7 & 30.8 & 0.00672 ** \\
+Canine Closed Extraction & 76.7 & 38.5 & 0.0339 * \\
+Feline Closed Extraction & 76.7 & 38.5 & 0.0339 * \\
+Canine Open Extraction - Single Root & 76.7 & 38.5 & 0.0339 * \\
+Feline Open Extraction - Single Root & 80.0 & 46.2 & 0.0367 * \\
+Canine Open Extraction - Canines/Multiple Roots & 80.0 & 46.2 & 0.0367
+* \\
+Feline Open Extraction - Canines/Multiple Roots & 23.3 & 30.8 & 0.709 \\
+Fluoride Treatment & 6.7 & 15.4 & 0.572 \\
+None of These & 20.0 & 0.0 & 0.155 \\
 \end{longtable}
+
+Figure 5.2 shows the percentage of employers and educators who selected
+the given skills and Table 4 shows the p-values associated with Fisher's
+Exact Test and their significance.
+
+For eleven of the thirteen skills, educators reported a higher
+percentage of selection. The two skills for which employers reported
+higher perceived learning were feline open extraction - canines/multiple
+roots and fluoride treatment.
+
+At the 5\% significance level, the difference in skill selection between
+employers and educators was found to be significant for seven skills:
+
+\begin{itemize}
+\tightlist
+\item
+  Scaling
+\item
+  Polishing
+\item
+  Canine Closed Extraction
+\item
+  Feline Closed Extraction
+\item
+  Canine Open Extraction - Single Root
+\item
+  Feline Open Extraction - Single Root
+\item
+  Canine Open Extraction - Canines/Multiple Roots
+\end{itemize}
+
+For all skills with statistically significant differences, educators
+reported higher percentages than employers.
+
+The most significant difference was found in polishing. Educators
+selected this skill 76.7\% of the time, while employers selected this
+skill only 30.8\% of the time. The resulting p-value was 0.00672.
 
 \subsubsection{S8 Do educators and employers differ in their opinions
 about which clinical dentistry skills DVM students should be required to

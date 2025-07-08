@@ -10,6 +10,7 @@ format:
     toc: true
     toc-depth: 2
     number-sections: true
+    number-figures: true
     fig-caption: true
     number-depth: 2
     fig-align: center
@@ -34,6 +35,7 @@ library(naniar)
 library(patchwork)
 library(maps)
 library(knitr)
+
 ```
 
 ```{r Employer Data load, echo=FALSE, message=FALSE, warning=FALSE, results="hide",include=FALSE, error=FALSE}
@@ -898,17 +900,327 @@ After all preprocessing steps, the final cleaned datasets consisted of 13 employ
 
 ## Method Description
 
-Likert scale questions (statistical questions #1,3, 6, and 8): These questions utilize a likert scale to answer Strongly Agree, Agree, Disagree, or Strongly Disagree on a variety of skills and procedures. To analyze this data, we will use diverging stacked bar charts and tables for exploratory data analysis and the Mann-Whitney U Test for the formal hypothesis procedure. The Mann-Whitney U Test is a non-parametric test that does not rely on an assumption of normality. It does require independence between datasets and it is reasonable to assume that the educators and employers were independent from each other when taking the survey. The Mann-Whitney test particularly works well with these questions due to the ordinal (and therefore ranked) nature of the data.
+#### Likert scale questions (statistical questions #1,3, 6, and 8)
 
-Select all that apply questions (statistical questions #2, 5, and 7): These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. In this context, it is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+These questions use a Likert scale with response options: Strongly Agree, Agree, Disagree, and Strongly Disagree across a variety of skills and procedures. Given the ordinal nature of these responses, we use diverging stacked bar charts and summary tables for exploratory data analysis, followed by a Mann-Whitney U Test for formal hypothesis testing.
 
-Numerical entry questions: (statistical question #4): This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
+The Mann-Whitney U Test is a non-parametric test used to assess whether there is a statistically significant difference in the distributions of ordinal or continuous variables between two independent groups. In this case, educators and employers are assumed to be independent, consistent with the survey design.
+
+This test is appropriate for Likert-scale data because:
+
+*It does not assume normality (unlike the t-test),
+*It respects the ordinal (ranked) structure of the data,
+*It retains statistical power in small samples.
+
+```{r}
+#| label: mannwhitneytable
+#| echo: false
+#| warning: false
+#| fig-cap: "Mann-Whitney U test logic for comparing ranked data"
+#| fig-align: center
+
+# Create a visual summary table
+mw_data <- data.frame(
+  Group = c("Group 1 (e.g., Educators)", "Group 2 (e.g., Employers)"),
+  `Sample Size` = c("n₁", "n₂"),
+  `Sum of Ranks` = c("R₁", "R₂"),
+  `Mean Rank` = c("R₁ / n₁", "R₂ / n₂")
+)
+
+kable(mw_data, align = "lrrr", caption = "Mann-Whitney U Rank Summary Table", booktabs = TRUE)
+
+```
+
+
+
+
+#### Select all that apply questions (statistical questions #2, 5, and 7)
+These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Dot plots will also be utilized for questions with many options to avoid crowding in bar graphs. 
+
+Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+
+
+```{r}
+#| label: fishertable
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
+
+# Create the generic table
+table_data <- data.frame(
+  Group = c("Group 1 (ex: Educators)", "Group 2 (ex: Employers)", "Column Totals"),
+  `Outcome Present` = c("a", "c", "a + c"),
+  `Outcome Absent` = c("b", "d", "b + d"),
+  `Row Totals` = c("a + b", "c + d", "n = a + b + c + d"))
+  
+# Print the table
+kable(table_data, align = "lrr", caption = "Fisher's Exact 2×2 Contingency Table", booktabs=TRUE)
+
+```
+
+Fisher's Exact Test operates under the null hypothesis that there is no association between the two variables. The alternative hypothesis is that there is an association. The p-value for the test is computed using the following formula: 
+
+\[
+$p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}$
+\]
+
+P-values are then computed for each skill, format, etc. between the two groups (educators and employers) depending on the statistical question to be analyzed.
+
+#### Numerical entry questions: (statistical question #4)
+
+This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
 
 # Results
+ 
 
 ### S1 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
+ 
+ 
+To assess whether there are differences in perceptions of new graduate competence in dentistry, educators and employers were asked a parallel question (Q4). Employers were asked to rate their expectation that early career veterinarians can competently perform 12 specific dental skills on their first day of employment. Educators were asked to rate whether they believe new graduates can perform those same skills competently. Responses were recorded on a 4-point Likert scale from 1 (Strongly Disagree) to 4 (Strongly Agree).
+
+
+We used the Mann-Whitney U test to compare the responses between educators and employers for each skill. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. Median scores and group sizes were also reported to support interpretation of the findings.
+
+
+The results showed no statistically significant differences between educators and employers for most skills, indicating general agreement about which dental competencies new graduates possess. The only skill approaching significance was interpreting dental radiographs (p = 0.064), where employers appeared slightly more confident than educators. While this difference is subtle (both groups had a median rating of 3), it may warrant further exploration in future studies. Overall, the findings suggest alignment between educational preparation and employer expectations regarding small animal dentistry skills.
+
+
+```{r}
+#| label: setup_mw_test
+#| echo: false
+#| warning: false
+#| message: false
+#| include: false
+
+library(dplyr)
+library(tidyr)
+library(purrr)
+
+# Add group identifiers
+educator_cleaned <- Educator_Data_Clean %>%
+  mutate(group = "Educator")
+
+employer_cleaned <- Employer_Data_Clean %>%
+  mutate(group = "Employer")
+
+# Define Q4 variable names
+q4_vars <- paste0("Q04_", sprintf("%02d", 1:12))
+
+# Subset and label
+educator_q4 <- educator_cleaned %>%
+  select(all_of(q4_vars)) %>%
+  mutate(group = "Educator")
+
+employer_q4 <- employer_cleaned %>%
+  select(all_of(q4_vars)) %>%
+  mutate(group = "Employer")
+
+# Combine and reshape
+combined_data <- bind_rows(educator_q4, employer_q4)
+
+q4_long <- combined_data %>%
+  pivot_longer(
+    cols = starts_with("Q04_"),
+    names_to = "Skill",
+    values_to = "Rating_num"
+  ) %>%
+  mutate(Rating_num = as.numeric(Rating_num)) %>%
+  filter(!is.na(Rating_num))
+
+# Mann-Whitney test
+mw_results <- q4_long %>%
+  group_by(Skill) %>%
+  summarise(
+    p_value = wilcox.test(Rating_num ~ group)$p.value,
+    median_educator = median(Rating_num[group == "Educator"]),
+    median_employer = median(Rating_num[group == "Employer"]),
+    n_educator = sum(group == "Educator"),
+    n_employer = sum(group == "Employer"),
+    .groups = "drop"
+  ) %>%
+  arrange(p_value)
+
+# Clean column names
+mw_results_clean <- mw_results %>%
+  rename(
+    `Skill` = Skill,
+    `p-value` = p_value,
+    `Median (Educator)` = median_educator,
+    `Median (Employer)` = median_employer,
+    `n (Educator)` = n_educator,
+    `n (Employer)` = n_employer
+  )
+
+library(gt)
+```
+
+
+
+```{r}
+#| label: question_1
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
+
+mw_results_clean %>%
+  gt() %>%
+  tab_header(
+    title = "Mann-Whitney U Test Results by Skill"
+  ) %>%
+  fmt_number(columns = c(`p-value`), decimals = 3)
+
+```
+
 
 ### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
+
+To evaluate whether differences exist between DVM educators and employers in their understanding of which dental skills are taught in the pre-clinical curriculum, we analyzed responses to parallel survey questions. Educators were asked to indicate which of seven core dentistry skills are taught as part of their pre-clinical courses (Q12), while employers were asked which skills they believe recent graduates were taught prior to clinical training (Q16). Since the two groups answered different question numbers about the same underlying skills, we first aligned the datasets by renaming employer variables to match educator labels. This harmonization allowed for direct comparison of responses skill-by-skill across the two groups.
+
+After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. One skill item was excluded due to all responses being missing, and approximately 70% of employer data for Q16 items were incomplete, limiting the strength of some comparisons.
+
+The results of the Fisher’s tests revealed no statistically significant differences between educators and employers for any of the seven aligned skills (all p-values > 0.32). Both groups reported similar proportions of skills being taught, with educator endorsement rates ranging from approximately 53% to 77%, and employer endorsement ranging from 54% to 92%. These findings suggest general agreement between what educators report teaching and what employers believe early career veterinarians have been taught in the pre-clinical phase of training. The overall consistency supports the idea that pre-clinical dental training expectations are reasonably aligned between academic programs and employer perceptions.
+
+```{r}
+#| label: question_2prep
+#| echo: false
+#| warning: false
+#| message: false
+#| include: false
+library(dplyr)
+library(tidyr)
+
+# 1. Educator Q12 data (Q12_01 to Q12_07)
+educator_q12 <- Educator_Data_Clean %>%
+  select(Q12_01:Q12_07) %>%
+  mutate(group = "Educator")
+
+colnames(educator_q12)[1:7] <- paste0("Q12_", sprintf("%02d", 1:7))
+
+# 2. Employer Q16 data (only Q16_01 to Q16_10)
+employer_q16 <- Employer_Data_Clean %>%
+  select(Q16_01:Q16_10) %>%  # select only first 10 Q16 columns
+  mutate(group = "Employer")
+
+colnames(employer_q16)[1:10] <- paste0("Q16_", sprintf("%02d", 1:10))
+
+# 3. Combine datasets
+combined_raw <- bind_rows(educator_q12, employer_q16)
+
+# 4. Convert Q columns to character to avoid pivot issues
+combined_raw_clean <- combined_raw %>%
+  mutate(across(starts_with("Q"), as.character))
+
+# 5. Pivot longer
+combined_long <- combined_raw_clean %>%
+  pivot_longer(
+    cols = starts_with("Q"),
+    names_to = "Skill_Format",
+    values_to = "Taught_raw"
+  ) %>%
+  mutate(
+    Taught = na_if(Taught_raw, "N/A"),
+    Taught = na_if(Taught, ""),
+    Taught = as.numeric(Taught)
+  ) %>%
+  select(Skill_Format, group, Taught)
+
+# 6. Confirm columns included
+combined_long %>%
+  filter(grepl("^Q16_", Skill_Format)) %>%
+  distinct(Skill_Format)
+
+
+
+
+combined_long %>%
+  filter(grepl("^Q16_", Skill_Format)) %>%
+  group_by(Skill_Format) %>%
+  summarise(
+    total_responses = n(),
+    missing = sum(is.na(Taught)),
+    non_missing = total_responses - missing,
+    prop_non_missing = non_missing / total_responses
+  )
+
+# 1. Rename employer Q16 columns to Q12 labels for matching skills
+employer_q16 <- Employer_Data_Clean %>%
+  select(Q16_01:Q16_07) %>%
+  rename_with(~ paste0("Q12_", sprintf("%02d", 1:7)), .cols = everything()) %>%
+  mutate(group = "Employer")
+
+# 2. Select educator Q12 columns and label group
+educator_q12 <- Educator_Data_Clean %>%
+  select(Q12_01:Q12_07) %>%
+  mutate(group = "Educator")
+
+# 3. Combine the two datasets
+combined_q12_q16 <- bind_rows(educator_q12, employer_q16)
+
+# 4. Convert Q columns to character (to avoid pivot issues)
+combined_raw_clean <- combined_q12_q16 %>%
+  mutate(across(starts_with("Q12_"), as.character))
+
+# 5. Pivot to long format
+combined_long <- combined_raw_clean %>%
+  pivot_longer(
+    cols = starts_with("Q12_"),
+    names_to = "Skill_Format",
+    values_to = "Taught_raw"
+  ) %>%
+  mutate(
+    Taught = na_if(Taught_raw, "N/A"),
+    Taught = na_if(Taught, ""),
+    Taught = as.numeric(Taught)
+  ) %>%
+  filter(!is.na(Taught), group %in% c("Educator", "Employer"))
+
+# 6. Run Fisher's exact test on valid 2x2 tables
+test_results <- combined_long %>%
+  group_by(Skill_Format) %>%
+  summarise(
+    tab = list(table(group, Taught)),
+    .groups = "drop"
+  ) %>%
+  rowwise() %>%
+  mutate(
+    dims = list(dim(tab)),
+    is_valid = !is.null(dims[[1]]) && all(dims[[1]] >= 2)
+  ) %>%
+  filter(is_valid) %>%
+  mutate(
+    p_value = tryCatch(fisher.test(tab)$p.value, error = function(e) NA_real_),
+    n_educator = if ("Educator" %in% rownames(tab)) sum(tab["Educator", ]) else NA_integer_,
+    n_employer = if ("Employer" %in% rownames(tab)) sum(tab["Employer", ]) else NA_integer_,
+    prop_educator = if ("Educator" %in% rownames(tab) && "1" %in% colnames(tab)) {
+      tab["Educator", "1"] / sum(tab["Educator", ])
+    } else NA_real_,
+    prop_employer = if ("Employer" %in% rownames(tab) && "1" %in% colnames(tab)) {
+      tab["Employer", "1"] / sum(tab["Employer", ])
+    } else NA_real_
+  ) %>%
+  ungroup() %>%
+  select(-tab, -is_valid, -dims) %>%
+  arrange(p_value)
+
+```
+
+
+```{r}
+#| label: question_2
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
+
+kable(test_results, 
+      digits = 3,
+      caption = "Fisher's Exact Test Results by Skill",
+      format = "markdown")  # use "latex" for PDF, "html" for HTML output
+
+```
+
 
 ### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
@@ -918,17 +1230,22 @@ Numerical entry questions: (statistical question #4): This question asks partici
 
 Both educators and employers were asked a question relating to the format of instruction during the clinical year.
 
-Employers were asked: "What format of clinical instruction in dentistry do you believe that the early career veterinarians (individuals who have graduated from a DVM program after May 2021) hired into your practice/organization/institution completed as part of their DVM training? Select all that apply."
+On question 20 of their survey, employers were asked: "What format of clinical instruction in dentistry do you believe that the early career veterinarians (individuals who have graduated from a DVM program after May 2021) hired into your practice/organization/institution completed as part of their DVM training? Select all that apply."
 
-Educators were asked: "What format of instruction in dentistry does your DVM program provide during the clinical year? Select all that apply."
+On question 16 of their survey, educators were asked: "What format of instruction in dentistry does your DVM program provide during the clinical year? Select all that apply."
 
 Since the question was of the format "select all that apply," participants were able to select more than one response and percentages will not add to 100%. Results reported below are the percentages of their respective group (educators or employers) that selected the given format of instruction. Percentages were utilized due to the difference in sample size.
 
+Educators and employers were also given the option to enter their own responses to the question. One employer opted to write in "Cadaver." Two educators entered their own responses with one saying "rounds" and the other saying "topic seminars do occur with some rotations during case rounds when dental cases are chosen to present."
+
 Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (73.3% vs. 46.2%) and live patient training (93.3% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 16.7%) than educators. These differences suggest varying expectations or awareness between the two groups regarding dental training experiences of recent graduates.
 
-\*Add here about people who entered a text response.
-
-```{r question_5a, echo=FALSE}
+```{r}
+#| label: formatgraph
+#| echo: false
+#| warning: false
+#| fig-cap: "Perceived Clinical Instruction Formats in Dentistry Completed by Early Career Veterinarians"
+#| fig-align: center
 #Add custom labels to final bar graph
 option_labels <- c(
   "01" = "Didactic",
@@ -978,7 +1295,7 @@ combined_percent$option <- factor(combined_percent$option,
 #Plot percentages
 ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
   geom_bar(stat = "identity", position = position_dodge()) +
-  labs(title ="Perceived Clinical Instruction Formats in Dentistry\nCompleted by Early Career Veterinarians",
+  labs(title ="Dentistry Formats",
        x = "Format of Instruction",
        y = "Percent of Respondents",
        fill = "Group") +
@@ -990,15 +1307,20 @@ ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
           vjust = -0.3, size = 3)
 ```
 
-The table below shows the percentages of each format selected (as seen in the bar graph above) and the p-value associated with performing Fisher's Exact Test on each format.
+Figure 5.1 shows the percentages of each format selected and Table 3 shows the p-value associated with performing Fisher's Exact Test on each format.
 
 Didactic instruction was selected by 53.3% of educators and 61.5% of employers, with no statistically significant difference between the groups (p=0.743). There was also no statistically significant difference in simulation (p=0.417) and wet lab instruction (p=0.162).
 
 On the other hand, live patient instruction was selected by 93.3% of educators, but only 38.5% of employers. This difference was found to be statistically significant with a p-value of 0.0003.
 
-\*Don't know whether to talk about "none of the above" being significant.
+"None of these" was also found to be statistically significant at the 5% level. No educators selected that none of these formats were used, but 23.1% of employers selected that none of the formats were believed to be utilized in the clinical year.
 
-```{r question_5b, echo = FALSE}
+```{r}
+#| label: question_5b
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
 # Total respondents per group
 n_employers <- nrow(Employer_Data_Clean)
 n_educators <- nrow(Educator_Data_Clean)
@@ -1055,7 +1377,8 @@ final_table <- combined_counts %>%
   select(Format, educator_percent, employer_percent, p_value) %>%
   arrange(match(Format, c("Didactic", "Simulation", "Wet Lab", "Live Patient", "None of These")))
 
-# Format percentages nicely
+
+#Format percentages nicely
 final_table <- final_table %>%
   mutate(
     educator_percent = round(educator_percent, 1),
@@ -1068,8 +1391,20 @@ final_table <- final_table %>%
     `P-value` = p_value
   )
 
-library(knitr)
-knitr::kable(final_table, col.names = c("Format", "% of Educators", "% of Employers", "P-value"))
+# Add significance stars
+final_table <- final_table %>%
+  mutate(
+    Significance = case_when(
+      `P-value` < 0.001 ~ "***",
+      `P-value` < 0.01  ~ "**",
+      `P-value` < 0.05  ~ "*",
+      TRUE              ~ ""
+    ),
+    `P-value` = paste0(`P-value`, " ", Significance)
+  ) %>%
+  select(-Significance)  # Optional: remove extra column if not needed
+
+kable(final_table, caption = "Perceived Formats of Clinical Dental Instruction in DVM Programs", align = "lrr", booktabs=TRUE)
 
 ```
 
@@ -1216,8 +1551,23 @@ On question 20 of their survey, educators were asked: "Which of the following sk
 
 Since the question was of the format "select all that apply," participants were able to select more than one response and percentages will not add to 100%. Results reported below are the percentages of their respective group (educators or employers) that selected the given format of instruction. Percentages were utilized due to the difference in sample size.
 
-```{r, echo = FALSE, fig.width=10, fig.height=7}
+Educators and employers were also given the option to enter their own responses to the question. No employers entered any text responses. Six educators entered text responses of the following:
 
+* "OvaVet gel application, Crown amputation, Sealant application for UCF, oral tumor biopsy and excision, orthodontia"
+* "Nerve blocks, barrier sealant and bonded sealant application, jaw fracture repair, root canals"
+* "Often- bonded sealants; Sometimes-  root canals, restorations, jaw fracture repair"
+* "Oral biopsy, root planning, bonded sealants"
+* "extractions only if performed on that patient"
+* "Not all students see all types of extractions"
+
+```{r}
+#| label: question_7a
+#| echo: false
+#| warning: false
+#| fig-cap: "Clinical Training Skills Perceived by Educators vs Employers in DVM Programs"
+#| fig-align: center
+#| fig.width: 10
+#| fig.height: 7
 # Labels for each skill
 option_labels <- c(
   "01" = "Oral Exam/Charting",
@@ -1280,7 +1630,7 @@ ggplot(combined_percent, aes(x = percent, y = Label, color = Group)) +
   labs(
     x = "% of respondents in respective groups",
     y = NULL,
-    title = "Clinical Training Skills Perceived by Educators vs Employers",
+    title = "Clinical Training Skills",
     subtitle = "Each dot shows percent of Eduactors or Employers who selected each skill",
     color = NULL
   ) +
@@ -1297,7 +1647,12 @@ ggplot(combined_percent, aes(x = percent, y = Label, color = Group)) +
 
 ```
 
-```{r echo = FALSE}
+```{r}
+#| label: question_7b
+#| echo: false
+#| warning: false
+#| fig-cap: " "
+#| fig-align: center
 # Define labels for each of the 13 skills
 option_labels <- c(
   "01" = "Oral Exam/Charting",
@@ -1378,9 +1733,42 @@ final_table <- combined_counts %>%
   ) %>%
   arrange(match(Skill, option_labels))
 
+# Add significance stars
+final_table <- final_table %>%
+  mutate(
+    Significance = case_when(
+      `P-value` < 0.001 ~ "***",
+      `P-value` < 0.01  ~ "**",
+      `P-value` < 0.05  ~ "*",
+      TRUE              ~ ""
+    ),
+    `P-value` = paste0(`P-value`, " ", Significance)
+  ) %>%
+  select(-Significance)  # Optional: remove extra column if not needed
+
+
 # Print a clean table
-knitr::kable(final_table, col.names = c("Skill", "% of Educators", "% of Employers", "P-value"))
+kable(final_table, caption = "Perceived Skills Learned of Clinical Dental Instruction in DVM Programs", align = "lrr", booktabs=TRUE)
 ```
+
+Figure 5.2 shows the percentage of employers and educators who selected the given skills and Table 4 shows the p-values associated with Fisher's Exact Test and their significance. 
+
+For eleven of the thirteen skills, educators reported a higher percentage of selection. The two skills for which employers reported higher perceived learning were feline open extraction - canines/multiple roots and fluoride treatment. 
+
+At the 5% significance level, the difference in skill selection between employers and educators was found to be significant for seven skills:
+
+* Scaling
+* Polishing
+* Canine Closed Extraction
+* Feline Closed Extraction 
+* Canine Open Extraction - Single Root
+* Feline Open Extraction - Single Root
+* Canine Open Extraction - Canines/Multiple Roots
+
+For all skills with statistically significant differences, educators reported higher percentages than employers.
+
+The most significant difference was found in polishing. Educators selected this skill 76.7% of the time, while employers selected this skill only 30.8% of the time. The resulting p-value was 0.00672.
+
 
 ### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
