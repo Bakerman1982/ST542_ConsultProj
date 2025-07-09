@@ -21,7 +21,7 @@ format:
     keep-tex: true
     linkcolor: blue
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 header-includes:
   - \numberwithin{figure}{section}
 ---
@@ -603,7 +603,6 @@ ggplot(combined_progress, aes(x = progress, fill = group)) +
 
 Regarding the proportion of the survey completed, employer responses were more variable—spanning the full range from partial to full completion. In contrast, educators tended to complete more of the survey, with a concentration near full completion and a less pronounced left tail. The density plot below visualizes these differences in survey progress across groups.
 
-
 ```{r}
 #| label: Data_Desc_06
 #| fig-cap: "Geographic distribution of survey respondents across the United States."
@@ -952,10 +951,10 @@ In order to calculate the test statistic and p-value for a Mann-Whitney U Test:
 P-values will be utilized for each statistical question listed above in order to formally analyze the data.
 
 #### Select all that apply questions (statistical questions #2, 5, and 7)
-These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Dot plots will also be utilized for questions with many options to avoid crowding in bar graphs. 
+
+These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Dot plots will also be utilized for questions with many options to avoid crowding in bar graphs.
 
 Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is again reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
-
 
 ```{r}
 #| label: fishertable
@@ -976,7 +975,7 @@ kable(table_data, align = "lrr", caption = "Fisher's Exact 2×2 Contingency Tabl
 
 ```
 
-Fisher's Exact Test operates under the null hypothesis that there is no association between the two variables. The alternative hypothesis is that there is an association. The p-value for the test is computed using the following formula: 
+Fisher's Exact Test operates under the null hypothesis that there is no association between the two variables. The alternative hypothesis is that there is an association. The p-value for the test is computed using the following formula:
 
 $$p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}$$
 
@@ -987,19 +986,16 @@ P-values are then computed for each skill, format, etc. between the two groups (
 This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
 
 # Results
- 
+
+## Statistical Analysis
 
 ### S1 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
- 
- 
-To assess whether there are differences in perceptions of new graduate competence in dentistry, educators and employers were asked a parallel question (Q4). Employers were asked to rate their expectation that early career veterinarians can competently perform 12 specific dental skills on their first day of employment. Educators were asked to rate whether they believe new graduates can perform those same skills competently. Responses were recorded on a 4-point Likert scale from 1 (Strongly Disagree) to 4 (Strongly Agree).
 
+To assess whether there are differences in perceptions of new graduate competence in dentistry, educators and employers were asked a parallel question (Q4). Employers were asked to rate their expectation that early career veterinarians can competently perform 12 specific dental skills on their first day of employment. Educators were asked to rate whether they believe new graduates can perform those same skills competently. Responses were recorded on a 4-point Likert scale from 1 (Strongly Disagree) to 4 (Strongly Agree).
 
 We used the Mann-Whitney U test to compare the responses between educators and employers for each skill. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. Median scores and group sizes were also reported to support interpretation of the findings.
 
-
 The results showed no statistically significant differences between educators and employers for most skills, indicating general agreement about which dental competencies new graduates possess. The only skill approaching significance was interpreting dental radiographs (p = 0.064), where employers appeared slightly more confident than educators. While this difference is subtle (both groups had a median rating of 3), it may warrant further exploration in future studies. Overall, the findings suggest alignment between educational preparation and employer expectations regarding small animal dentistry skills.
-
 
 ```{r}
 #| label: setup_mw_test
@@ -1070,8 +1066,6 @@ mw_results_clean <- mw_results %>%
 library(gt)
 ```
 
-
-
 ```{r}
 #| label: question_1
 #| echo: false
@@ -1088,14 +1082,13 @@ mw_results_clean %>%
 
 ```
 
-
 ### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
 
 To evaluate whether differences exist between DVM educators and employers in their understanding of which dental skills are taught in the pre-clinical curriculum, we analyzed responses to parallel survey questions. Educators were asked to indicate which of seven core dentistry skills are taught as part of their pre-clinical courses (Q12), while employers were asked which skills they believe recent graduates were taught prior to clinical training (Q16). Since the two groups answered different question numbers about the same underlying skills, we first aligned the datasets by renaming employer variables to match educator labels. This harmonization allowed for direct comparison of responses skill-by-skill across the two groups.
 
 After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. One skill item was excluded due to all responses being missing, and approximately 70% of employer data for Q16 items were incomplete, limiting the strength of some comparisons.
 
-The results of the Fisher’s tests revealed no statistically significant differences between educators and employers for any of the seven aligned skills (all p-values > 0.32). Both groups reported similar proportions of skills being taught, with educator endorsement rates ranging from approximately 53% to 77%, and employer endorsement ranging from 54% to 92%. These findings suggest general agreement between what educators report teaching and what employers believe early career veterinarians have been taught in the pre-clinical phase of training. The overall consistency supports the idea that pre-clinical dental training expectations are reasonably aligned between academic programs and employer perceptions.
+The results of the Fisher’s tests revealed no statistically significant differences between educators and employers for any of the seven aligned skills (all p-values \> 0.32). Both groups reported similar proportions of skills being taught, with educator endorsement rates ranging from approximately 53% to 77%, and employer endorsement ranging from 54% to 92%. These findings suggest general agreement between what educators report teaching and what employers believe early career veterinarians have been taught in the pre-clinical phase of training. The overall consistency supports the idea that pre-clinical dental training expectations are reasonably aligned between academic programs and employer perceptions.
 
 ```{r}
 #| label: question_2prep
@@ -1221,7 +1214,6 @@ test_results <- combined_long %>%
 
 ```
 
-
 ```{r}
 #| label: question_2
 #| echo: false
@@ -1235,7 +1227,6 @@ kable(test_results,
       format = "markdown")  # use "latex" for PDF, "html" for HTML output
 
 ```
-
 
 ### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
@@ -1506,11 +1497,22 @@ kable(final_table, caption = "Perceived Formats of Clinical Dental Instruction i
 
 ### S6 Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
 
-In question #21 of the employers version of the survey, participants were asked, "Which of the following types of [*clinical instruction in dentistry*]{.underline} do you think that DVM students should be required to complete as part of a [*DVM program*]{.underline}? Select one response for each of the instructional types listed below." The analogue of this question for educators was survey question #17. We want to make a note that the educators survey question had a slight variation in phraseology. It asked, "Which of the following types of [*instruction*]{.underline} do you think DVM students should be required to complete as part of their [*clinical training*]{.underline}? Select one response for each type of instruction listed below.".
+In question #21 of the employers’ version of the survey, participants were asked:
 
-This question is targeting how participants feel about what dental veterinarian medical programs are teaching and what topics should be required in their curriculum. The research question asked if there was a difference in opinions on this matter. To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between groups.
+-   “Which of the following types of [clinical instruction]{.underline} in dentistry do you think that DVM students should be required to complete as part of a [DVM program]{.underline}? Select one response for each of the instructional types listed below.”
+
+The analogue of this question for educators was survey question #17, which asked:
+
+-   “Which of the following types of [instruction]{.underline} do you think DVM students should be required to complete as part of their [clinical training]{.underline}? Select one response for each type of instruction listed below.”
+
+This question aimed to assess how participants view the types of dental instruction that should be required within veterinary medical curricula. To examine whether there were differences in opinions between educators and employers, the Mann-Whitney U-Test—a non-parametric test also known as the Wilcoxon Rank-Sum Test—was used. This test is appropriate for comparing two independent groups without assuming a normal distribution and assumes mutual exclusivity between the groups.
 
 ```{r question_6a, , echo=FALSE, warning=FALSE, fig.align='center'}
+#| label: question_6a
+#| echo: false
+#| warning: false
+#| fig-align: center
+
 # Define the matching question columns
 educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
 employer_cols  <- paste0("Q21_", sprintf("%02d", 1:7))
@@ -1523,10 +1525,8 @@ instruction_labels <- c(
   "Q17_04" = "Live Patient",   "Q21_04" = "Live Patient",
   "Q17_05" = "None of these",  "Q21_05" = "None of these",
   "Q17_06" = "Other",          "Q21_06" = "Other",
-  "Q17_07" = "Other",          "Q21_07" = "Other"
+  "Q17_07" = "Other - Text",   "Q21_07" = "Other - Text"
 )
-
-
 
 # Initialize an empty list to store results
 mw_results <- list()
@@ -1542,7 +1542,7 @@ for (i in seq_along(educator_cols)) {
   emp_vals <- emp_vals[!is.na(emp_vals)]
   
   if (length(edu_vals) > 1 && length(emp_vals) > 1) {
-    test_result <- wilcox.test(edu_vals, emp_vals, exact = FALSE)
+    test_result <- wilcox.test(edu_vals, emp_vals, exact = TRUE)
     mw_results[[q_edu]] <- list(
       question = q_edu,
       W = test_result$statistic,
@@ -1568,6 +1568,7 @@ mw_df$significance <- cut(mw_df$p_value,
 
 # Build display table with readable names
 mw_table <- mw_df %>%
+  filter(question != "Q17_07") %>%
   mutate(
     Instruction_Type = recode(question, !!!instruction_labels),
     W_Statistic = ifelse(is.na(W), "-", round(W, 1)),
@@ -1577,65 +1578,11 @@ mw_table <- mw_df %>%
   ) %>%
   select(Instruction_Type, W_Statistic, P_Value, Significance, Notes)
 
-# Render with kable
-kable(mw_table, caption = "Mann-Whitney U-Test Results for Instruction Types", align = "c")
-
-# ====================
-# Now the Plot Section
-# ====================
-
-# Educator data (remove Q17_05 and Q17_06)
-educator_long <- Educator_Data_Clean %>%
-  select(starts_with("Q17_")) %>%
-  select(-Q17_05, -Q17_06) %>%
-  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
-  mutate(group = "Educator")
-
-# Employer data (remove Q21_05 and Q21_06)
-employer_long <- Employer_Data_Clean %>%
-  select(starts_with("Q21_")) %>%
-  select(-Q21_05, -Q21_06) %>%
-  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
-  mutate(group = "Employer")
-
-
-# Combine and apply instruction labels
-plot_data <- bind_rows(educator_long, employer_long) %>%
-  mutate(response = as.numeric(response)) %>%
-  filter(!is.na(response)) %>%
-  mutate(question = recode(question, !!!instruction_labels))
-
-desired_order <- c("Live Patient", "Wet Lab", "Didactic", "Simulation")
-plot_data <- plot_data %>%
-  filter(question %in% desired_order) %>%
-  mutate(question = factor(question, levels = desired_order))
-
-
-plot_summary <- plot_data %>%
-  group_by(question, response, group) %>%
-  summarize(count = n(), .groups = "drop") %>%
-  # Make counts negative for one group to diverge left
-  mutate(count_signed = ifelse(group == "Employer", -count, count))
-
-# Plot horizontal diverging bars
-ggplot(plot_summary, aes(x = factor(response), y = count_signed, fill = group)) +
-  geom_bar(stat = "identity", color = "black", width = 0.7) +
-  coord_flip() +
-  facet_wrap(~ question, ncol = 2) +
-  scale_y_continuous(
-    breaks = scales::pretty_breaks(),
-    labels = abs
-  ) +
-  labs(
-    title = "Horizontal Diverging Bar Chart: Educator vs Employer Responses",
-    x = "Response Level",
-    y = "Count",
-    fill = "Group"
-  ) +
-  theme_minimal() +
-  scale_fill_manual(values = c("Educator" = "#1f77b4", "Employer" = "#ff7f0e"))
+# Render the table
+kable(mw_table, caption = "Mann-Whitney U-Test Results for Instruction Types", align = "c", row.names = FALSE)
 ```
 
+The results are presented in Table 7. No statistically significant differences were found between educators and employers in their responses regarding the Didactic, Simulation, or Wet Lab instructional formats. However, a significant difference was identified between the two groups concerning Live Patient instruction, where responses varied significantly. The instructional categories “None of These” and “Other” could not be tested due to insufficient data.
 
 ### S7 Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
 
@@ -1649,12 +1596,12 @@ Since the question was of the format "select all that apply," participants were 
 
 Educators and employers were also given the option to enter their own responses to the question. No employers entered any text responses. Six educators entered text responses of the following:
 
-* "OvaVet gel application, Crown amputation, Sealant application for UCF, oral tumor biopsy and excision, orthodontia"
-* "Nerve blocks, barrier sealant and bonded sealant application, jaw fracture repair, root canals"
-* "Often- bonded sealants; Sometimes-  root canals, restorations, jaw fracture repair"
-* "Oral biopsy, root planning, bonded sealants"
-* "extractions only if performed on that patient"
-* "Not all students see all types of extractions"
+-   "OvaVet gel application, Crown amputation, Sealant application for UCF, oral tumor biopsy and excision, orthodontia"
+-   "Nerve blocks, barrier sealant and bonded sealant application, jaw fracture repair, root canals"
+-   "Often- bonded sealants; Sometimes- root canals, restorations, jaw fracture repair"
+-   "Oral biopsy, root planning, bonded sealants"
+-   "extractions only if performed on that patient"
+-   "Not all students see all types of extractions"
 
 ```{r}
 #| label: question_7a
@@ -1847,36 +1794,42 @@ final_table <- final_table %>%
 kable(final_table, caption = "Perceived Skills Learned of Clinical Dental Instruction in DVM Programs", align = "lrr", booktabs=TRUE)
 ```
 
-Figure 5.2 shows the percentage of employers and educators who selected the given skills and Table 4 shows the p-values associated with Fisher's Exact Test and their significance. 
+Figure 5.2 shows the percentage of employers and educators who selected the given skills and Table 4 shows the p-values associated with Fisher's Exact Test and their significance.
 
-For eleven of the thirteen skills, educators reported a higher percentage of selection. The two skills for which employers reported higher perceived learning were feline open extraction - canines/multiple roots and fluoride treatment. 
+For eleven of the thirteen skills, educators reported a higher percentage of selection. The two skills for which employers reported higher perceived learning were feline open extraction - canines/multiple roots and fluoride treatment.
 
 At the 5% significance level, the difference in skill selection between employers and educators was found to be significant for seven skills:
 
-* Scaling
-* Polishing
-* Canine Closed Extraction
-* Feline Closed Extraction 
-* Canine Open Extraction - Single Root
-* Feline Open Extraction - Single Root
-* Canine Open Extraction - Canines/Multiple Roots
+-   Scaling
+-   Polishing
+-   Canine Closed Extraction
+-   Feline Closed Extraction
+-   Canine Open Extraction - Single Root
+-   Feline Open Extraction - Single Root
+-   Canine Open Extraction - Canines/Multiple Roots
 
 For all skills with statistically significant differences, educators reported higher percentages than employers.
 
 The most significant difference was found in polishing. Educators selected this skill 76.7% of the time, while employers selected this skill only 30.8% of the time. The resulting p-value was 0.00672.
 
-
 ### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
-In question #26 of the employers version of the survey, participants were asked, "Which of the following skills do you think that DVM students should be required to practice/learn as part of the clinical training portion of a DVM program? Select one response for each of the skills listed below." The analogue of this question for educators was survey question #21
+In question #26 of the employers’ version of the survey, participants were asked:
 
-This question hits at the sentiment on what both groups think should be required practice/learnings for students. The research question asked if there was a difference in opinions on this matter. To infer from the data, we will use the Mann-Whitney U-Test, a non-parametric test also known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between groups.
+* “Which of the following skills do you think that DVM students should be required to practice/learn as part of the clinical training portion of a DVM program? Select one response for each of the skills listed below.”
+
+The corresponding question for educators was survey question #21.
+
+This question aimed to assess opinions on which clinical dentistry skills should be required in DVM student training. To evaluate whether differences existed between educators and employers, the Mann-Whitney U-Test, a non-parametric test also known as the Wilcoxon Rank-Sum Test, was applied. This test compares two independent groups without assuming normality and requires mutual exclusivity between groups.
+
+The results are presented in Table 9. No statistically significant differences were observed between educators and employers for most of the listed clinical skills, including oral examination/charting, radiographic positioning, radiographic interpretation, scaling, polishing, or several extraction procedures. However, significant differences were identified for the skills of feline closed extraction and canine open extraction—single root, with p-values of 0.049 for both. Two additional procedures—feline open extraction—single root and canine open extraction—canines/multiple roots—approached significance (p = 0.076). The “Fluoride treatment” and “None” categories could not be tested due to insufficient data.
 
 ```{r question_8a, echo=FALSE, warning=FALSE, fig.align='center'}
-educator_cols <- paste0("Q21_", sprintf("%02d", 1:14))
-employer_cols  <- paste0("Q26_", sprintf("%02d", 1:14))
+# Define educator and employer question columns (first 13 only)
+educator_cols <- paste0("Q21_", sprintf("%02d", 1:13))
+employer_cols <- paste0("Q26_", sprintf("%02d", 1:13))
 
-# Create mapping vector
+# Create human-friendly labels (first 13 procedures only)
 procedure_labels <- c(
   "Oral exam/charting",
   "Radiographic positioning",
@@ -1890,16 +1843,15 @@ procedure_labels <- c(
   "Canine open extraction - Canines/multiple roots",
   "Feline open extraction - Canines/multiple roots",
   "Fluoride treatment",
-  "None",
-  "Other: Please describe"
+  "None"
 )
 
 names(procedure_labels) <- educator_cols
 
-# Initialize a results list
+# Initialize results list
 mw_results <- list()
 
-for (i in 1:14) {
+for (i in seq_along(educator_cols)) {
   q_edu <- educator_cols[i]
   q_emp <- employer_cols[i]
   
@@ -1910,52 +1862,174 @@ for (i in 1:14) {
   emp_vals <- emp_vals[!is.na(emp_vals)]
   
   if (length(edu_vals) > 1 && length(emp_vals) > 1) {
-    test_result <- wilcox.test(edu_vals, emp_vals, exact = FALSE)
-    
+    test_result <- wilcox.test(edu_vals, emp_vals, exact = TRUE)
     mw_results[[q_edu]] <- list(
-      question = procedure_labels[[q_edu]],
+      Instruction_Type = procedure_labels[[q_edu]],
+      W_Statistic = round(test_result$statistic, 1),
+      P_Value = round(test_result$p.value, 3)
+    )
+  } else {
+    mw_results[[q_edu]] <- list(
+      Instruction_Type = procedure_labels[[q_edu]],
+      W_Statistic = "-",
+      P_Value = "-"
+    )
+  }
+}
+
+# Combine results into a data frame
+mw_df <- do.call(rbind, lapply(mw_results, as.data.frame)) %>% as.data.frame()
+
+# Add significance and notes
+mw_df <- mw_df %>%
+  mutate(
+    Significance = case_when(
+      P_Value == "-" ~ "-",
+      as.numeric(P_Value) <= 0.001 ~ "***",
+      as.numeric(P_Value) <= 0.01 ~ "**",
+      as.numeric(P_Value) <= 0.05 ~ "*",
+      as.numeric(P_Value) <= 0.1 ~ ".",
+      TRUE ~ "ns"
+    ),
+    Notes = ifelse(P_Value == "-", "Insufficient data", "Test performed")
+  )
+
+# Remove rownames before table
+rownames(mw_df) <- NULL
+
+# Render kable table
+kable(mw_df, caption = "Mann-Whitney U-Test Results for Clinical Procedures", align = "c")
+```
+
+# Discussion/Conclusion
+
+## Interpretation of Results
+
+```{r question_6a, , echo=FALSE, eval=FALSE, warning=FALSE, fig.align='center'}
+# Define the matching question columns
+educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
+employer_cols  <- paste0("Q21_", sprintf("%02d", 1:7))
+
+# Create human-friendly labels
+instruction_labels <- c(
+  "Q17_01" = "Didactic",       "Q21_01" = "Didactic",
+  "Q17_02" = "Simulation",     "Q21_02" = "Simulation",
+  "Q17_03" = "Wet Lab",        "Q21_03" = "Wet Lab",
+  "Q17_04" = "Live Patient",   "Q21_04" = "Live Patient",
+  "Q17_05" = "None of these",  "Q21_05" = "None of these",
+  "Q17_06" = "Other",          "Q21_06" = "Other",
+  "Q17_07" = "Other - Text",          "Q21_07" = "Other - Text"
+)
+
+
+
+# Initialize an empty list to store results
+mw_results <- list()
+
+for (i in seq_along(educator_cols)) {
+  q_edu <- educator_cols[i]
+  q_emp <- employer_cols[i]
+  
+  edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
+  emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
+  
+  edu_vals <- edu_vals[!is.na(edu_vals)]
+  emp_vals <- emp_vals[!is.na(emp_vals)]
+  
+  if (length(edu_vals) > 1 && length(emp_vals) > 1) {
+    test_result <- wilcox.test(edu_vals, emp_vals, exact = TRUE)
+    mw_results[[q_edu]] <- list(
+      question = q_edu,
       W = test_result$statistic,
       p_value = test_result$p.value
     )
   } else {
     mw_results[[q_edu]] <- list(
-      question = procedure_labels[[q_edu]],
+      question = q_edu,
       W = NA,
       p_value = NA
     )
   }
 }
 
-mw_df <- do.call(rbind, lapply(mw_results, as.data.frame))
-mw_df <- as.data.frame(mw_df)
+# Create mw_df
+mw_df <- do.call(rbind, lapply(mw_results, as.data.frame)) %>% as.data.frame()
 mw_df$p_value <- as.numeric(mw_df$p_value)
-
-# Optional: sort by p-value
-mw_df <- mw_df[order(mw_df$p_value), ]
-
+mw_df$W <- as.numeric(mw_df$W)
+mw_df$question <- rownames(mw_df)
 mw_df$significance <- cut(mw_df$p_value,
                           breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
                           labels = c("***", "**", "*", ".", "ns"))
 
-print(mw_df)
+# Build display table with readable names
+mw_table <- mw_df %>%
+  filter(question != "Q17_07") %>%
+  mutate(
+    Instruction_Type = recode(question, !!!instruction_labels),
+    W_Statistic = ifelse(is.na(W), "-", round(W, 1)),
+    P_Value = ifelse(is.na(p_value), "-", round(p_value, 3)),
+    Significance = ifelse(is.na(significance), "-", as.character(significance)),
+    Notes = ifelse(P_Value == "-", "Insufficient data", "Test performed")
+  ) %>%
+  select(Instruction_Type, W_Statistic, P_Value, Significance, Notes)  # No 'question' column here
+
+
+# ====================
+# Now the Plot Section
+# ====================
+
+# Educator data (remove Q17_05 and Q17_06)
+educator_long <- Educator_Data_Clean %>%
+  select(starts_with("Q17_")) %>%
+  select(-Q17_05, -Q17_06) %>%
+  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
+  mutate(group = "Educator")
+
+# Employer data (remove Q21_05 and Q21_06)
+employer_long <- Employer_Data_Clean %>%
+  select(starts_with("Q21_")) %>%
+  select(-Q21_05, -Q21_06) %>%
+  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
+  mutate(group = "Employer")
+
+
+# Combine and apply instruction labels
+plot_data <- bind_rows(educator_long, employer_long) %>%
+  mutate(response = as.numeric(response)) %>%
+  filter(!is.na(response)) %>%
+  mutate(question = recode(question, !!!instruction_labels))
+
+desired_order <- c("Live Patient", "Wet Lab", "Didactic", "Simulation")
+plot_data <- plot_data %>%
+  filter(question %in% desired_order) %>%
+  mutate(question = factor(question, levels = desired_order))
+
+
+plot_summary <- plot_data %>%
+  group_by(question, response, group) %>%
+  summarize(count = n(), .groups = "drop") %>%
+  # Make counts negative for one group to diverge left
+  mutate(count_signed = ifelse(group == "Employer", -count, count))
+
+# Plot horizontal diverging bars
+ggplot(plot_summary, aes(x = factor(response), y = count_signed, fill = group)) +
+  geom_bar(stat = "identity", color = "black", width = 0.7) +
+  coord_flip() +
+  facet_wrap(~ question, ncol = 2) +
+  scale_y_continuous(
+    breaks = scales::pretty_breaks(),
+    labels = abs
+  ) +
+  labs(
+    title = "Horizontal Diverging Bar Chart: Educator vs Employer Responses",
+    x = "Response Level",
+    y = "Count",
+    fill = "Group"
+  ) +
+  theme_minimal() +
+  scale_fill_manual(values = c("Educator" = "#1f77b4", "Employer" = "#ff7f0e"))
 ```
 
-```{r S8v2, fig.align='center'}
-view(Educator_Data_Clean %>% select(starts_with("Q17")))
-view(Employer_Data_Clean %>% select(starts_with("Q21")))
-```
-
-## Findings
-
-## Statistical Analysis
-
-# Discussion/Conclusion
-
-## Interpretation of Results
-
-In statistical question six, when asked, "Which of the following types of clinical instruction in dentistry/instruction do you think that DVM students should be required to complete as part o a DVM program/Clinical training?", we found that there was no statistical difference between groups on the medical procedures "Didactic", "Simulation" or "Wet Lab".  There was a statistically significant difference on sentiments of whether a student or recent graduate should be taught on "Live Patients".  The survey gave the option of "None of These" or "Other"; however, not enough data was present to make viable comparisons on these groups. 
-
-Statistical question eight asked, "Which of the following skills do you think that DVM students should be required to practice/learn as part of the clinical trainingportion of a DVM program? Select one response for each of the skills listed below."  
 
 
 ## Implications of the Study
