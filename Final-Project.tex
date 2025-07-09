@@ -76,46 +76,6 @@
 \fi
 \makeatother
 
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{241,243,245}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.40,0.45,0.13}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\BuiltInTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\ExtensionTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.28,0.35,0.67}{#1}}
-\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.00,0.46,0.62}{#1}}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.68,0.00,0.00}{#1}}
-\newcommand{\RegionMarkerTok}[1]{\textcolor[rgb]{0.00,0.23,0.31}{#1}}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.07,0.07,0.07}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.13,0.47,0.30}{#1}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.37,0.37,0.37}{\textit{#1}}}
 
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
@@ -578,7 +538,7 @@ with the survey design.
 
 This test is appropriate for Likert-scale data because:
 
-\emph{It does not assume normality (unlike the t-test), }It respects the
+\emph{It does not assume normality (unlike the t-test),} It respects the
 ordinal (ranked) structure of the data, *It retains statistical power in
 small samples.
 
@@ -686,6 +646,8 @@ If the assumption on normality is met, we can consider a two-sample t
 test for this analysis.
 
 \section{Results}\label{results}
+
+\subsection{Statistical Analysis}\label{statistical-analysis}
 
 \subsubsection{S1 Are there significant differences between educators
 and practice owners in their belief that new graduates are competent in
@@ -960,38 +922,48 @@ which formats of clinical instruction in dentistry should be required
 for DVM students as part of their clinical
 training?}\label{s6-do-educators-and-employers-differ-in-their-views-on-which-formats-of-clinical-instruction-in-dentistry-should-be-required-for-dvm-students-as-part-of-their-clinical-training}
 
-In question \#21 of the employers version of the survey, participants
-were asked, ``Which of the following types of \ul{\emph{clinical
-instruction in dentistry}} do you think that DVM students should be
-required to complete as part of a \ul{\emph{DVM program}}? Select one
-response for each of the instructional types listed below.'' The
-analogue of this question for educators was survey question \#17. We
-want to make a note that the educators survey question had a slight
-variation in phraseology. It asked, ``Which of the following types of
-\ul{\emph{instruction}} do you think DVM students should be required to
-complete as part of their \ul{\emph{clinical training}}? Select one
-response for each type of instruction listed below.''.
+In question \#21 of the employers' version of the survey, participants
+were asked:
 
-This question is targeting how participants feel about what dental
-veterinarian medical programs are teaching and what topics should be
-required in their curriculum. The research question asked if there was a
-difference in opinions on this matter. To infer from the data, we will
-use the Mann-Whitney U-Test, a non-parametric test also known as
-Wilcoxin Rank Sign Test. This test assumes mutual exclusivity between
-groups.
+\begin{itemize}
+\tightlist
+\item
+  ``Which of the following types of \ul{clinical instruction} in
+  dentistry do you think that DVM students should be required to
+  complete as part of a \ul{DVM program}? Select one response for each
+  of the instructional types listed below.''
+\end{itemize}
+
+The analogue of this question for educators was survey question \#17,
+which asked:
+
+\begin{itemize}
+\tightlist
+\item
+  ``Which of the following types of \ul{instruction} do you think DVM
+  students should be required to complete as part of their \ul{clinical
+  training}? Select one response for each type of instruction listed
+  below.''
+\end{itemize}
+
+This question aimed to assess how participants view the types of dental
+instruction that should be required within veterinary medical curricula.
+To examine whether there were differences in opinions between educators
+and employers, the Mann-Whitney U-Test---a non-parametric test also
+known as the Wilcoxon Rank-Sum Test---was used. This test is appropriate
+for comparing two independent groups without assuming a normal
+distribution and assumes mutual exclusivity between the groups.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0875}}
-  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2250}}
-  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1625}}
-  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1125}}
-  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1750}}
-  >{\centering\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2375}}@{}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2466}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1781}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1233}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1918}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2603}}@{}}
 \caption{Mann-Whitney U-Test Results for Instruction
 Types}\tabularnewline
 \toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\begin{minipage}[b]{\linewidth}\centering
 Instruction\_Type
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 W\_Statistic
@@ -1005,8 +977,7 @@ Notes
 \midrule\noalign{}
 \endfirsthead
 \toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+\begin{minipage}[b]{\linewidth}\centering
 Instruction\_Type
 \end{minipage} & \begin{minipage}[b]{\linewidth}\centering
 W\_Statistic
@@ -1021,18 +992,21 @@ Notes
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Q17\_01 & Didactic & 138.5 & 0.415 & ns & Test performed \\
-Q17\_02 & Simulation & 108 & 0.363 & ns & Test performed \\
-Q17\_03 & Wet Lab & 162 & 0.713 & ns & Test performed \\
-Q17\_04 & Live Patient & 263.5 & 0.003 & ** & Test performed \\
-Q17\_05 & None of these & - & - & - & Insufficient data \\
-Q17\_06 & Other & - & - & - & Insufficient data \\
-Q17\_07 & Other & - & - & - & Insufficient data \\
+Didactic & 138.5 & 0.415 & ns & Test performed \\
+Simulation & 108 & 0.363 & ns & Test performed \\
+Wet Lab & 162 & 0.713 & ns & Test performed \\
+Live Patient & 263.5 & 0.003 & ** & Test performed \\
+None of these & - & - & - & Insufficient data \\
+Other & - & - & - & Insufficient data \\
 \end{longtable}
 
-\begin{center}
-\pandocbounded{\includegraphics[keepaspectratio]{Final-Project_files/figure-pdf/question_6a, -1.pdf}}
-\end{center}
+The results are presented in Table 7. No statistically significant
+differences were found between educators and employers in their
+responses regarding the Didactic, Simulation, or Wet Lab instructional
+formats. However, a significant difference was identified between the
+two groups concerning Live Patient instruction, where responses varied
+significantly. The instructional categories ``None of These'' and
+``Other'' could not be tested due to insufficient data.
 
 \subsubsection{S7 Is there a difference between the clinical dentistry
 skills that educators report DVM students are learning during their
@@ -1185,83 +1159,99 @@ about which clinical dentistry skills DVM students should be required to
 practice or learn during their clinical
 training?}\label{s8-do-educators-and-employers-differ-in-their-opinions-about-which-clinical-dentistry-skills-dvm-students-should-be-required-to-practice-or-learn-during-their-clinical-training}
 
-In question \#26 of the employers version of the survey, participants
-were asked, ``Which of the following skills do you think that DVM
-students should be required to practice/learn as part of the clinical
-training portion of a DVM program? Select one response for each of the
-skills listed below.'' The analogue of this question for educators was
-survey question \#21
+In question \#26 of the employers' version of the survey, participants
+were asked:
 
-This question hits at the sentiment on what both groups think should be
-required practice/learnings for students. The research question asked if
-there was a difference in opinions on this matter. To infer from the
-data, we will use the Mann-Whitney U-Test, a non-parametric test also
-known as Wilcoxin Rank Sign Test. This test assumes mutual exclusivity
-between groups.
+\begin{itemize}
+\tightlist
+\item
+  ``Which of the following skills do you think that DVM students should
+  be required to practice/learn as part of the clinical training portion
+  of a DVM program? Select one response for each of the skills listed
+  below.''
+\end{itemize}
 
-\begin{verbatim}
-                                              question     W    p_value
-Q21_07                        Feline closed extraction 104.5 0.04863265
-Q21_08            Canine open extraction - Single root 104.5 0.04892603
-Q21_09            Feline open extraction - Single root 115.5 0.07564530
-Q21_10 Canine open extraction - Canines/multiple roots 115.5 0.07587786
-Q21_03                     Radiographic interpretation 126.5 0.19379896
-Q21_11 Feline open extraction - Canines/multiple roots  54.0 0.20728866
-Q21_06                        Canine closed extraction 127.5 0.32836731
-Q21_01                              Oral exam/charting 139.0 0.62171592
-Q21_02                        Radiographic positioning 157.0 0.71723375
-Q21_04                                         Scaling 156.0 0.76158684
-Q21_05                                       Polishing 148.5 1.00000000
-Q21_12                              Fluoride treatment    NA         NA
-Q21_13                                            None    NA         NA
-Q21_14                          Other: Please describe    NA         NA
-       significance
-Q21_07            *
-Q21_08            *
-Q21_09            .
-Q21_10            .
-Q21_03           ns
-Q21_11           ns
-Q21_06           ns
-Q21_01           ns
-Q21_02           ns
-Q21_04           ns
-Q21_05           ns
-Q21_12         <NA>
-Q21_13         <NA>
-Q21_14         <NA>
-\end{verbatim}
+The corresponding question for educators was survey question \#21.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{view}\NormalTok{(Educator\_Data\_Clean }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\FunctionTok{starts\_with}\NormalTok{(}\StringTok{"Q17"}\NormalTok{)))}
-\FunctionTok{view}\NormalTok{(Employer\_Data\_Clean }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{select}\NormalTok{(}\FunctionTok{starts\_with}\NormalTok{(}\StringTok{"Q21"}\NormalTok{)))}
-\end{Highlighting}
-\end{Shaded}
+This question aimed to assess opinions on which clinical dentistry
+skills should be required in DVM student training. To evaluate whether
+differences existed between educators and employers, the Mann-Whitney
+U-Test, a non-parametric test also known as the Wilcoxon Rank-Sum Test,
+was applied. This test compares two independent groups without assuming
+normality and requires mutual exclusivity between groups.
 
-\subsection{Findings}\label{findings}
+The results are presented in Table 9. No statistically significant
+differences were observed between educators and employers for most of
+the listed clinical skills, including oral examination/charting,
+radiographic positioning, radiographic interpretation, scaling,
+polishing, or several extraction procedures. However, significant
+differences were identified for the skills of feline closed extraction
+and canine open extraction---single root, with p-values of 0.049 for
+both. Two additional procedures---feline open extraction---single root
+and canine open extraction---canines/multiple roots---approached
+significance (p = 0.076). The ``Fluoride treatment'' and ``None''
+categories could not be tested due to insufficient data.
 
-\subsection{Statistical Analysis}\label{statistical-analysis}
+\begin{longtable}[]{@{}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.4712}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1250}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0865}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1346}}
+  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1827}}@{}}
+\caption{Mann-Whitney U-Test Results for Clinical
+Procedures}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Instruction\_Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+W\_Statistic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+P\_Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Significance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Notes
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\centering
+Instruction\_Type
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+W\_Statistic
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+P\_Value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Significance
+\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
+Notes
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Oral exam/charting & 139 & 0.622 & ns & Test performed \\
+Radiographic positioning & 157 & 0.717 & ns & Test performed \\
+Radiographic interpretation & 126.5 & 0.194 & ns & Test performed \\
+Scaling & 156 & 0.762 & ns & Test performed \\
+Polishing & 148.5 & 1 & ns & Test performed \\
+Canine closed extraction & 127.5 & 0.328 & ns & Test performed \\
+Feline closed extraction & 104.5 & 0.049 & * & Test performed \\
+Canine open extraction - Single root & 104.5 & 0.049 & * & Test
+performed \\
+Feline open extraction - Single root & 115.5 & 0.076 & . & Test
+performed \\
+Canine open extraction - Canines/multiple roots & 115.5 & 0.076 & . &
+Test performed \\
+Feline open extraction - Canines/multiple roots & 54 & 0.207 & ns & Test
+performed \\
+Fluoride treatment & - & - & - & Insufficient data \\
+None & - & - & - & Insufficient data \\
+\end{longtable}
 
 \section{Discussion/Conclusion}\label{discussionconclusion}
 
 \subsection{Interpretation of Results}\label{interpretation-of-results}
-
-In statistical question six, when asked, ``Which of the following types
-of clinical instruction in dentistry/instruction do you think that DVM
-students should be required to complete as part o a DVM program/Clinical
-training?'', we found that there was no statistical difference between
-groups on the medical procedures ``Didactic'', ``Simulation'' or ``Wet
-Lab''. There was a statistically significant difference on sentiments of
-whether a student or recent graduate should be taught on ``Live
-Patients''. The survey gave the option of ``None of These'' or
-``Other''; however, not enough data was present to make viable
-comparisons on these groups.
-
-Statistical question eight asked, ``Which of the following skills do you
-think that DVM students should be required to practice/learn as part of
-the clinical trainingportion of a DVM program? Select one response for
-each of the skills listed below.''
 
 \subsection{Implications of the Study}\label{implications-of-the-study}
 
