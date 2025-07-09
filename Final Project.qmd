@@ -991,11 +991,11 @@ This question asks participants to enter a number related to the number of denta
 
 ### S1 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
 
+
 To assess whether there are differences in perceptions of new graduate competence in dentistry, educators and employers were asked a parallel question (Q4). Employers were asked to rate their expectation that early career veterinarians can competently perform 12 specific dental skills on their first day of employment. Educators were asked to rate whether they believe new graduates can perform those same skills competently. Responses were recorded on a 4-point Likert scale from 1 (Strongly Disagree) to 4 (Strongly Agree).
 
-We used the Mann-Whitney U test to compare the responses between educators and employers for each skill. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. Median scores and group sizes were also reported to support interpretation of the findings.
 
-The results showed no statistically significant differences between educators and employers for most skills, indicating general agreement about which dental competencies new graduates possess. The only skill approaching significance was interpreting dental radiographs (p = 0.064), where employers appeared slightly more confident than educators. While this difference is subtle (both groups had a median rating of 3), it may warrant further exploration in future studies. Overall, the findings suggest alignment between educational preparation and employer expectations regarding small animal dentistry skills.
+We used the Mann-Whitney U test to compare the responses between educators and employers for each skill. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. Median scores and group sizes were also reported to support interpretation of the findings.
 
 ```{r}
 #| label: setup_mw_test
@@ -1084,11 +1084,11 @@ mw_results_clean %>%
 
 ### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
 
+
 To evaluate whether differences exist between DVM educators and employers in their understanding of which dental skills are taught in the pre-clinical curriculum, we analyzed responses to parallel survey questions. Educators were asked to indicate which of seven core dentistry skills are taught as part of their pre-clinical courses (Q12), while employers were asked which skills they believe recent graduates were taught prior to clinical training (Q16). Since the two groups answered different question numbers about the same underlying skills, we first aligned the datasets by renaming employer variables to match educator labels. This harmonization allowed for direct comparison of responses skill-by-skill across the two groups.
 
-After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. One skill item was excluded due to all responses being missing, and approximately 70% of employer data for Q16 items were incomplete, limiting the strength of some comparisons.
+After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. 
 
-The results of the Fisher’s tests revealed no statistically significant differences between educators and employers for any of the seven aligned skills (all p-values \> 0.32). Both groups reported similar proportions of skills being taught, with educator endorsement rates ranging from approximately 53% to 77%, and employer endorsement ranging from 54% to 92%. These findings suggest general agreement between what educators report teaching and what employers believe early career veterinarians have been taught in the pre-clinical phase of training. The overall consistency supports the idea that pre-clinical dental training expectations are reasonably aligned between academic programs and employer perceptions.
 
 ```{r}
 #| label: question_2prep
@@ -1231,9 +1231,9 @@ kable(test_results,
 ### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
 
-To assess whether educators and employers differ in their beliefs about which dental skills should be included in the pre-clinical DVM curriculum, we analyzed responses to parallel Likert-scale questions: Q13 (educators) and Q17 (employers). Both groups rated the importance of teaching 12 specific dentistry skills using a 4-point Likert scale ranging from 1 (Strongly Disagree) to 4 (Strongly Agree). Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually.
+To assess whether educators and employers differ in their beliefs about which dental skills should be included in the pre-clinical DVM curriculum, we analyzed responses to parallel Likert-scale questions: Q13 (educators) and Q17 (employers). Both groups rated the importance of teaching 12 specific dentistry skills using a 4-point Likert scale ranging from 1 (Strongly Disagree) to 4 (Strongly Agree). 
 
-The results showed statistically significant differences in opinion for two of the twelve skills. Employers were significantly more likely than educators to agree that feline open extractions involving multiple roots or canines (Skill_11, p = 0.003) and fluoride treatment (Skill_12, p = 0.013) should be included in the pre-clinical curriculum. For all other skills, there were no statistically significant differences between groups (all p > 0.10), and the median rating for most skills was 4 (“Strongly Agree”) in both groups. These findings suggest general alignment between educators and employers on most skills, but highlight a few areas—particularly more advanced feline extractions and fluoride use—where employer expectations may exceed what educators currently prioritize for pre-clinical training.
+Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. 
 
 
 
@@ -1312,6 +1312,10 @@ q3_results_clean %>%
 
 ### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
 
+To assess whether educators and practice owners differ in their expectations for the number of dental procedures students should complete during clinical training, we compared responses from Question 19 of the educator survey and Question 24 of the employer survey. Respondents indicated the number of procedures they believe should be completed in four clinical settings: primary care, dentistry rotations, shelter medicine, and lab animal medicine. 
+
+
+Before selecting an appropriate statistical test, we assessed normality using the Shapiro-Wilk test, which showed that the data were not normally distributed in any group-setting combination (all p-values < 0.05). Given the non-normal distribution and the ordinal or skewed nature of the data, we used the Mann-Whitney U test—a non-parametric alternative to the independent samples t-test—to compare the distributions of responses between educators and employers for each clinical setting. This test is appropriate when comparing two independent groups without assuming normality or equal variances.
 
 ### S5 Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
 
