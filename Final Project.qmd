@@ -455,7 +455,7 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
 #Remove irrelevant/problematic columns to the research/stats questions
 Educator_Data_Clean <- Educator_Data_Clean %>%
   mutate(progress = as.numeric(progress)) %>%
-  filter(Q44 != "2", progress >= 50) %>%
+  filter(Q44 != "2", progress >= 50, !(response_id %in% c('R_1By20if00mw1SfP', 'R_7kFWGHJpi0UkB7X', 'R_5LXUELTJZBjMt84','R_4CdkBhi7XaGfwNb','R_8EYfypBzjIWzwn7')) ) %>%
   select(
     ip_address, progress, duration_in_seconds,
     finished, recorded_date, response_id, group, respondent_id,
@@ -470,8 +470,6 @@ Educator_Data_Clean <- Educator_Data_Clean %>%
     starts_with("Q20"),
     starts_with("Q21")
   )
-
-
 
 #Identify metadata columns to keep at the front
 edu_meta_cols <- c("ip_address", "progress", "duration_in_seconds",

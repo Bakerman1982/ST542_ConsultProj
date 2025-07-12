@@ -1,5 +1,4 @@
 % Options for packages loaded elsewhere
-% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -9,24 +8,22 @@
   letterpaper,
   DIV=11,
   numbers=noendperiod]{scrartcl}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
+
 \usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{2}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
+  \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else
-  % xetex/luatex font selection
-  \setmainfont[]{Times New Roman}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+    \setmainfont[]{Times New Roman}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -44,6 +41,17 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+  
+\fi
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{2}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -69,7 +77,8 @@
 \makeatother
 
 
-\usepackage{longtable,booktabs,array}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -94,26 +103,6 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
-
-\ifLuaTeX
-  \usepackage{luacolor}
-  \usepackage[soul]{lua-ul}
-\else
-  \usepackage{soul}
-\fi
-
-
-
-
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
-
-
- 
-
 
 \usepackage{booktabs}
 \usepackage{caption}
@@ -165,9 +154,11 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+
 \usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
+\urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Bridging the Gap:},
   pdfauthor={Brock Akerman, Hanan Ali, Taylor Cesarski},
@@ -190,6 +181,7 @@
 Dentistry}
 \author{Brock Akerman, Hanan Ali, Taylor Cesarski}
 \date{2025-06-25}
+
 \begin{document}
 \maketitle
 
@@ -726,17 +718,17 @@ interpretation of the findings.
 \toprule
 Skill & p-value & Median (Educator) & Median (Employer) & n (Educator) & n (Employer) \\ 
 \midrule\addlinespace[2.5pt]
-Q04\_03 & 0.064 & 3 & 3.0 & 30 & 12 \\ 
-Q04\_10 & 0.242 & 2 & 3.0 & 30 & 13 \\ 
-Q04\_05 & 0.260 & 3 & 3.0 & 30 & 13 \\ 
-Q04\_06 & 0.396 & 3 & 3.0 & 30 & 13 \\ 
-Q04\_02 & 0.485 & 3 & 2.5 & 29 & 12 \\ 
-Q04\_04 & 0.492 & 4 & 4.0 & 29 & 13 \\ 
-Q04\_09 & 0.533 & 2 & 2.0 & 29 & 13 \\ 
-Q04\_08 & 0.728 & 3 & 3.0 & 30 & 13 \\ 
-Q04\_01 & 0.872 & 4 & 4.0 & 30 & 13 \\ 
-Q04\_07 & 0.955 & 3 & 3.0 & 30 & 13 \\ 
-Q04\_11 & 1.000 & 1 & 1.0 & 8 & 4 \\ 
+Q04\_03 & 0.052 & 3 & 3.0 & 28 & 12 \\ 
+Q04\_05 & 0.242 & 3 & 3.0 & 28 & 13 \\ 
+Q04\_10 & 0.289 & 2 & 3.0 & 28 & 13 \\ 
+Q04\_02 & 0.369 & 3 & 2.5 & 27 & 12 \\ 
+Q04\_06 & 0.374 & 3 & 3.0 & 28 & 13 \\ 
+Q04\_04 & 0.552 & 4 & 4.0 & 27 & 13 \\ 
+Q04\_09 & 0.613 & 2 & 2.0 & 27 & 13 \\ 
+Q04\_08 & 0.769 & 3 & 3.0 & 28 & 13 \\ 
+Q04\_11 & 0.778 & 1 & 1.0 & 7 & 4 \\ 
+Q04\_01 & 1.000 & 4 & 4.0 & 28 & 13 \\ 
+Q04\_07 & 1.000 & 3 & 3.0 & 28 & 13 \\ 
 Q04\_12 & 1.000 & 3 & 4.0 & 2 & 1 \\ 
 \bottomrule
 \end{tabular*}
@@ -810,13 +802,13 @@ prop\_employer
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Q12\_03 & 0.324 & 30 & 13 & 0.700 & 0.538 \\
-Q12\_01 & 0.400 & 30 & 13 & 0.767 & 0.923 \\
-Q12\_05 & 0.485 & 30 & 13 & 0.733 & 0.615 \\
-Q12\_07 & 0.736 & 30 & 13 & 0.633 & 0.538 \\
-Q12\_02 & 0.743 & 30 & 13 & 0.533 & 0.615 \\
-Q12\_06 & 0.747 & 30 & 13 & 0.600 & 0.538 \\
-Q12\_04 & 1.000 & 30 & 13 & 0.633 & 0.615 \\
+Q12\_03 & 0.307 & 28 & 13 & 0.714 & 0.538 \\
+Q12\_01 & 0.399 & 28 & 13 & 0.786 & 0.923 \\
+Q12\_05 & 0.469 & 28 & 13 & 0.750 & 0.615 \\
+Q12\_07 & 0.732 & 28 & 13 & 0.643 & 0.538 \\
+Q12\_02 & 0.742 & 28 & 13 & 0.536 & 0.615 \\
+Q12\_06 & 0.742 & 28 & 13 & 0.607 & 0.538 \\
+Q12\_04 & 1.000 & 28 & 13 & 0.643 & 0.615 \\
 \end{longtable}
 
 \subsubsection{S3 Is there a difference between educators and practice
@@ -965,11 +957,11 @@ P-value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Didactic & 53.3 & 61.5 & 0.743 \\
-Simulation & 16.7 & 30.8 & 0.417 \\
-Wet Lab & 73.3 & 46.2 & 0.162 \\
-Live Patient & 93.3 & 38.5 & 0.000303 *** \\
-None of These & 0.0 & 23.1 & 0.0232 * \\
+Didactic & 57.1 & 61.5 & 1 \\
+Simulation & 14.3 & 30.8 & 0.237 \\
+Wet Lab & 75.0 & 46.2 & 0.0885 \\
+Live Patient & 96.4 & 38.5 & 0.000105 *** \\
+None of These & 0.0 & 23.1 & 0.0268 * \\
 \end{longtable}
 
 \subsubsection{S6 Do educators and employers differ in their views on
@@ -1047,10 +1039,10 @@ Notes
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Didactic & 138.5 & 0.415 & ns & Test performed \\
-Simulation & 108 & 0.363 & ns & Test performed \\
-Wet Lab & 162 & 0.713 & ns & Test performed \\
-Live Patient & 263.5 & 0.003 & ** & Test performed \\
+Didactic & 129.5 & 0.467 & ns & Test performed \\
+Simulation & 98 & 0.366 & ns & Test performed \\
+Wet Lab & 148 & 0.658 & ns & Test performed \\
+Live Patient & 245.5 & 0.004 & ** & Test performed \\
 None of these & - & - & - & Insufficient data \\
 Other & - & - & - & Insufficient data \\
 \end{longtable}
@@ -1156,20 +1148,20 @@ P-value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Oral Exam/Charting & 86.7 & 69.2 & 0.217 \\
-Radiographic Positioning & 93.3 & 69.2 & 0.0576 \\
-Radiographic Interpretation & 90.0 & 76.9 & 0.345 \\
-Scaling & 90.0 & 61.5 & 0.0415 * \\
-Polishing & 76.7 & 30.8 & 0.00672 ** \\
-Canine Closed Extraction & 76.7 & 38.5 & 0.0339 * \\
-Feline Closed Extraction & 76.7 & 38.5 & 0.0339 * \\
-Canine Open Extraction - Single Root & 76.7 & 38.5 & 0.0339 * \\
-Feline Open Extraction - Single Root & 80.0 & 46.2 & 0.0367 * \\
-Canine Open Extraction - Canines/Multiple Roots & 80.0 & 46.2 & 0.0367
+Oral Exam/Charting & 92.9 & 69.2 & 0.0685 \\
+Radiographic Positioning & 96.4 & 69.2 & 0.0284 * \\
+Radiographic Interpretation & 96.4 & 76.9 & 0.0861 \\
+Scaling & 96.4 & 61.5 & 0.0084 ** \\
+Polishing & 82.1 & 30.8 & 0.00331 ** \\
+Canine Closed Extraction & 82.1 & 38.5 & 0.0102 * \\
+Feline Closed Extraction & 82.1 & 38.5 & 0.0102 * \\
+Canine Open Extraction - Single Root & 82.1 & 38.5 & 0.0102 * \\
+Feline Open Extraction - Single Root & 85.7 & 46.2 & 0.0193 * \\
+Canine Open Extraction - Canines/Multiple Roots & 85.7 & 46.2 & 0.0193
 * \\
-Feline Open Extraction - Canines/Multiple Roots & 23.3 & 30.8 & 0.709 \\
-Fluoride Treatment & 6.7 & 15.4 & 0.572 \\
-None of These & 20.0 & 0.0 & 0.155 \\
+Feline Open Extraction - Canines/Multiple Roots & 25.0 & 30.8 & 0.719 \\
+Fluoride Treatment & 3.6 & 15.4 & 0.232 \\
+None of These & 21.4 & 0.0 & 0.152 \\
 \end{longtable}
 
 Figure 5.2 shows the percentage of employers and educators who selected
@@ -1285,21 +1277,21 @@ Notes
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Oral exam/charting & 139 & 0.622 & ns & Test performed \\
-Radiographic positioning & 157 & 0.717 & ns & Test performed \\
-Radiographic interpretation & 126.5 & 0.194 & ns & Test performed \\
-Scaling & 156 & 0.762 & ns & Test performed \\
-Polishing & 148.5 & 1 & ns & Test performed \\
-Canine closed extraction & 127.5 & 0.328 & ns & Test performed \\
-Feline closed extraction & 104.5 & 0.049 & * & Test performed \\
-Canine open extraction - Single root & 104.5 & 0.049 & * & Test
+Oral exam/charting & 139 & 0.829 & ns & Test performed \\
+Radiographic positioning & 157 & 0.51 & ns & Test performed \\
+Radiographic interpretation & 126.5 & 0.261 & ns & Test performed \\
+Scaling & 155.5 & 0.578 & ns & Test performed \\
+Polishing & 148 & 0.816 & ns & Test performed \\
+Canine closed extraction & 127.5 & 0.437 & ns & Test performed \\
+Feline closed extraction & 104.5 & 0.064 & . & Test performed \\
+Canine open extraction - Single root & 104.5 & 0.064 & . & Test
 performed \\
-Feline open extraction - Single root & 115.5 & 0.076 & . & Test
+Feline open extraction - Single root & 110 & 0.092 & . & Test
 performed \\
-Canine open extraction - Canines/multiple roots & 115.5 & 0.076 & . &
+Canine open extraction - Canines/multiple roots & 110 & 0.092 & . & Test
+performed \\
+Feline open extraction - Canines/multiple roots & 53.5 & 0.276 & ns &
 Test performed \\
-Feline open extraction - Canines/multiple roots & 54 & 0.207 & ns & Test
-performed \\
 Fluoride treatment & - & - & - & Insufficient data \\
 None & - & - & - & Insufficient data \\
 \end{longtable}
