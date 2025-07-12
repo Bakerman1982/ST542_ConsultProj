@@ -744,3 +744,188 @@ print(test_results)
 
 The Fisher’s exact test results show no statistically significant differences between Educators and Employers across all seven skills assessed (all p-values > 0.32). Both groups reported similar proportions of positive responses, with Educator positive response rates ranging from about 53% to 77%, and Employer rates ranging from about 54% to 92%. These findings suggest that Educators and Employers have broadly comparable perceptions or reports regarding training or expectation of these veterinary dentistry skills. The lack of significant difference implies alignment between the two groups on these specific competencies.
 
+
+
+
+
+
+To assess whether educators and employers differ in their beliefs about which dental skills should be included in the pre-clinical DVM curriculum, we analyzed responses to parallel Likert-scale questions: Q13 (educators) and Q17 (employers). Both groups rated the importance of teaching 12 specific dentistry skills using a 4-point Likert scale ranging from 1 (Strongly Disagree) to 4 (Strongly Agree). Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually.
+
+The results showed statistically significant differences in opinion for two of the twelve skills. Employers were significantly more likely than educators to agree that feline open extractions involving multiple roots or canines (Skill_11, p = 0.003) and fluoride treatment (Skill_12, p = 0.013) should be included in the pre-clinical curriculum. For all other skills, there were no statistically significant differences between groups (all p > 0.10), and the median rating for most skills was 4 (“Strongly Agree”) in both groups. These findings suggest general alignment between educators and employers on most skills, but highlight a few areas—particularly more advanced feline extractions and fluoride use—where employer expectations may exceed what educators currently prioritize for pre-clinical training.
+
+
+
+
+```{r}
+# Load required packages
+library(dplyr)
+library(tidyr)
+library(gt)
+
+# 1. Select relevant Q13 (educators) and Q17 (employers) columns
+q13_vars <- paste0("Q13_", sprintf("%02d", 1:12))  # Educators
+q17_vars <- paste0("Q17_", sprintf("%02d", 1:12))  # Employers
+
+educator_q13 <- Educator_Data_Clean %>%
+  select(all_of(q13_vars)) %>%
+  mutate(group = "Educator")
+
+employer_q17 <- Employer_Data_Clean %>%
+  select(all_of(q17_vars)) %>%
+  mutate(group = "Employer")
+
+# 2. Combine and standardize column names
+colnames(educator_q13)[1:12] <- paste0("Skill_", sprintf("%02d", 1:12))
+colnames(employer_q17)[1:12] <- paste0("Skill_", sprintf("%02d", 1:12))
+
+combined_data <- bind_rows(educator_q13, employer_q17)
+
+# 3. Reshape to long format
+q3_long <- combined_data %>%
+  pivot_longer(
+    cols = starts_with("Skill_"),
+    names_to = "Skill",
+    values_to = "Rating_num"
+  ) %>%
+  mutate(Rating_num = as.numeric(Rating_num)) %>%
+  filter(!is.na(Rating_num))
+
+# 4. Run Mann-Whitney U tests
+q3_results <- q3_long %>%
+  group_by(Skill) %>%
+  summarise(
+    p_value = wilcox.test(Rating_num ~ group)$p.value,
+    median_educator = median(Rating_num[group == "Educator"], na.rm = TRUE),
+    median_employer = median(Rating_num[group == "Employer"], na.rm = TRUE),
+    n_educator = sum(group == "Educator"),
+    n_employer = sum(group == "Employer"),
+    .groups = "drop"
+  ) %>%
+  arrange(p_value)
+
+# 5. Clean column names
+q3_results_clean <- q3_results %>%
+  rename(
+    `p-value` = p_value,
+    `Median (Educator)` = median_educator,
+    `Median (Employer)` = median_employer,
+    `n (Educator)` = n_educator,
+    `n (Employer)` = n_employer
+  )
+
+# 6. Display results as table
+q3_results_clean %>%
+  gt() %>%
+  tab_header(
+    title = "Mann-Whitney U Test: Pre-Clinical Skill Training Beliefs"
+  ) %>%
+  fmt_number(columns = c(`p-value`), decimals = 3)
+
+```
+
+
+
+
+
+
+
+
+To assess whether educators and practice owners differ in their expectations for the number of dental procedures students should complete during clinical training, we compared responses from Question 19 of the educator survey and Question 24 of the employer survey. Respondents reported the number of procedures they believe should be completed across four clinical settings: primary care, dentistry rotations, shelter medicine, and lab animal medicine. Since Shapiro-Wilk tests indicated that the data were not normally distributed in any group-setting combination (all p-values < 0.05), we used the Mann-Whitney U test to compare groups for each setting.
+
+The results showed no statistically significant differences in expectations between educators and employers across all four settings (all p-values > 0.09). However, there were modest differences in median values. For example, in dentistry rotations, employers reported a higher median (6.5 procedures) than educators (4 procedures), though the p-value (0.098) did not reach statistical significance. In contrast, both groups reported low or zero median expectations for procedures in lab animal and shelter medicine settings. These findings suggest general alignment between groups, though some settings—particularly dentistry rotations—may reflect subtle differences in expectations that warrant further exploration.
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(broom)
+
+# 1. Define variables
+educator_vars <- paste0("Q19_0", 1:4)
+employer_vars <- paste0("Q24_0", 1:4)
+setting_labels <- c(
+  "Primary_Care", "Dentistry_Rotation", "Shelter_Medicine", "Lab_Animal"
+)
+
+# 2. Select and reshape data
+educator_proc <- Educator_Data_Clean %>%
+  select(all_of(educator_vars)) %>%
+  mutate(group = "Educator")
+
+employer_proc <- Employer_Data_Clean %>%
+  select(all_of(employer_vars)) %>%
+  mutate(group = "Employer")
+
+# 3. Rename columns to match across datasets
+colnames(educator_proc)[1:4] <- setting_labels
+colnames(employer_proc)[1:4] <- setting_labels
+
+# 4. Combine into long format
+combined_proc <- bind_rows(educator_proc, employer_proc) %>%
+  pivot_longer(
+    cols = all_of(setting_labels),
+    names_to = "Setting",
+    values_to = "Procedure_Count"
+  ) %>%
+  filter(!is.na(Procedure_Count)) %>%
+  mutate(Procedure_Count = as.numeric(Procedure_Count))
+
+# 5. Check normality (optional step)
+combined_proc %>%
+  group_by(Setting, group) %>%
+  summarise(
+    n = n(),
+    shapiro_p = shapiro.test(Procedure_Count)$p.value,
+    .groups = "drop"
+  )
+
+# 6. Run t-tests per setting
+ttest_results <- combined_proc %>%
+  group_by(Setting) %>%
+  summarise(
+    ttest = list(t.test(Procedure_Count ~ group)),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    tidy_res = map(ttest, broom::tidy)
+  ) %>%
+  unnest(tidy_res) %>%
+  select(Setting, estimate1, estimate2, statistic, p.value, conf.low, conf.high)
+
+# 7. Since normality is violated, use Mann-Whitney
+mw_results <- combined_proc %>%
+  group_by(Setting) %>%
+  summarise(
+    p_value = wilcox.test(Procedure_Count ~ group)$p.value,
+    median_educator = median(Procedure_Count[group == "Educator"]),
+    median_employer = median(Procedure_Count[group == "Employer"]),
+    .groups = "drop"
+  )
+
+library(gt)
+
+mw_results %>%
+  mutate(
+    p_value = round(p_value, 3),
+    median_educator = round(median_educator, 1),
+    median_employer = round(median_employer, 1)
+  ) %>%
+  rename(
+    `Setting` = Setting,
+    `Median (Educator)` = median_educator,
+    `Median (Employer)` = median_employer,
+    `p-value` = p_value
+  ) %>%
+  gt() %>%
+  tab_header(
+    title = md("**Mann-Whitney U Test: Expected Number of Dental Procedures**"),
+    subtitle = "Comparison of Educator and Employer Expectations by Clinical Setting"
+  ) %>%
+  cols_align(align = "center") %>%
+  fmt_number(columns = `p-value`, decimals = 3)
+```
+
+
+
+

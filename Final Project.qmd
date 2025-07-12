@@ -487,6 +487,17 @@ Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)
 
 # Abstract
 
+Authors of each section
+
+Introduction - Taylor Cesarski
+Data - Brock Akerman
+Methods - Taylor Cesarski
+Results - All
+
+* Questions 1-4 -  Hanan Ali
+* Questions 5,7 - Taylor Cesarski
+* Questions 6,8 - Brock Akerman
+
 # Introduction
 
 Dr. Mariea Ross-Estrada, a faculty member at North Carolina State University's College of Veterinary Medicine, is exploring whether there are differences between the expectations of small animal primary care veterinary employers and veterinary educators regarding new graduates' competencies in dentistry. Through her own professional experience and conversations with colleagues, Dr. Ross-Estrada observed that many veterinarians must rely on on-the-job training to gain the skills necessary in small animal dentistry. These shared experiences prompted her to investigate whether there is a misalignment in what is taught in veterinary programs and what is expected in clinical practice.
@@ -901,19 +912,21 @@ After all preprocessing steps, the final cleaned datasets consisted of 13 employ
 
 #### Likert scale questions (statistical questions #1,3, 6, and 8)
 
-These questions use a Likert scale with response options: Strongly Agree, Agree, Disagree, and Strongly Disagree across a variety of skills and procedures. Given the ordinal nature of these responses, we use diverging stacked bar charts and summary tables for exploratory data analysis, followed by a Mann-Whitney U Test for formal hypothesis testing.
+These questions use a Likert scale with response options: Strongly Agree, Agree, Disagree, and Strongly Disagree across a variety of skills and procedures. Given the ordinal nature of these responses, we will use diverging stacked bar charts and summary tables to visually explore the data, followed by a Mann-Whitney U Test for formal hypothesis testing.
 
 The Mann-Whitney U Test is a non-parametric test used to assess whether there is a statistically significant difference in the distributions of ordinal or continuous variables between two independent groups. In this case, educators and employers are assumed to be independent, consistent with the survey design.
 
 This test is appropriate for Likert-scale data because:
 
-*It does not assume normality (unlike the t-test),* It respects the ordinal (ranked) structure of the data, \*It retains statistical power in small samples.
+* It does not assume normality (unlike the t-test),
+* It respects the ordinal (ranked) structure of the data,
+* It retains statistical power in small samples.
 
 ```{r}
 #| label: mannwhitneytable
 #| echo: false
 #| warning: false
-#| fig-cap: "Mann-Whitney U test logic for comparing ranked data"
+#| fig-cap: " "
 #| fig-align: center
 
 # Create a visual summary table
@@ -928,11 +941,20 @@ kable(mw_data, align = "lrrr", caption = "Mann-Whitney U Rank Summary Table", bo
 
 ```
 
+In order to calculate the test statistic and p-value for a Mann-Whitney U Test:
+
+* All observations are ranked together
+* The sum of the ranks for each group is calculated ($R_1$ and $R_2$)
+* The test statistic U is then calculated as the minimum of $U_1$ and $U_2$ where $U_1$ and $U_2$ are the following: $U_1 = R_1 - \frac{n_1(n_1 + 1)}{2},  U_2 = R_2 - \frac{n_2(n_2 + 1)}{2}$ 
+* Then the p-value is calculated from the U distribution or normal approximation.
+
+P-values will be utilized for each statistical question listed above in order to formally analyze the data.
+
 #### Select all that apply questions (statistical questions #2, 5, and 7)
 
 These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Dot plots will also be utilized for questions with many options to avoid crowding in bar graphs.
 
-Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is again reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
 
 ```{r}
 #| label: fishertable
@@ -955,7 +977,7 @@ kable(table_data, align = "lrr", caption = "Fisher's Exact 2×2 Contingency Tabl
 
 Fisher's Exact Test operates under the null hypothesis that there is no association between the two variables. The alternative hypothesis is that there is an association. The p-value for the test is computed using the following formula:
 
-\[ $p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}$ \]
+$$p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}$$
 
 P-values are then computed for each skill, format, etc. between the two groups (educators and employers) depending on the statistical question to be analyzed.
 
@@ -969,11 +991,11 @@ This question asks participants to enter a number related to the number of denta
 
 ### S1 Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
 
+
 To assess whether there are differences in perceptions of new graduate competence in dentistry, educators and employers were asked a parallel question (Q4). Employers were asked to rate their expectation that early career veterinarians can competently perform 12 specific dental skills on their first day of employment. Educators were asked to rate whether they believe new graduates can perform those same skills competently. Responses were recorded on a 4-point Likert scale from 1 (Strongly Disagree) to 4 (Strongly Agree).
 
-We used the Mann-Whitney U test to compare the responses between educators and employers for each skill. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. Median scores and group sizes were also reported to support interpretation of the findings.
 
-The results showed no statistically significant differences between educators and employers for most skills, indicating general agreement about which dental competencies new graduates possess. The only skill approaching significance was interpreting dental radiographs (p = 0.064), where employers appeared slightly more confident than educators. While this difference is subtle (both groups had a median rating of 3), it may warrant further exploration in future studies. Overall, the findings suggest alignment between educational preparation and employer expectations regarding small animal dentistry skills.
+We used the Mann-Whitney U test to compare the responses between educators and employers for each skill. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. Median scores and group sizes were also reported to support interpretation of the findings.
 
 ```{r}
 #| label: setup_mw_test
@@ -1062,11 +1084,11 @@ mw_results_clean %>%
 
 ### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
 
+
 To evaluate whether differences exist between DVM educators and employers in their understanding of which dental skills are taught in the pre-clinical curriculum, we analyzed responses to parallel survey questions. Educators were asked to indicate which of seven core dentistry skills are taught as part of their pre-clinical courses (Q12), while employers were asked which skills they believe recent graduates were taught prior to clinical training (Q16). Since the two groups answered different question numbers about the same underlying skills, we first aligned the datasets by renaming employer variables to match educator labels. This harmonization allowed for direct comparison of responses skill-by-skill across the two groups.
 
-After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. One skill item was excluded due to all responses being missing, and approximately 70% of employer data for Q16 items were incomplete, limiting the strength of some comparisons.
+After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. 
 
-The results of the Fisher’s tests revealed no statistically significant differences between educators and employers for any of the seven aligned skills (all p-values \> 0.32). Both groups reported similar proportions of skills being taught, with educator endorsement rates ranging from approximately 53% to 77%, and employer endorsement ranging from 54% to 92%. These findings suggest general agreement between what educators report teaching and what employers believe early career veterinarians have been taught in the pre-clinical phase of training. The overall consistency supports the idea that pre-clinical dental training expectations are reasonably aligned between academic programs and employer perceptions.
 
 ```{r}
 #| label: question_2prep
@@ -1208,7 +1230,92 @@ kable(test_results,
 
 ### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
+
+To assess whether educators and employers differ in their beliefs about which dental skills should be included in the pre-clinical DVM curriculum, we analyzed responses to parallel Likert-scale questions: Q13 (educators) and Q17 (employers). Both groups rated the importance of teaching 12 specific dentistry skills using a 4-point Likert scale ranging from 1 (Strongly Disagree) to 4 (Strongly Agree). 
+
+Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. 
+
+
+
+
+```{r}
+#| label: question_3prep
+#| echo: false
+#| warning: false
+#| message: false
+#| include: false
+# Load required packages
+library(dplyr)
+library(tidyr)
+library(gt)
+
+# 1. Select relevant Q13 (educators) and Q17 (employers) columns
+q13_vars <- paste0("Q13_", sprintf("%02d", 1:12))  # Educators
+q17_vars <- paste0("Q17_", sprintf("%02d", 1:12))  # Employers
+
+educator_q13 <- Educator_Data_Clean %>%
+  select(all_of(q13_vars)) %>%
+  mutate(group = "Educator")
+
+employer_q17 <- Employer_Data_Clean %>%
+  select(all_of(q17_vars)) %>%
+  mutate(group = "Employer")
+
+# 2. Combine and standardize column names
+colnames(educator_q13)[1:12] <- paste0("Skill_", sprintf("%02d", 1:12))
+colnames(employer_q17)[1:12] <- paste0("Skill_", sprintf("%02d", 1:12))
+
+combined_data <- bind_rows(educator_q13, employer_q17)
+
+# 3. Reshape to long format
+q3_long <- combined_data %>%
+  pivot_longer(
+    cols = starts_with("Skill_"),
+    names_to = "Skill",
+    values_to = "Rating_num"
+  ) %>%
+  mutate(Rating_num = as.numeric(Rating_num)) %>%
+  filter(!is.na(Rating_num))
+
+# 4. Run Mann-Whitney U tests
+q3_results <- q3_long %>%
+  group_by(Skill) %>%
+  summarise(
+    p_value = wilcox.test(Rating_num ~ group)$p.value,
+    median_educator = median(Rating_num[group == "Educator"], na.rm = TRUE),
+    median_employer = median(Rating_num[group == "Employer"], na.rm = TRUE),
+    n_educator = sum(group == "Educator"),
+    n_employer = sum(group == "Employer"),
+    .groups = "drop"
+  ) %>%
+  arrange(p_value)
+
+# 5. Clean column names
+q3_results_clean <- q3_results %>%
+  rename(
+    `p-value` = p_value,
+    `Median (Educator)` = median_educator,
+    `Median (Employer)` = median_employer,
+    `n (Educator)` = n_educator,
+    `n (Employer)` = n_employer
+  )
+
+# 6. Display results as table
+q3_results_clean %>%
+  gt() %>%
+  tab_header(
+    title = "Mann-Whitney U Test: Pre-Clinical Skill Training Beliefs"
+  ) %>%
+  fmt_number(columns = c(`p-value`), decimals = 3)
+
+```
+
 ### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+
+To assess whether educators and practice owners differ in their expectations for the number of dental procedures students should complete during clinical training, we compared responses from Question 19 of the educator survey and Question 24 of the employer survey. Respondents indicated the number of procedures they believe should be completed in four clinical settings: primary care, dentistry rotations, shelter medicine, and lab animal medicine. 
+
+
+Before selecting an appropriate statistical test, we assessed normality using the Shapiro-Wilk test, which showed that the data were not normally distributed in any group-setting combination (all p-values < 0.05). Given the non-normal distribution and the ordinal or skewed nature of the data, we used the Mann-Whitney U test—a non-parametric alternative to the independent samples t-test—to compare the distributions of responses between educators and employers for each clinical setting. This test is appropriate when comparing two independent groups without assuming normality or equal variances.
 
 ### S5 Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
 

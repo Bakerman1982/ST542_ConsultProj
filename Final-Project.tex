@@ -1,4 +1,5 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -8,22 +9,24 @@
   letterpaper,
   DIV=11,
   numbers=noendperiod]{scrartcl}
-
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{2}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
-    \setmainfont[]{Times New Roman}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmainfont[]{Times New Roman}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -41,17 +44,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\ifLuaTeX
-  \usepackage{luacolor}
-  \usepackage[soul]{lua-ul}
-\else
-  \usepackage{soul}
-  
-\fi
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{2}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -77,8 +69,7 @@
 \makeatother
 
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -103,6 +94,26 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+\ifLuaTeX
+  \usepackage{luacolor}
+  \usepackage[soul]{lua-ul}
+\else
+  \usepackage{soul}
+\fi
+
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
 
 \usepackage{booktabs}
 \usepackage{caption}
@@ -154,11 +165,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={Bridging the Gap:},
   pdfauthor={Brock Akerman, Hanan Ali, Taylor Cesarski},
@@ -181,7 +190,6 @@
 Dentistry}
 \author{Brock Akerman, Hanan Ali, Taylor Cesarski}
 \date{2025-06-25}
-
 \begin{document}
 \maketitle
 
@@ -193,6 +201,21 @@ Dentistry}
 }
 
 \section{Abstract}\label{abstract}
+
+Authors of each section
+
+Introduction - Taylor Cesarski Data - Brock Akerman Methods - Taylor
+Cesarski Results - All
+
+\begin{itemize}
+\tightlist
+\item
+  Questions 1-4 - Hanan Ali
+\item
+  Questions 5,7 - Taylor Cesarski
+\item
+  Questions 6,8 - Brock Akerman
+\end{itemize}
 
 \section{Introduction}\label{introduction}
 
@@ -525,10 +548,9 @@ After all preprocessing steps, the final cleaned datasets consisted of
 
 These questions use a Likert scale with response options: Strongly
 Agree, Agree, Disagree, and Strongly Disagree across a variety of skills
-and procedures. Given the ordinal nature of these responses, we use
-diverging stacked bar charts and summary tables for exploratory data
-analysis, followed by a Mann-Whitney U Test for formal hypothesis
-testing.
+and procedures. Given the ordinal nature of these responses, we will use
+diverging stacked bar charts and summary tables to visually explore the
+data, followed by a Mann-Whitney U Test for formal hypothesis testing.
 
 The Mann-Whitney U Test is a non-parametric test used to assess whether
 there is a statistically significant difference in the distributions of
@@ -538,9 +560,15 @@ with the survey design.
 
 This test is appropriate for Likert-scale data because:
 
-\emph{It does not assume normality (unlike the t-test),} It respects the
-ordinal (ranked) structure of the data, *It retains statistical power in
-small samples.
+\begin{itemize}
+\tightlist
+\item
+  It does not assume normality (unlike the t-test),
+\item
+  It respects the ordinal (ranked) structure of the data,
+\item
+  It retains statistical power in small samples.
+\end{itemize}
 
 \begin{longtable}[]{@{}lrrr@{}}
 \caption{Mann-Whitney U Rank Summary Table}\tabularnewline
@@ -558,7 +586,27 @@ Group 1 (e.g., Educators) & n₁ & R₁ & R₁ / n₁ \\
 Group 2 (e.g., Employers) & n₂ & R₂ & R₂ / n₂ \\
 \end{longtable}
 
-Mann-Whitney U test logic for comparing ranked data
+In order to calculate the test statistic and p-value for a Mann-Whitney
+U Test:
+
+\begin{itemize}
+\tightlist
+\item
+  All observations are ranked together
+\item
+  The sum of the ranks for each group is calculated (\(R_1\) and
+  \(R_2\))
+\item
+  The test statistic U is then calculated as the minimum of \(U_1\) and
+  \(U_2\) where \(U_1\) and \(U_2\) are the following:
+  \(U_1 = R_1 - \frac{n_1(n_1 + 1)}{2},  U_2 = R_2 - \frac{n_2(n_2 + 1)}{2}\)
+\item
+  Then the p-value is calculated from the U distribution or normal
+  approximation.
+\end{itemize}
+
+P-values will be utilized for each statistical question listed above in
+order to formally analyze the data.
 
 \paragraph{Select all that apply questions (statistical questions \#2,
 5, and
@@ -574,13 +622,13 @@ for questions with many options to avoid crowding in bar graphs.
 
 Fisher's Exact Test works with categorical data with independent
 samples, in this case educators and employers. Based on the survey
-design from the client, it is reasonable to assume that these two groups
-are independent. In this context, Fisher's Exact Test is preferred over
-Chi-Squared Tests due to the small sample size and therefore not meeting
-the expected count threshold that is required to proceed with
-Chi-Squared Tests. Given the small sample sizes, we acknowledge the
-limited power of these analyses and may consider post hoc power analyses
-for these tests.
+design from the client, it is again reasonable to assume that these two
+groups are independent. In this context, Fisher's Exact Test is
+preferred over Chi-Squared Tests due to the small sample size and
+therefore not meeting the expected count threshold that is required to
+proceed with Chi-Squared Tests. Given the small sample sizes, we
+acknowledge the limited power of these analyses and may consider post
+hoc power analyses for these tests.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3288}}
@@ -624,9 +672,7 @@ association between the two variables. The alternative hypothesis is
 that there is an association. The p-value for the test is computed using
 the following formula:
 
-{[}
-\(p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}\)
-{]}
+\[p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}\]
 
 P-values are then computed for each skill, format, etc. between the two
 groups (educators and employers) depending on the statistical question
@@ -670,16 +716,6 @@ especially when the assumptions for parametric tests may not hold.
 Ratings were reshaped into long format and analyzed skill-by-skill.
 Median scores and group sizes were also reported to support
 interpretation of the findings.
-
-The results showed no statistically significant differences between
-educators and employers for most skills, indicating general agreement
-about which dental competencies new graduates possess. The only skill
-approaching significance was interpreting dental radiographs (p =
-0.064), where employers appeared slightly more confident than educators.
-While this difference is subtle (both groups had a median rating of 3),
-it may warrant further exploration in future studies. Overall, the
-findings suggest alignment between educational preparation and employer
-expectations regarding small animal dentistry skills.
 
 \begin{table}
 \caption*{
@@ -730,21 +766,7 @@ skill. This non-parametric test is appropriate for evaluating
 categorical (yes/no) outcomes in small samples, especially when
 comparing proportions between two independent groups. Only skills for
 which both groups provided non-missing responses were included in the
-final analysis. One skill item was excluded due to all responses being
-missing, and approximately 70\% of employer data for Q16 items were
-incomplete, limiting the strength of some comparisons.
-
-The results of the Fisher's tests revealed no statistically significant
-differences between educators and employers for any of the seven aligned
-skills (all p-values \textgreater{} 0.32). Both groups reported similar
-proportions of skills being taught, with educator endorsement rates
-ranging from approximately 53\% to 77\%, and employer endorsement
-ranging from 54\% to 92\%. These findings suggest general agreement
-between what educators report teaching and what employers believe early
-career veterinarians have been taught in the pre-clinical phase of
-training. The overall consistency supports the idea that pre-clinical
-dental training expectations are reasonably aligned between academic
-programs and employer perceptions.
+final analysis.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1831}}
@@ -802,10 +824,43 @@ owners in their level of agreement about whether specific dental skills
 should be taught
 pre-clinically?}\label{s3-is-there-a-difference-between-educators-and-practice-owners-in-their-level-of-agreement-about-whether-specific-dental-skills-should-be-taught-pre-clinically}
 
+To assess whether educators and employers differ in their beliefs about
+which dental skills should be included in the pre-clinical DVM
+curriculum, we analyzed responses to parallel Likert-scale questions:
+Q13 (educators) and Q17 (employers). Both groups rated the importance of
+teaching 12 specific dentistry skills using a 4-point Likert scale
+ranging from 1 (Strongly Disagree) to 4 (Strongly Agree).
+
+Because the data were ordinal and responses came from two independent
+groups, the Mann-Whitney U test was used to compare educator and
+employer ratings for each skill individually. This non-parametric test
+is appropriate for comparing ordinal data between two independent
+groups, especially when the assumptions for parametric tests may not
+hold. Ratings were reshaped into long format and analyzed
+skill-by-skill.
+
 \subsubsection{S4 Do employers and educators differ in their
 expectations about how many dental procedures new graduates should
 complete during clinical
 training?}\label{s4-do-employers-and-educators-differ-in-their-expectations-about-how-many-dental-procedures-new-graduates-should-complete-during-clinical-training}
+
+To assess whether educators and practice owners differ in their
+expectations for the number of dental procedures students should
+complete during clinical training, we compared responses from Question
+19 of the educator survey and Question 24 of the employer survey.
+Respondents indicated the number of procedures they believe should be
+completed in four clinical settings: primary care, dentistry rotations,
+shelter medicine, and lab animal medicine.
+
+Before selecting an appropriate statistical test, we assessed normality
+using the Shapiro-Wilk test, which showed that the data were not
+normally distributed in any group-setting combination (all p-values
+\textless{} 0.05). Given the non-normal distribution and the ordinal or
+skewed nature of the data, we used the Mann-Whitney U test---a
+non-parametric alternative to the independent samples t-test---to
+compare the distributions of responses between educators and employers
+for each clinical setting. This test is appropriate when comparing two
+independent groups without assuming normality or equal variances.
 
 \subsubsection{S5 Is there difference between the instructional formats
 in dentistry reported by DVM programs and the formats perceived by
