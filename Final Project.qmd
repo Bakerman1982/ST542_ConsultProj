@@ -3,6 +3,8 @@ title: "Bridging the Gap:"
 subtitle: "Comparing Employer and Educator Expectations in Small Animal Dentistry"
 author: Brock Akerman, Hanan Ali, Taylor Cesarski
 date: "June, 25, 2025"
+bibliography: references.bib
+# csl: apa.csl  # Optional: uncomment and provide a CSL file for citation styling (e.g., APA, MLA)
 format:
   pdf:
     pdf-engine: xelatex
@@ -20,11 +22,14 @@ format:
     fontsize: 11pt
     keep-tex: true
     linkcolor: blue
+
 editor_options: 
   chunk_output_type: inline
+
 header-includes:
   - \numberwithin{figure}{section}
 ---
+
 
 ```{r package_load, warning=FALSE, include=FALSE}
 library(ggplot2)
@@ -602,7 +607,7 @@ ggplot(combined_progress, aes(x = progress, fill = group)) +
 Regarding the proportion of the survey completed, employer responses were more variable—spanning the full range from partial to full completion. In contrast, educators tended to complete more of the survey, with a concentration near full completion and a less pronounced left tail. The density plot below visualizes these differences in survey progress across groups.
 
 ```{r}
-#| label: Data_Desc_06
+#| label: Data_Desc_03
 #| fig-cap: "Geographic distribution of survey respondents across the United States."
 #| echo: false
 #| fig-align: center
@@ -669,7 +674,7 @@ Since our analysis focused on the representativeness of the United States, we id
 #### Educator metrics
 
 ```{r}
-#| label: Data_Desc_03
+#| label: Data_Desc_04
 #| fig-cap: "Educator contextualized background information about teaching and procedures."
 #| echo: false
 #| fig-align: center
@@ -761,8 +766,10 @@ Figure 3.3 provides an overview of the survey participants and their institution
 
 #### Employer metrics
 
+The employer dataset was considerably smaller than the educator dataset, which may reflect differences in motivation or willingness to complete the survey. Most employer respondents identified as practice owners, and approximately 75% indicated they were employed in private practice. This aligns with findings from the American Veterinary Medical Association (AVMA), which reported that "most veterinarians age 75 or younger, 83.9%, work in private clinical practice" [@avma2019].
+
 ```{r}
-#| label: Data_Desc_04
+#| label: Data_Desc_06
 #| fig-cap: ""
 #| echo: false
 #| warning: false
@@ -824,10 +831,11 @@ kable(q37_table, caption = "Respondent Role: Counts and Percentages", align = "l
 
 ```
 
-Table 1 and Table 2 provide additional context about the survey respondents. The majority of respondents work in privately owned veterinary practices, and most identified themselves as the owners of those practices.
+Survey responses were also heavily skewed toward practice ownership, with 63.6% of employer participants identifying as owners. By comparison, the same AVMA survey reported that only 21.3% of veterinarians identified as practice owners. This discrepancy may be due to the smaller sample size or the possibility that practice owners were more willing to complete the survey than associates or other veterinary professionals.
+
 
 ```{r}
-#| label: Data_Desc_05
+#| label: Data_Desc_07
 #| fig-cap: "Average dental procedures employer survey participants indicated they performed each week."
 #| echo: false
 #| warning: false
@@ -1509,12 +1517,8 @@ The analogue of this question for educators was survey question #17, which asked
 
 This question aimed to assess how participants view the types of dental instruction that should be required within veterinary medical curricula. To examine whether there were differences in opinions between educators and employers, the Mann-Whitney U-Test—a non-parametric test also known as the Wilcoxon Rank-Sum Test—was used. This test is appropriate for comparing two independent groups without assuming a normal distribution and assumes mutual exclusivity between the groups.
 
-```{r question_6a, , echo=FALSE, warning=FALSE, fig.align='center'}
-#| label: question_6a
-#| echo: false
-#| warning: false
-#| fig-align: center
 
+```{r question_6a_updated, echo=FALSE, warning=FALSE, fig.align='center'}
 # Define the matching question columns
 educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
 employer_cols  <- paste0("Q21_", sprintf("%02d", 1:7))
@@ -1530,59 +1534,54 @@ instruction_labels <- c(
   "Q17_07" = "Other - Text",   "Q21_07" = "Other - Text"
 )
 
-# Initialize an empty list to store results
+# Initialize results list
 mw_results <- list()
 
 for (i in seq_along(educator_cols)) {
   q_edu <- educator_cols[i]
   q_emp <- employer_cols[i]
-  
+
   edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
   emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
-  
+
   edu_vals <- edu_vals[!is.na(edu_vals)]
   emp_vals <- emp_vals[!is.na(emp_vals)]
-  
+
   if (length(edu_vals) > 1 && length(emp_vals) > 1) {
     test_result <- wilcox.test(edu_vals, emp_vals, exact = TRUE)
     mw_results[[q_edu]] <- list(
       question = q_edu,
-      W = test_result$statistic,
-      p_value = test_result$p.value
-    )
-  } else {
-    mw_results[[q_edu]] <- list(
-      question = q_edu,
-      W = NA,
-      p_value = NA
+      p_value = test_result$p.value,
+      n_educators = length(edu_vals),
+      n_employers = length(emp_vals)
     )
   }
 }
 
-# Create mw_df
+# Create dataframe
 mw_df <- do.call(rbind, lapply(mw_results, as.data.frame)) %>% as.data.frame()
 mw_df$p_value <- as.numeric(mw_df$p_value)
-mw_df$W <- as.numeric(mw_df$W)
-mw_df$question <- rownames(mw_df)
-mw_df$significance <- cut(mw_df$p_value,
-                          breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
-                          labels = c("***", "**", "*", ".", "ns"))
 
-# Build display table with readable names
-mw_table <- mw_df %>%
-  filter(question != "Q17_07") %>%
+# Add significance stars
+mw_df$stars <- cut(mw_df$p_value,
+                   breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+                   labels = c("***", "**", "*", ".", ""))
+
+
+# Add readable labels and combine sample sizes with clear label
+mw_df <- mw_df %>%
   mutate(
-    Instruction_Type = recode(question, !!!instruction_labels),
-    W_Statistic = ifelse(is.na(W), "-", round(W, 1)),
-    P_Value = ifelse(is.na(p_value), "-", round(p_value, 3)),
-    Significance = ifelse(is.na(significance), "-", as.character(significance)),
-    Notes = ifelse(P_Value == "-", "Insufficient data", "Test performed")
+    Skill = recode(question, !!!instruction_labels),
+    P_Value = ifelse(stars != "", paste0(sprintf("%.3f", p_value), " ", stars), sprintf("%.3f", p_value)),
+    `n (educators / employers)` = paste0(n_educators, " / ", n_employers)
   ) %>%
-  select(Instruction_Type, W_Statistic, P_Value, Significance, Notes)
+  select(Skill, P_Value, `n (educators / employers)`)
 
-# Render the table
-kable(mw_table, caption = "Mann-Whitney U-Test Results for Instruction Types", align = "c", row.names = FALSE)
+
+# Render table
+kable(mw_df, caption = "Mann-Whitney U-Test Results by Skill", align = "c", row.names = FALSE)
 ```
+
 
 The results are presented in Table 7. No statistically significant differences were found between educators and employers in their responses regarding the Didactic, Simulation, or Wet Lab instructional formats. However, a significant difference was identified between the two groups concerning Live Patient instruction, where responses varied significantly. The instructional categories “None of These” and “Other” could not be tested due to insufficient data.
 
@@ -2045,3 +2044,5 @@ ggplot(plot_summary, aes(x = factor(response), y = count_signed, fill = group)) 
 ## Final Thoughts
 
 # Appendix
+
+
