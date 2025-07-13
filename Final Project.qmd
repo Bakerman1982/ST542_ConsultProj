@@ -48,6 +48,8 @@ library(effectsize) # For calculating ranked-biserial correlation
 library(stringr)    
 library(kableExtra) # For advanced kable features like column_spec and styling
 library(magrittr)
+library(forcats) # For fct_rev and fct_relevel
+library(scales)  # For scales::label_percent()
 ```
 
 ```{r Employer Data load, echo=FALSE, message=FALSE, warning=FALSE, results="hide",include=FALSE, error=FALSE}
@@ -1526,7 +1528,7 @@ This question aimed to assess perceptions regarding which types of dental instru
 
 
 ```{r}
-#| label: question_6a_updated_final
+#| label: 6a_MannWhit_Table
 #| echo: false
 #| warning: false
 #| message: false
@@ -1680,6 +1682,171 @@ The Mann–Whitney U-test revealed a statistically significant difference ($p = 
 No statistically significant differences were found between the groups regarding the instructional types Simulation ($p = 0.366$), Didactic ($p = 0.467$), or Wet Lab ($p = 0.658$). The ranked-biserial correlations for Simulation ($r_{rb} = 0.18$) and Didactic ($r_{rb} = 0.13$) were small and positive, indicating a slight tendency for educators to rate these types of instruction as more important than employers. The effect size for Wet Lab ($r_{rb} = 0.05$) was negligible. None of these differences reached statistical significance.
 
 The instructional categories “None of These” and “Other” were excluded from Table 5.3 due to insufficient data for statistical testing.
+
+```{r}
+#| label: s6_diverging_stacked_bar
+#| echo: false
+#| warning: false
+#| message: false
+#| include: true
+#| fig-height: 8 # Adjust height as needed for readability
+#| fig-width: 10 # Adjust width as needed for readability
+#| fig-cap: "Diverging Stacked Bar Chart of Perceived Importance/Competence of Clinical Instruction Formats by Group (Educator vs. Employer)."
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(forcats) # For fct_rev and fct_relevel
+library(scales)  # For scales::label_percent()
+
+# Define the matching question columns (from your S6 code)
+educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
+employer_cols <- paste0("Q21_", sprintf("%02d", 1:7))
+
+# Create human-friendly labels (from your S6 code)
+instruction_labels <- c(
+  "Q17_01" = "Didactic", "Q21_01" = "Didactic",
+  "Q17_02" = "Simulation", "Q21_02" = "Simulation",
+  "Q17_03" = "Wet Lab", "Q21_03" = "Wet Lab",
+  "Q17_04" = "Live Patient", "Q21_04" = "Live Patient",
+  "Q17_05" = "None of these", "Q21_05" = "None of these",
+  "Q17_06" = "Other", "Q21_06" = "Other",
+  "Q17_07" = "Other - Text (Specify)" # Clarified label
+)
+
+# --- 1. Prepare and Combine Data ---
+# Select and rename educator data
+edu_long <- Educator_Data_Clean |>
+  select(all_of(educator_cols)) |>
+  mutate(Group = "Educator", ID = row_number()) |>
+  pivot_longer(
+    cols = -c(Group, ID),
+    names_to = "Question_ID",
+    values_to = "Response"
+  ) |>
+  filter(Question_ID %in% c("Q17_01", "Q17_02", "Q17_03", "Q17_04"))
+
+# Select and rename employer data
+emp_long <- Employer_Data_Clean |>
+  select(all_of(employer_cols)) |>
+  mutate(Group = "Employer", ID = row_number()) |>
+  pivot_longer(
+    cols = -c(Group, ID),
+    names_to = "Question_ID",
+    values_to = "Response"
+  ) |>
+  filter(Question_ID %in% c("Q21_01", "Q21_02", "Q21_03", "Q21_04"))
+
+# Combine both datasets
+combined_data_s6 <- bind_rows(edu_long, emp_long) |>
+  filter(!is.na(Response)) # Remove NA responses
+
+# --- 2. Create a unified "Skill" label for plotting and Likert factor ---
+full_label_map <- instruction_labels[c("Q17_01", "Q17_02", "Q17_03", "Q17_04")]
+names(full_label_map) <- c("Q17_01", "Q17_02", "Q17_03", "Q17_04")
+full_label_map <- c(full_label_map,
+                    "Q21_01" = "Didactic", "Q21_02" = "Simulation",
+                    "Q21_03" = "Wet Lab", "Q21_04" = "Live Patient")
+
+combined_data_s6 <- combined_data_s6 |>
+  mutate(
+    Skill = recode(Question_ID, !!!full_label_map),
+    Response_Factor = factor(Response,
+                             levels = 1:4,
+                             labels = c("1 - Strongly Disagree", "2 - Disagree", "3 - Agree", "4 - Strongly Agree"),
+                             ordered = TRUE)
+  )
+
+# --- 3. Calculate Proportions and Ns for plotting ---
+total_n_s6 <- combined_data_s6 |>
+  group_by(Skill, Group) |>
+  summarise(N = n(), .groups = 'drop')
+
+plot_data_s6 <- combined_data_s6 |>
+  group_by(Skill, Group, Response_Factor) |>
+  summarise(Count = n(), .groups = 'drop_last') |>
+  mutate(Proportion = Count / sum(Count)) |>
+  ungroup() |>
+  # Reversing the divergence logic: Educator is now negative, Employer is positive
+  mutate(Proportion_Diverge = ifelse(Group == "Educator", -Proportion, Proportion))
+
+plot_data_s6 <- plot_data_s6 |>
+  left_join(total_n_s6, by = c("Skill", "Group"))
+
+# --- 4. Create the Diverging Stacked Bar Chart (Mirror Style) ---
+
+# === REORDER SKILLS HERE (TOP TO BOTTOM) ===
+custom_skill_order <- c("Live Patient", "Simulation", "Didactic", "Wet Lab")
+plot_data_s6$Skill <- factor(plot_data_s6$Skill, levels = rev(custom_skill_order)) # Use rev() to display top-to-bottom
+
+likert_colors <- c(
+  "1 - Strongly Disagree" = "#de2d26",
+  "2 - Disagree" = "#fc9272",
+  "3 - Agree" = "#a1d99b",
+  "4 - Strongly Agree" = "#2ca25f"
+)
+
+ggplot(plot_data_s6, aes(y = Skill)) +
+  # === EDUCATOR BARS ON LEFT (NEGATIVE X) ===
+  geom_bar(data = plot_data_s6 |> filter(Group == "Educator"),
+           aes(x = Proportion_Diverge, fill = Response_Factor),
+           stat = "identity", width = 0.8) +
+  # === EMPLOYER BARS ON RIGHT (POSITIVE X) ===
+  geom_bar(data = plot_data_s6 |> filter(Group == "Employer"),
+           aes(x = Proportion_Diverge, fill = Response_Factor),
+           stat = "identity", width = 0.8) +
+
+  geom_vline(xintercept = 0, color = "grey50", linetype = "solid", size = 0.5) +
+
+  # Update N label positioning for new group layout
+  geom_text(data = total_n_s6 |> filter(Group == "Educator"),
+            aes(x = -0.05, y = Skill, label = paste0("N=", N)), # Position left of center for Educator
+            hjust = 1, size = 3, color = "black") +
+  geom_text(data = total_n_s6 |> filter(Group == "Employer"),
+            aes(x = 0.05, y = Skill, label = paste0("N=", N)), # Position right of center for Employer
+            hjust = 0, size = 3, color = "black") +
+
+  scale_x_continuous(
+    breaks = seq(-1, 1, 0.1),
+    labels = function(x) {
+      paste0(abs(x * 100), "%")
+    },
+    limits = c(-1.1, 1.1)
+  ) +
+  scale_fill_manual(
+    values = likert_colors,
+    drop = FALSE,
+    name = "Likert Response",
+    guide = guide_legend(reverse = FALSE)
+  ) +
+  labs(
+    title = "Perceived Importance/Competence of Clinical Instruction Formats",
+    subtitle = "Distribution of Likert Scale Responses by Group (Educator vs. Employer)",
+    x = "Proportion of Responses",
+    y = "Clinical Instruction" # === UPDATED Y-AXIS LABEL ===
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",
+    panel.grid.major.y = element_blank(),
+    legend.title = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold")
+  ) +
+  # Update group labels for new layout
+  annotate("text", x = -0.75, y = Inf, label = "Educator", # Educator label on left
+           vjust = 1.5, hjust = 0.5, size = 4, fontface = "bold", color = "black") +
+  annotate("text", x = 0.75, y = Inf, label = "Employer", # Employer label on right
+           vjust = 1.5, hjust = 0.5, size = 4, fontface = "bold", color = "black")
+```
+
+Figure 5.2 presents the proportional distribution of responses for each group. While a moderate difference was observed between groups regarding the use of live patients, the majority of participants in both groups selected Strongly Agree, and notably, no participants selected Disagree or Strongly Disagree—indicating strong consensus that live patient experience should be required in clinical training.
+
+The response distributions for simulation and wet lab instruction appear nearly identical visually, and statistical analysis confirmed no significant differences between groups for these skills. Interestingly, the distribution for didactic instruction looks somewhat different from those two, despite also showing no statistically significant difference.
+
+This highlights an important point: even when one bar chart appears to show more variability in proportions than another, the overall ranking of responses between groups may still be similar. The Mann-Whitney U-test is designed to detect consistent directional differences in how groups rank responses. If those patterns are weak, inconsistent, or cancel each other out, the test will indicate no significant difference—even when the visualizations suggest otherwise. Differences in sample size and variability can also exaggerate or smooth over apparent contrasts that don’t reflect meaningful differences in central tendency.
 
 ### S7 Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
 
@@ -1919,9 +2086,9 @@ The corresponding question for educators was survey question #21.
 
 This question aimed to assess opinions on which clinical dentistry skills should be required in DVM student training. Table 5.5 presents the Mann–Whitney U-testresults, summary statistics, effect sizes, and ranked-biserial correlation outputs.
 
-\newpage
+
 ```{r question_8a}
-#| label: question_8a_updated_with_effect_size
+#| label: 8a_MannWhit_Table
 #| echo: false
 #| warning: false
 #| message: false
@@ -2102,138 +2269,169 @@ All of these showed small positive effect sizes, indicating that educators place
 
 These results suggest that educators and employers generally agreed on the importance of these particular skills, with only very small or no measurable differences between groups.
 
-Overall, while the effect sizes for several procedures suggest that educators may value certain clinical extraction skills and radiographic interpretation slightly more than employers, the differences were not statistically significant. The negligible effect sizes for basic procedures like polishing and oral exams indicate broad consensus between the two groups on those skills.
+```{r}
+#| label: s8_diverging_stacked_bar_final
+#| echo: false
+#| warning: false
+#| message: false
+#| include: true
+#| fig-height: 10
+#| fig-width: 12
+#| fig-cap: "Diverging Stacked Bar Chart of Perceived Competence of Clinical Procedures by Group (Educator vs. Employer)."
+
+# Required libraries
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+# --- (STEP 1) Define ALL necessary objects ---
+
+# Define the question columns from your S8 analysis
+educator_cols_s8 <- paste0("Q21_", sprintf("%02d", 1:12))
+employer_cols_s8 <- paste0("Q26_", sprintf("%02d", 1:12))
+
+# Define the human-readable labels for the procedures
+procedure_labels_s8 <- c(
+  "Q21_01" = "Oral exam/charting", "Q26_01" = "Oral exam/charting",
+  "Q21_02" = "Radiographic positioning", "Q26_02" = "Radiographic positioning",
+  "Q21_03" = "Radiographic interpretation", "Q26_03" = "Radiographic interpretation",
+  "Q21_04" = "Scaling", "Q26_04" = "Scaling",
+  "Q21_05" = "Polishing", "Q26_05" = "Polishing",
+  "Q21_06" = "Canine closed extraction", "Q26_06" = "Canine closed extraction",
+  "Q21_07" = "Feline closed extraction", "Q26_07" = "Feline closed extraction",
+  "Q21_08" = "Canine open extraction - Single root", "Q26_08" = "Canine open extraction - Single root",
+  "Q21_09" = "Feline open extraction - Single root", "Q26_09" = "Feline open extraction - Single root",
+  "Q21_10" = "Canine open extraction - Canines/multiple roots", "Q26_10" = "Canine open extraction - Canines/multiple roots",
+  "Q21_11" = "Feline open extraction - Canines/multiple roots", "Q26_11" = "Feline open extraction - Canines/multiple roots",
+  "Q21_12" = "Fluoride treatment", "Q26_12" = "Fluoride treatment"
+)
+
+# Pivot educator data from wide to long format
+edu_long_s8 <- Educator_Data_Clean |>
+  select(all_of(educator_cols_s8)) |>
+  mutate(Group = "Educator", ID = row_number()) |>
+  pivot_longer(cols = -c(Group, ID), names_to = "Question_ID", values_to = "Response") |>
+  # Filter out responses that contain a comma (e.g., "1,4")
+  filter(!grepl(",", Response))
+
+# Pivot employer data from wide to long format
+emp_long_s8 <- Employer_Data_Clean |>
+  select(all_of(employer_cols_s8)) |>
+  mutate(Group = "Employer", ID = row_number()) |>
+  pivot_longer(cols = -c(Group, ID), names_to = "Question_ID", values_to = "Response")
+
+
+# --- (STEP 2) Filter data and calculate proportions ---
+
+# Combine, filter, and create factors
+combined_data_s8_filtered <- bind_rows(edu_long_s8, emp_long_s8) |>
+  filter(!is.na(Response)) |>
+  # Ensure Response is numeric before converting to factor, as it might be character due to filtering
+  mutate(Response = as.numeric(Response)) |>
+  mutate(Skill = recode(Question_ID, !!!procedure_labels_s8)) |>
+  filter(Skill != "Fluoride treatment") |>
+  mutate(
+    Response_Factor = factor(Response,
+                             levels = 1:4,
+                             labels = c("1 - Strongly Disagree", "2 - Disagree", "3 - Agree", "4 - Strongly Agree"),
+                             ordered = TRUE)
+  )
+
+# Calculate total responses (N) for labeling
+total_n_s8 <- combined_data_s8_filtered |>
+  group_by(Skill, Group) |>
+  summarise(N = n(), .groups = 'drop')
+
+# Calculate proportions for the stacked bars
+plot_data_s8 <- combined_data_s8_filtered |>
+  group_by(Skill, Group, Response_Factor) |>
+  summarise(Count = n(), .groups = 'drop_last') |>
+  mutate(Proportion = Count / sum(Count)) |>
+  ungroup() |>
+  mutate(Proportion_Diverge = ifelse(Group == "Educator", -Proportion, Proportion)) |>
+  left_join(total_n_s8, by = c("Skill", "Group"))
+
+
+# --- (STEP 3) Create the chart ---
+
+# Define the display order for skills based on the Mann Whitney U table
+# UPDATED: This order now matches your provided Mann-Whitney U table.
+custom_skill_order_s8 <- c(
+  "Feline closed extraction",
+  "Canine open extraction - Single root",
+  "Feline open extraction - Single root",
+  "Canine open extraction - Canines/multiple roots",
+  "Radiographic interpretation",
+  "Feline open extraction - Canines/multiple roots", # Included again as it appears in your table
+  "Canine closed extraction",
+  "Radiographic positioning",
+  "Scaling",
+  "Polishing",
+  "Oral exam/charting"
+)
+
+# Apply the custom order to the plot data.
+# We reverse the order here because ggplot plots factors from bottom to top,
+# so to have your custom order from top to bottom on the chart, you reverse it for the levels.
+plot_data_s8$Skill <- factor(plot_data_s8$Skill, levels = rev(custom_skill_order_s8))
+
+# Define the 4-color palette
+likert_colors_s8 <- c(
+  "1 - Strongly Disagree" = "#de2d26",
+  "2 - Disagree" = "#fc9272",
+  "3 - Agree" = "#a1d99b",
+  "4 - Strongly Agree" = "#2ca25f"
+)
+
+# Generate the plot
+ggplot(plot_data_s8, aes(y = Skill)) +
+  geom_bar(data = . %>% filter(Group == "Educator"),
+           aes(x = Proportion_Diverge, fill = Response_Factor), stat = "identity", width = 0.8) +
+  geom_bar(data = . %>% filter(Group == "Employer"),
+           aes(x = Proportion_Diverge, fill = Response_Factor), stat = "identity", width = 0.8) +
+  geom_vline(xintercept = 0, color = "grey40", linetype = "solid") +
+  geom_text(data = total_n_s8,
+            aes(x = ifelse(Group == "Educator", -0.05, 0.05),
+                label = paste0("N=", N),
+                hjust = ifelse(Group == "Educator", 1, 0)),
+            size = 3.5, color = "black") +
+  scale_x_continuous(
+    breaks = seq(-1, 1, 0.2),
+    labels = function(x) paste0(abs(x * 100), "%"),
+    limits = c(-1.1, 1.1)
+  ) +
+  scale_fill_manual(
+    values = likert_colors_s8,
+    drop = FALSE,
+    name = "Competence Level",
+    breaks = c("1 - Strongly Disagree", "2 - Disagree", "3 - Agree", "4 - Strongly Agree"),
+    guide = guide_legend(reverse = FALSE)
+  ) +
+  labs(
+    title = "Perceived Competence of Clinical Procedures",
+    subtitle = "Distribution of Likert Scale Responses by Group (Educator vs. Employer)",
+    x = "Proportion of Responses",
+    y = "Clinical Procedure"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle = element_text(hjust = 0.5),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "bottom",
+    panel.grid.major.y = element_blank(),
+    legend.title = element_text(face = "bold"),
+    axis.title.y = element_text(face = "bold", margin = margin(r = 10))
+  ) +
+  annotate("text", x = -0.7, y = Inf, label = "Educator", vjust = 1.5, size = 5, fontface = "bold") +
+  annotate("text", x = 0.7, y = Inf, label = "Employer", vjust = 1.5, size = 5, fontface = "bold")
+```
+
+While the effect sizes for several procedures suggest that educators may place slightly more value on certain clinical extraction skills and radiographic interpretation than employers, these differences were not statistically significant. The negligible effect sizes for basic procedures such as polishing and oral exams indicate a strong consensus between the two groups regarding these skills. Figure 5.4 shows that the distribution of responses is broadly similar, and although some differences exist, they do not reach statistical significance to suggest meaningful divergence in perceptions of clinical competencies. Notably, the procedure "Feline Open Extraction – Canines/Multiple Roots" exhibits the greatest variability; however, this may be influenced by the smaller number of responses for that item.
 
 # Discussion/Conclusion
 
 ## Interpretation of Results
-
-```{r question_6a, , echo=FALSE, eval=FALSE, warning=FALSE, fig.align='center'}
-# Define the matching question columns
-educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
-employer_cols  <- paste0("Q21_", sprintf("%02d", 1:7))
-
-# Create human-friendly labels
-instruction_labels <- c(
-  "Q17_01" = "Didactic",       "Q21_01" = "Didactic",
-  "Q17_02" = "Simulation",     "Q21_02" = "Simulation",
-  "Q17_03" = "Wet Lab",        "Q21_03" = "Wet Lab",
-  "Q17_04" = "Live Patient",   "Q21_04" = "Live Patient",
-  "Q17_05" = "None of these",  "Q21_05" = "None of these",
-  "Q17_06" = "Other",          "Q21_06" = "Other",
-  "Q17_07" = "Other - Text",          "Q21_07" = "Other - Text"
-)
-
-
-
-# Initialize an empty list to store results
-mw_results <- list()
-
-for (i in seq_along(educator_cols)) {
-  q_edu <- educator_cols[i]
-  q_emp <- employer_cols[i]
-  
-  edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
-  emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
-  
-  edu_vals <- edu_vals[!is.na(edu_vals)]
-  emp_vals <- emp_vals[!is.na(emp_vals)]
-  
-  if (length(edu_vals) > 1 && length(emp_vals) > 1) {
-    test_result <- wilcox.test(edu_vals, emp_vals, exact = TRUE)
-    mw_results[[q_edu]] <- list(
-      question = q_edu,
-      W = test_result$statistic,
-      p_value = test_result$p.value
-    )
-  } else {
-    mw_results[[q_edu]] <- list(
-      question = q_edu,
-      W = NA,
-      p_value = NA
-    )
-  }
-}
-
-# Create mw_df
-mw_df <- do.call(rbind, lapply(mw_results, as.data.frame)) %>% as.data.frame()
-mw_df$p_value <- as.numeric(mw_df$p_value)
-mw_df$W <- as.numeric(mw_df$W)
-mw_df$question <- rownames(mw_df)
-mw_df$significance <- cut(mw_df$p_value,
-                          breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
-                          labels = c("***", "**", "*", ".", "ns"))
-
-# Build display table with readable names
-mw_table <- mw_df %>%
-  filter(question != "Q17_07") %>%
-  mutate(
-    Instruction_Type = recode(question, !!!instruction_labels),
-    W_Statistic = ifelse(is.na(W), "-", round(W, 1)),
-    P_Value = ifelse(is.na(p_value), "-", round(p_value, 3)),
-    Significance = ifelse(is.na(significance), "-", as.character(significance)),
-    Notes = ifelse(P_Value == "-", "Insufficient data", "Test performed")
-  ) %>%
-  select(Instruction_Type, W_Statistic, P_Value, Significance, Notes)  # No 'question' column here
-
-
-# ====================
-# Now the Plot Section
-# ====================
-
-# Educator data (remove Q17_05 and Q17_06)
-educator_long <- Educator_Data_Clean %>%
-  select(starts_with("Q17_")) %>%
-  select(-Q17_05, -Q17_06) %>%
-  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
-  mutate(group = "Educator")
-
-# Employer data (remove Q21_05 and Q21_06)
-employer_long <- Employer_Data_Clean %>%
-  select(starts_with("Q21_")) %>%
-  select(-Q21_05, -Q21_06) %>%
-  pivot_longer(cols = everything(), names_to = "question", values_to = "response") %>%
-  mutate(group = "Employer")
-
-
-# Combine and apply instruction labels
-plot_data <- bind_rows(educator_long, employer_long) %>%
-  mutate(response = as.numeric(response)) %>%
-  filter(!is.na(response)) %>%
-  mutate(question = recode(question, !!!instruction_labels))
-
-desired_order <- c("Live Patient", "Wet Lab", "Didactic", "Simulation")
-plot_data <- plot_data %>%
-  filter(question %in% desired_order) %>%
-  mutate(question = factor(question, levels = desired_order))
-
-
-plot_summary <- plot_data %>%
-  group_by(question, response, group) %>%
-  summarize(count = n(), .groups = "drop") %>%
-  # Make counts negative for one group to diverge left
-  mutate(count_signed = ifelse(group == "Employer", -count, count))
-
-# Plot horizontal diverging bars
-ggplot(plot_summary, aes(x = factor(response), y = count_signed, fill = group)) +
-  geom_bar(stat = "identity", color = "black", width = 0.7) +
-  coord_flip() +
-  facet_wrap(~ question, ncol = 2) +
-  scale_y_continuous(
-    breaks = scales::pretty_breaks(),
-    labels = abs
-  ) +
-  labs(
-    title = "Horizontal Diverging Bar Chart: Educator vs Employer Responses",
-    x = "Response Level",
-    y = "Count",
-    fill = "Group"
-  ) +
-  theme_minimal() +
-  scale_fill_manual(values = c("Educator" = "#1f77b4", "Employer" = "#ff7f0e"))
-```
-
-
 
 ## Implications of the Study
 
