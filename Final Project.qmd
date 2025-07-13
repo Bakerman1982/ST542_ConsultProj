@@ -516,6 +516,8 @@ Dr. Mariea Ross-Estrada, a faculty member at North Carolina State University's C
 
 To explore this question, Dr. Ross-Estrada distributed two surveys: one to medical directors and private practice owners and the other to primary care veterinary educators. Both surveys included similar questions regarding what early-career veterinarians are expected to have learned during their education and the skills they are expected to perform in practice.
 
+This research has the potential to improve veterinary care by ensuring new graduates are better prepared to meet clinical demands. It could also support a smoother transition into practice for early-career veterinarians, reduce the burden of on-the-job training for employers, and promote overall workforce readiness in the field of small animal primary care.
+
 ## Research Question
 
 How do small animal primary care employers (medical directors and practice owners) and primary care veterinary educators differ in regards to their expectations of early career veterinary graduates’ competencies in small animal dentistry?
@@ -923,8 +925,6 @@ After all preprocessing steps, the final cleaned datasets consisted of 13 employ
 
 # Statistical Methods
 
-## Method Description
-
 #### Likert scale questions (statistical questions #1,3, 6, and 8)
 
 These questions use a Likert scale with response options: Strongly Agree, Agree, Disagree, and Strongly Disagree across a variety of skills and procedures. Given the ordinal nature of these responses, we will use diverging stacked bar charts and summary tables to visually explore the data, followed by a Mann-Whitney U Test for formal hypothesis testing.
@@ -965,11 +965,14 @@ In order to calculate the test statistic and p-value for a Mann-Whitney U Test:
 
 P-values will be utilized for each statistical question listed above in order to formally analyze the data.
 
+ADD MENTION HERE OF EFFECT SIZE CALCULATIONS.
+
+
 #### Select all that apply questions (statistical questions #2, 5, and 7)
 
 These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Dot plots will also be utilized for questions with many options to avoid crowding in bar graphs.
 
-Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is again reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests. Given the small sample sizes, we acknowledge the limited power of these analyses and may consider post hoc power analyses for these tests.
+Fisher’s Exact Test works with categorical data with independent samples, in this case educators and employers. Based on the survey design from the client, it is again reasonable to assume that these two groups are independent. In this context, Fisher's Exact Test is preferred over Chi-Squared Tests due to the small sample size and therefore not meeting the expected count threshold that is required to proceed with Chi-Squared Tests.
 
 ```{r}
 #| label: fishertable
@@ -996,9 +999,10 @@ $$p = \frac{(a+b)! \, (c+d)! \, (a+c)! \, (b+d)!}{a! \, b! \, c! \, d! \, n!}$$
 
 P-values are then computed for each skill, format, etc. between the two groups (educators and employers) depending on the statistical question to be analyzed.
 
+
 #### Numerical entry questions: (statistical question #4)
 
-This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis.
+This question asks participants to enter a number related to the number of dental procedures that should be completed during training in different areas. We plan to produce box plots and/or histograms to visually examine the data. Depending on the normality or lack thereof of the distributions, we will then conduct either a two-sample t-test or a Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a non-parametric test that does not depend on the assumption of normality. If the assumption on normality is met, we can consider a two-sample t test for this analysis. However, from examination of the data, normality is not met and we will therefore utilize a Mann-Whitney U Test. The test follows the same method above as statistical questions #2, 5, and 7.
 
 # Results
 
@@ -1344,7 +1348,7 @@ Since the question was of the format "select all that apply," participants were 
 
 Educators and employers were also given the option to enter their own responses to the question. One employer opted to write in "Cadaver." Two educators entered their own responses with one saying "rounds" and the other saying "topic seminars do occur with some rotations during case rounds when dental cases are chosen to present."
 
-Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (73.3% vs. 46.2%) and live patient training (93.3% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 16.7%) than educators. These differences suggest varying expectations or awareness between the two groups regarding dental training experiences of recent graduates.
+Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (75% vs. 46.2%) and live patient training (96.4% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 14.3%) than educators. These differences suggest varying expectations or awareness between the two groups regarding dental training experiences of recent graduates.
 
 ```{r}
 #| label: formatgraph
@@ -1413,13 +1417,13 @@ ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
           vjust = -0.3, size = 3)
 ```
 
-Figure 5.1 shows the percentages of each format selected and Table 3 shows the p-value associated with performing Fisher's Exact Test on each format.
+Figure 5.1 shows the percentages of each format selected and Table 5.2 shows the p-value associated with performing Fisher's Exact Test on each format.
 
-Didactic instruction was selected by 53.3% of educators and 61.5% of employers, with no statistically significant difference between the groups (p=0.743). There was also no statistically significant difference in simulation (p=0.417) and wet lab instruction (p=0.162).
+Didactic instruction was selected by 57.1% of educators and 61.5% of employers, with no statistically significant difference between the groups (p=1). There was also no statistically significant difference in simulation (p=0.237) and wet lab instruction (p=0.0885).
 
-On the other hand, live patient instruction was selected by 93.3% of educators, but only 38.5% of employers. This difference was found to be statistically significant with a p-value of 0.0003.
+On the other hand, live patient instruction was selected by 96.4% of educators, but only 38.5% of employers. This difference was found to be statistically significant with a p-value of 0.000105.
 
-"None of these" was also found to be statistically significant at the 5% level. No educators selected that none of these formats were used, but 23.1% of employers selected that none of the formats were believed to be utilized in the clinical year.
+"None of these" was also found to be statistically significant at the 5% level. No educators selected that none of these formats were believed to have been used, but 23.1% of employers selected that none of the formats were believed to be utilized in the clinical year.
 
 ```{r}
 #| label: question_5b
@@ -2058,23 +2062,24 @@ final_table <- final_table %>%
 kable(final_table, caption = "Perceived Skills Learned of Clinical Dental Instruction in DVM Programs", align = "lrr", booktabs=TRUE)
 ```
 
-Figure 5.2 shows the percentage of employers and educators who selected the given skills and Table 4 shows the p-values associated with Fisher's Exact Test and their significance.
+Figure 5.3 shows the percentage of employers and educators who selected the given skills and Table 4 shows the p-values associated with Fisher's Exact Test and their significance.
 
 For eleven of the thirteen skills, educators reported a higher percentage of selection. The two skills for which employers reported higher perceived learning were feline open extraction - canines/multiple roots and fluoride treatment.
 
 At the 5% significance level, the difference in skill selection between employers and educators was found to be significant for seven skills:
 
--   Scaling
--   Polishing
--   Canine Closed Extraction
--   Feline Closed Extraction
--   Canine Open Extraction - Single Root
--   Feline Open Extraction - Single Root
--   Canine Open Extraction - Canines/Multiple Roots
+-   Radiographic Positioning (p=0.0284)
+-   Scaling (p=0.0084)
+-   Polishing (p=0.00331)
+-   Canine Closed Extraction (p=0.0102)
+-   Feline Closed Extraction (p=0.0102)
+-   Canine Open Extraction - Single Root (p=0.0102)
+-   Feline Open Extraction - Single Root (p=0.0193)
+-   Canine Open Extraction - Canines/Multiple Roots (p=0.0193)
 
 For all skills with statistically significant differences, educators reported higher percentages than employers.
 
-The most significant difference was found in polishing. Educators selected this skill 76.7% of the time, while employers selected this skill only 30.8% of the time. The resulting p-value was 0.00672.
+The most significant difference was found in polishing. Educators selected this skill 82.1% of the time, while employers selected this skill only 30.8% of the time. The resulting p-value was 0.00331.
 
 ### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
