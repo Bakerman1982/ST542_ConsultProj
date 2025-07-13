@@ -43,13 +43,6 @@
 \makeatother
 \usepackage{xcolor}
 \usepackage[margin=1in]{geometry}
-\ifLuaTeX
-  \usepackage{luacolor}
-  \usepackage[soul]{lua-ul}
-\else
-  \usepackage{soul}
-  
-\fi
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \setcounter{secnumdepth}{2}
 % Make \paragraph and \subparagraph free-standing
@@ -138,14 +131,24 @@
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \usepackage{booktabs}
-\usepackage{caption}
 \usepackage{longtable}
-\usepackage{colortbl}
 \usepackage{array}
-\usepackage{anyfontsize}
 \usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{anyfontsize}
 \KOMAoption{captions}{tableheading}
 \numberwithin{figure}{section}
+\numberwithin{table}{section}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -1014,63 +1017,62 @@ which formats of clinical instruction in dentistry should be required
 for DVM students as part of their clinical
 training?}\label{s6-do-educators-and-employers-differ-in-their-views-on-which-formats-of-clinical-instruction-in-dentistry-should-be-required-for-dvm-students-as-part-of-their-clinical-training}
 
-In question \#21 of the employers' version of the survey, participants
-were asked:
+In Question \#21 of the employer survey, participants were asked:
 
-\begin{itemize}
-\tightlist
-\item
-  ``Which of the following types of \ul{clinical instruction} in
-  dentistry do you think that DVM students should be required to
-  complete as part of a \ul{DVM program}? Select one response for each
-  of the instructional types listed below.''
-\end{itemize}
+• ``Which of the following types of clinical instruction in dentistry do
+you think DVM students should be required to complete as part of a DVM
+program? Select one response for each of the instructional types listed
+below.''
 
-The analogue of this question for educators was survey question \#17,
-which asked:
+The analogous question for educators appeared as Question \#17 and
+stated:
 
-\begin{itemize}
-\tightlist
-\item
-  ``Which of the following types of \ul{instruction} do you think DVM
-  students should be required to complete as part of their \ul{clinical
-  training}? Select one response for each type of instruction listed
-  below.''
-\end{itemize}
+• ``Which of the following types of instruction do you think DVM
+students should be required to complete as part of their clinical
+training? Select one response for each type of instruction listed
+below.''
 
-This question aimed to assess how participants view the types of dental
-instruction that should be required within veterinary medical curricula.
-To examine whether there were differences in opinions between educators
-and employers, the Mann-Whitney U-Test---a non-parametric test also
-known as the Wilcoxon Rank-Sum Test---was used. This test is appropriate
-for comparing two independent groups without assuming a normal
-distribution and assumes mutual exclusivity between the groups.
+This question aimed to assess perceptions regarding which types of
+dental instruction should be required in the veterinary medical
+curriculum across both survey groups. Table 5.3 presents the
+Mann--Whitney U-test results, summary statistics, effect sizes, and
+ranked-biserial correlation outputs.
 
-\begin{longtable}[]{@{}ccc@{}}
-\caption{Mann-Whitney U-Test Results by Skill}\tabularnewline
-\toprule\noalign{}
-Skill & P\_Value & n (educators / employers) \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-Skill & P\_Value & n (educators / employers) \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Didactic & 0.467 & 23 / 13 \\
-Simulation & 0.366 & 20 / 12 \\
-Wet Lab & 0.658 & 24 / 13 \\
-Live Patient & 0.004 ** & 28 / 13 \\
+\begin{longtable}[t]{>{\centering\arraybackslash}p{1.0in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
+\caption{Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
+Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
+\midrule
+Live Patient & 4 & 4 & 28 / 13 & 0.004 ** & -0.35 & Medium negative effect\\
+Simulation & 3 & 4 & 20 / 12 & 0.366 & 0.18 & Small positive effect\\
+Didactic & 4 & 4 & 23 / 13 & 0.467 & 0.13 & Small positive effect\\
+Wet Lab & 4 & 4 & 24 / 13 & 0.658 & 0.05 & Negligible effect\\
+\bottomrule
 \end{longtable}
 
-The results are presented in Table 7. No statistically significant
-differences were found between educators and employers in their
-responses regarding the Didactic, Simulation, or Wet Lab instructional
-formats. However, a significant difference was identified between the
-two groups concerning Live Patient instruction, where responses varied
-significantly. The instructional categories ``None of These'' and
-``Other'' could not be tested due to insufficient data.
+The Mann--Whitney U-test revealed a statistically significant difference
+(\(p = 0.004\)) between employers and educators when evaluating the
+importance of Live Patients. Although both groups reported a median
+rating of 4, suggesting similar central tendencies, the ranked-biserial
+correlation (\(r_{rb} = -0.35\)) indicates a medium negative effect.
+This suggests that employers generally rated Live Patient instruction as
+more essential than educators did. The difference in ranking
+distributions is statistically meaningful.
+
+No statistically significant differences were found between the groups
+regarding the instructional types Simulation (\(p = 0.366\)), Didactic
+(\(p = 0.467\)), or Wet Lab (\(p = 0.658\)). The ranked-biserial
+correlations for Simulation (\(r_{rb} = 0.18\)) and Didactic
+(\(r_{rb} = 0.13\)) were small and positive, indicating a slight
+tendency for educators to rate these types of instruction as more
+important than employers. The effect size for Wet Lab
+(\(r_{rb} = 0.05\)) was negligible. None of these differences reached
+statistical significance.
+
+The instructional categories ``None of These'' and ``Other'' were
+excluded from Table 5.3 due to insufficient data for statistical
+testing.
 
 \subsubsection{S7 Is there a difference between the clinical dentistry
 skills that educators report DVM students are learning during their
@@ -1238,80 +1240,91 @@ were asked:
 The corresponding question for educators was survey question \#21.
 
 This question aimed to assess opinions on which clinical dentistry
-skills should be required in DVM student training. To evaluate whether
-differences existed between educators and employers, the Mann-Whitney
-U-Test, a non-parametric test also known as the Wilcoxon Rank-Sum Test,
-was applied. This test compares two independent groups without assuming
-normality and requires mutual exclusivity between groups.
+skills should be required in DVM student training. Table 5.5 presents
+the Mann--Whitney U-testresults, summary statistics, effect sizes, and
+ranked-biserial correlation outputs.
 
-The results are presented in Table 9. No statistically significant
-differences were observed between educators and employers for most of
-the listed clinical skills, including oral examination/charting,
-radiographic positioning, radiographic interpretation, scaling,
-polishing, or several extraction procedures. However, significant
-differences were identified for the skills of feline closed extraction
-and canine open extraction---single root, with p-values of 0.049 for
-both. Two additional procedures---feline open extraction---single root
-and canine open extraction---canines/multiple roots---approached
-significance (p = 0.076). The ``Fluoride treatment'' and ``None''
-categories could not be tested due to insufficient data.
+\newpage
 
-\begin{longtable}[]{@{}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.4712}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1250}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.0865}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1346}}
-  >{\centering\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1827}}@{}}
-\caption{Mann-Whitney U-Test Results for Clinical
-Procedures}\tabularnewline
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\centering
-Instruction\_Type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-W\_Statistic
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-P\_Value
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Significance
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Notes
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\centering
-Instruction\_Type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-W\_Statistic
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-P\_Value
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Significance
-\end{minipage} & \begin{minipage}[b]{\linewidth}\centering
-Notes
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Oral exam/charting & 139 & 0.829 & ns & Test performed \\
-Radiographic positioning & 157 & 0.51 & ns & Test performed \\
-Radiographic interpretation & 126.5 & 0.261 & ns & Test performed \\
-Scaling & 155.5 & 0.578 & ns & Test performed \\
-Polishing & 148 & 0.816 & ns & Test performed \\
-Canine closed extraction & 127.5 & 0.437 & ns & Test performed \\
-Feline closed extraction & 104.5 & 0.064 & . & Test performed \\
-Canine open extraction - Single root & 104.5 & 0.064 & . & Test
-performed \\
-Feline open extraction - Single root & 110 & 0.092 & . & Test
-performed \\
-Canine open extraction - Canines/multiple roots & 110 & 0.092 & . & Test
-performed \\
-Feline open extraction - Canines/multiple roots & 53.5 & 0.276 & ns &
-Test performed \\
-Fluoride treatment & - & - & - & Insufficient data \\
-None & - & - & - & Insufficient data \\
+\begin{longtable}[t]{>{\centering\arraybackslash}p{1.3in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
+\caption{Mann-Whitney U-Test Results for Clinical Procedures}\\
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
+Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
+\midrule
+Feline closed extraction & 4 & 4 & 26 / 11 & 0.064 . & 0.27 & Small positive effect\\
+Canine open extraction - Single root & 4 & 4 & 26 / 11 & 0.064 . & 0.27 & Small positive effect\\
+Feline open extraction - Single root & 4 & 4 & 26 / 11 & 0.092 . & 0.23 & Small positive effect\\
+Canine open extraction - Canines/multiple roots & 4 & 4 & 26 / 11 & 0.092 . & 0.23 & Small positive effect\\
+Radiographic interpretation & 4 & 4 & 26 / 11 & 0.261 & 0.12 & Small positive effect\\
+\addlinespace
+Feline open extraction - Canines/multiple roots & 3 & 4 & 16 / 9 & 0.276 & 0.26 & Small positive effect\\
+Canine closed extraction & 4 & 4 & 26 / 11 & 0.437 & 0.11 & Small positive effect\\
+Radiographic positioning & 4 & 4 & 26 / 11 & 0.510 & -0.10 & Negligible effect\\
+Scaling & 4 & 4 & 26 / 11 & 0.578 & -0.09 & Negligible effect\\
+Polishing & 4 & 4 & 26 / 11 & 0.816 & -0.03 & Negligible effect\\
+\addlinespace
+Oral exam/charting & 4 & 4 & 26 / 11 & 0.829 & 0.03 & Negligible effect\\
+\bottomrule
 \end{longtable}
+
+Nearly every skill reported a median of 4 with exception to the Feline
+Open Extraction - Canines/Multiple Roots whose central tendency was 3.
+Note that this exception was the only row that report fewer responses
+than the others. Small but consistent differences were found for several
+clinical procedures, with educators tending to rate certain skills as
+more important than employers.
+
+Specifically, educators rated the following procedures as more important
+(higher median values) compared to employers:
+
+\begin{itemize}
+\tightlist
+\item
+  Feline closed extraction (effect size: \(r = 0.27\))
+\item
+  Canine open extraction -- single root (\(r = 0.27\))
+\item
+  Feline open extraction -- single root (\(r = 0.23\))
+\item
+  Canine open extraction -- canines/multiple roots (\(r = 0.23\))
+\item
+  Feline open extraction -- canines/multiple roots (\(r = 0.26\))
+\item
+  Radiographic interpretation (\(r = 0.12\))
+\item
+  Canine closed extraction (\(r = 0.11\))
+\end{itemize}
+
+All of these showed small positive effect sizes, indicating that
+educators placed slightly more emphasis on these procedures than
+employers. However, none of these differences reached conventional
+levels of statistical significance (i.e., \(p < 0.05\)), though some
+were marginal (\(p ≈ 0.06–0.09\)). Negligible differences were found for
+the following skills:
+
+\begin{itemize}
+\tightlist
+\item
+  Radiographic positioning (\(r = -0.10\))
+\item
+  Scaling (\(r = -0.09\))
+\item
+  Polishing (\(r = -0.03\))
+\item
+  Oral examination/charting (\(r = 0.03\))
+\end{itemize}
+
+These results suggest that educators and employers generally agreed on
+the importance of these particular skills, with only very small or no
+measurable differences between groups.
+
+Overall, while the effect sizes for several procedures suggest that
+educators may value certain clinical extraction skills and radiographic
+interpretation slightly more than employers, the differences were not
+statistically significant. The negligible effect sizes for basic
+procedures like polishing and oral exams indicate broad consensus
+between the two groups on those skills.
 
 \section{Discussion/Conclusion}\label{discussionconclusion}
 

@@ -28,6 +28,7 @@ editor_options:
 
 header-includes:
   - \numberwithin{figure}{section}
+  - \numberwithin{table}{section}
 ---
 
 
@@ -40,7 +41,13 @@ library(naniar)
 library(patchwork)
 library(maps)
 library(knitr)
-
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(effectsize) # For calculating ranked-biserial correlation
+library(stringr)    
+library(kableExtra) # For advanced kable features like column_spec and styling
+library(magrittr)
 ```
 
 ```{r Employer Data load, echo=FALSE, message=FALSE, warning=FALSE, results="hide",include=FALSE, error=FALSE}
@@ -1507,83 +1514,172 @@ kable(final_table, caption = "Perceived Formats of Clinical Dental Instruction i
 
 ### S6 Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students as part of their clinical training?
 
-In question #21 of the employers’ version of the survey, participants were asked:
+In Question #21 of the employer survey, participants were asked:
 
--   “Which of the following types of [clinical instruction]{.underline} in dentistry do you think that DVM students should be required to complete as part of a [DVM program]{.underline}? Select one response for each of the instructional types listed below.”
+• “Which of the following types of clinical instruction in dentistry do you think DVM students should be required to complete as part of a DVM program? Select one response for each of the instructional types listed below.”
 
-The analogue of this question for educators was survey question #17, which asked:
+The analogous question for educators appeared as Question #17 and stated:
 
--   “Which of the following types of [instruction]{.underline} do you think DVM students should be required to complete as part of their [clinical training]{.underline}? Select one response for each type of instruction listed below.”
+• “Which of the following types of instruction do you think DVM students should be required to complete as part of their clinical training? Select one response for each type of instruction listed below.”
 
-This question aimed to assess how participants view the types of dental instruction that should be required within veterinary medical curricula. To examine whether there were differences in opinions between educators and employers, the Mann-Whitney U-Test—a non-parametric test also known as the Wilcoxon Rank-Sum Test—was used. This test is appropriate for comparing two independent groups without assuming a normal distribution and assumes mutual exclusivity between the groups.
+This question aimed to assess perceptions regarding which types of dental instruction should be required in the veterinary medical curriculum across both survey groups. Table 5.3 presents the Mann–Whitney U-test results, summary statistics, effect sizes, and ranked-biserial correlation outputs.
 
 
-```{r question_6a_updated, echo=FALSE, warning=FALSE, fig.align='center'}
+```{r}
+#| label: question_6a_updated_final
+#| echo: false
+#| warning: false
+#| message: false
+#| include: true
+#| fig-align: center
+
 # Define the matching question columns
 educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
-employer_cols  <- paste0("Q21_", sprintf("%02d", 1:7))
+employer_cols <- paste0("Q21_", sprintf("%02d", 1:7))
 
-# Create human-friendly labels
+# Create human-friendly labels (ensure 'Other - Text' is distinct)
 instruction_labels <- c(
-  "Q17_01" = "Didactic",       "Q21_01" = "Didactic",
-  "Q17_02" = "Simulation",     "Q21_02" = "Simulation",
-  "Q17_03" = "Wet Lab",        "Q21_03" = "Wet Lab",
-  "Q17_04" = "Live Patient",   "Q21_04" = "Live Patient",
-  "Q17_05" = "None of these",  "Q21_05" = "None of these",
-  "Q17_06" = "Other",          "Q21_06" = "Other",
-  "Q17_07" = "Other - Text",   "Q21_07" = "Other - Text"
+"Q17_01" = "Didactic", "Q21_01" = "Didactic",
+"Q17_02" = "Simulation", "Q21_02" = "Simulation",
+"Q17_03" = "Wet Lab",  "Q21_03" = "Wet Lab",
+"Q17_04" = "Live Patient", "Q21_04" = "Live Patient",
+"Q17_05" = "None of these", "Q21_05" = "None of these",
+"Q17_06" = "Other",  "Q21_06" = "Other",
+"Q17_07" = "Other - Text (Specify)" # Clarified label
 )
 
-# Initialize results list
-mw_results <- list()
+# Initialize a data frame to store all results
+all_mw_results_df <- tibble()
 
 for (i in seq_along(educator_cols)) {
-  q_edu <- educator_cols[i]
-  q_emp <- employer_cols[i]
+q_edu <- educator_cols[i]
+q_emp <- employer_cols[i]
 
-  edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
-  emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
+# Extract values and convert to numeric, ensuring consistency
+edu_data <- Educator_Data_Clean |> # Using base R pipe |> (R 4.1+)
+ select(Response = all_of(q_edu)) |>
+ mutate(Response = as.numeric(Response), Group = "Educator") |>
+ filter(!is.na(Response))
 
-  edu_vals <- edu_vals[!is.na(edu_vals)]
-  emp_vals <- emp_vals[!is.na(emp_vals)]
+emp_data <- Employer_Data_Clean |>
+ select(Response = all_of(q_emp)) |>
+ mutate(Response = as.numeric(Response), Group = "Employer") |>
+ filter(!is.na(Response))
 
-  if (length(edu_vals) > 1 && length(emp_vals) > 1) {
-    test_result <- wilcox.test(edu_vals, emp_vals, exact = TRUE)
-    mw_results[[q_edu]] <- list(
-      question = q_edu,
-      p_value = test_result$p.value,
-      n_educators = length(edu_vals),
-      n_employers = length(emp_vals)
-    )
-  }
+# Combine data for the current skill
+combined_skill_data <- bind_rows(edu_data, emp_data)
+
+# Ensure both groups have at least 2 observations to run test
+if (n_distinct(combined_skill_data$Group) == 2 &&
+ sum(combined_skill_data$Group == "Educator") >= 2 &&
+ sum(combined_skill_data$Group == "Employer") >= 2) {
+
+ # Ensure 'Group' is a factor with desired order for consistent sign of r_rb
+ # A positive r_rb means the group listed second (Educator) tends to have higher values.
+ combined_skill_data$Group <- factor(combined_skill_data$Group, levels = c("Employer", "Educator"))
+
+ # Perform Wilcoxon test (result kept for p-value)
+ test_result <- wilcox.test(Response ~ Group, data = combined_skill_data, exact = FALSE)
+
+ # Calculate ranked-biserial correlation using rank_biserial() with the formula and data
+ r_rb_object <- effectsize::rank_biserial(Response ~ Group, data = combined_skill_data)
+ r_rb <- r_rb_object$r_rank_biserial # Extract the specific value
+
+ # Calculate medians
+ med_edu <- median(edu_data$Response, na.rm = TRUE)
+ med_emp <- median(emp_data$Response, na.rm = TRUE)
+
+ # Store results
+ current_result <- tibble(
+ Skill_ID = q_edu,
+ p_value = test_result$p.value,
+ r_rb = r_rb,
+ median_educator = med_edu,
+ median_employer = med_emp,
+ n_educators = nrow(edu_data),
+ n_employers = nrow(emp_data)
+ )
+ all_mw_results_df <- bind_rows(all_mw_results_df, current_result)
+} else {
+ # Handle cases where a test can't be run (e.g., insufficient data in one group)
+ current_result <- tibble(
+ Skill_ID = q_edu,
+ p_value = NA, # Assign NA for p-value if test not run
+ r_rb = NA,  # Assign NA for r_rb if test not run
+ median_educator = median(edu_data$Response, na.rm = TRUE),
+ median_employer = median(emp_data$Response, na.rm = TRUE),
+ n_educators = nrow(edu_data),
+ n_employers = nrow(emp_data)
+ )
+ all_mw_results_df <- bind_rows(all_mw_results_df, current_result)
+}
 }
 
-# Create dataframe
-mw_df <- do.call(rbind, lapply(mw_results, as.data.frame)) %>% as.data.frame()
-mw_df$p_value <- as.numeric(mw_df$p_value)
+# Add significance stars and readable labels for final table
+final_results_table <- all_mw_results_df |>
+mutate(
+ Skill = recode(Skill_ID, !!!instruction_labels),
+ stars = cut(p_value,
+    breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+    labels = c("***", "**", "*", ".", "")),
+ P_Value = ifelse(is.na(p_value), "N/A", ifelse(stars != "", paste0(sprintf("%.3f", p_value), " ", stars), sprintf("%.3f", p_value))),
+ # Median values to be printed with no float (integers)
+ `Median (Educator)` = sprintf("%.0f", median_educator),
+ `Median (Employer)` = sprintf("%.0f", median_employer),
+ `n (Educator / Employer)` = paste0(n_educators, " / ", n_employers),
+ `Ranked-Biserial Correlation (r_rb)` = sprintf("%.2f", r_rb),
+ Interpretation = case_when(
+ is.na(r_rb) ~ "N/A (Insufficient Data)",
+ abs(r_rb) >= 0.50 ~ paste0("Large ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+ abs(r_rb) >= 0.30 ~ paste0("Medium ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+ abs(r_rb) >= 0.10 ~ paste0("Small ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+ TRUE ~ "Negligible effect"
+ )
+) |>
+  filter(P_Value != "N/A") |>
+select(
+ Skill,
+ `Med (Edu)` = `Median (Educator)`, # Concise header
+ `Med (Emp)` = `Median (Employer)`, # Concise header
+ `N (Edu / Emp)` = `n (Educator / Employer)`, # Concise header
+ `P-Value` = P_Value, # Consistent capitalization, remove space for LaTeX
+ `r_rb` = `Ranked-Biserial Correlation (r_rb)`, # Concise header
+ Interpretation
+) |>
+arrange(`P-Value`) # Arrange by the new column name
 
-# Add significance stars
-mw_df$stars <- cut(mw_df$p_value,
-                   breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
-                   labels = c("***", "**", "*", ".", ""))
-
-
-# Add readable labels and combine sample sizes with clear label
-mw_df <- mw_df %>%
-  mutate(
-    Skill = recode(question, !!!instruction_labels),
-    P_Value = ifelse(stars != "", paste0(sprintf("%.3f", p_value), " ", stars), sprintf("%.3f", p_value)),
-    `n (educators / employers)` = paste0(n_educators, " / ", n_employers)
-  ) %>%
-  select(Skill, P_Value, `n (educators / employers)`)
-
-
-# Render table
-kable(mw_df, caption = "Mann-Whitney U-Test Results by Skill", align = "c", row.names = FALSE)
+# Render the final table with kableExtra for advanced formatting
+kable(final_results_table,
+   caption = "Mann-Whitney U-Test Results for Clinical Instruction Formats",
+   align = "c",
+   row.names = FALSE,
+   escape = FALSE, # Allows LaTeX in headers and content
+   latex_options = c("scale_down", "HOLD_position", "striped") # latex_options belongs INSIDE kable()
+   ) |>
+ add_header_above(c(" " = 1,
+          "Median" = 2,
+          "N" = 1,
+          " " = 1,
+          "Effect Size" = 1,
+          " " = 1),
+         line = FALSE) |>
+ # Significantly reduce column widths to tighten the table.
+ # Adjusted widths for a tighter fit.
+ column_spec(1, width = "1.0in") |>
+ column_spec(2, width = "0.5in") |>
+ column_spec(3, width = "0.5in") |>
+ column_spec(4, width = "0.65in") |>
+ column_spec(5, width = "0.55in") |>
+ column_spec(6, width = "0.75in") |>
+ column_spec(7, width = "1.1in")
 ```
 
 
-The results are presented in Table 7. No statistically significant differences were found between educators and employers in their responses regarding the Didactic, Simulation, or Wet Lab instructional formats. However, a significant difference was identified between the two groups concerning Live Patient instruction, where responses varied significantly. The instructional categories “None of These” and “Other” could not be tested due to insufficient data.
+The Mann–Whitney U-test revealed a statistically significant difference ($p = 0.004$) between employers and educators when evaluating the importance of Live Patients. Although both groups reported a median rating of 4, suggesting similar central tendencies, the ranked-biserial correlation ($r_{rb} = -0.35$) indicates a medium negative effect. This suggests that employers generally rated Live Patient instruction as more essential than educators did. The difference in ranking distributions is statistically meaningful.
+
+No statistically significant differences were found between the groups regarding the instructional types Simulation ($p = 0.366$), Didactic ($p = 0.467$), or Wet Lab ($p = 0.658$). The ranked-biserial correlations for Simulation ($r_{rb} = 0.18$) and Didactic ($r_{rb} = 0.13$) were small and positive, indicating a slight tendency for educators to rate these types of instruction as more important than employers. The effect size for Wet Lab ($r_{rb} = 0.05$) was negligible. None of these differences reached statistical significance.
+
+The instructional categories “None of These” and “Other” were excluded from Table 5.3 due to insufficient data for statistical testing.
 
 ### S7 Is there a difference between the clinical dentistry skills that educators report DVM students are learning during their clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
 
@@ -1821,86 +1917,192 @@ In question #26 of the employers’ version of the survey, participants were ask
 
 The corresponding question for educators was survey question #21.
 
-This question aimed to assess opinions on which clinical dentistry skills should be required in DVM student training. To evaluate whether differences existed between educators and employers, the Mann-Whitney U-Test, a non-parametric test also known as the Wilcoxon Rank-Sum Test, was applied. This test compares two independent groups without assuming normality and requires mutual exclusivity between groups.
+This question aimed to assess opinions on which clinical dentistry skills should be required in DVM student training. Table 5.5 presents the Mann–Whitney U-testresults, summary statistics, effect sizes, and ranked-biserial correlation outputs.
 
-The results are presented in Table 9. No statistically significant differences were observed between educators and employers for most of the listed clinical skills, including oral examination/charting, radiographic positioning, radiographic interpretation, scaling, polishing, or several extraction procedures. However, significant differences were identified for the skills of feline closed extraction and canine open extraction—single root, with p-values of 0.049 for both. Two additional procedures—feline open extraction—single root and canine open extraction—canines/multiple roots—approached significance (p = 0.076). The “Fluoride treatment” and “None” categories could not be tested due to insufficient data.
+\newpage
+```{r question_8a}
+#| label: question_8a_updated_with_effect_size
+#| echo: false
+#| warning: false
+#| message: false
+#| include: true
+#| fig-align: center
 
-```{r question_8a, echo=FALSE, warning=FALSE, fig.align='center'}
-# Define educator and employer question columns (first 13 only)
+
+# Define the matching question columns
 educator_cols <- paste0("Q21_", sprintf("%02d", 1:13))
 employer_cols <- paste0("Q26_", sprintf("%02d", 1:13))
 
-# Create human-friendly labels (first 13 procedures only)
-procedure_labels <- c(
-  "Oral exam/charting",
-  "Radiographic positioning",
-  "Radiographic interpretation",
-  "Scaling",
-  "Polishing",
-  "Canine closed extraction",
-  "Feline closed extraction",
-  "Canine open extraction - Single root",
-  "Feline open extraction - Single root",
-  "Canine open extraction - Canines/multiple roots",
-  "Feline open extraction - Canines/multiple roots",
-  "Fluoride treatment",
-  "None"
+# Create human-friendly labels
+procedure_labels_map <- c(
+  "Q21_01" = "Oral exam/charting",
+  "Q21_02" = "Radiographic positioning",
+  "Q21_03" = "Radiographic interpretation",
+  "Q21_04" = "Scaling",
+  "Q21_05" = "Polishing",
+  "Q21_06" = "Canine closed extraction",
+  "Q21_07" = "Feline closed extraction",
+  "Q21_08" = "Canine open extraction - Single root",
+  "Q21_09" = "Feline open extraction - Single root",
+  "Q21_10" = "Canine open extraction - Canines/multiple roots",
+  "Q21_11" = "Feline open extraction - Canines/multiple roots",
+  "Q21_12" = "Fluoride treatment",
+  "Q21_13" = "None"
 )
 
-names(procedure_labels) <- educator_cols
-
-# Initialize results list
-mw_results <- list()
+# Initialize a data frame to store all results
+all_mw_results_df_s8 <- tibble()
 
 for (i in seq_along(educator_cols)) {
   q_edu <- educator_cols[i]
   q_emp <- employer_cols[i]
-  
-  edu_vals <- as.numeric(Educator_Data_Clean[[q_edu]])
-  emp_vals <- as.numeric(Employer_Data_Clean[[q_emp]])
-  
-  edu_vals <- edu_vals[!is.na(edu_vals)]
-  emp_vals <- emp_vals[!is.na(emp_vals)]
-  
-  if (length(edu_vals) > 1 && length(emp_vals) > 1) {
-    test_result <- wilcox.test(edu_vals, emp_vals, exact = TRUE)
-    mw_results[[q_edu]] <- list(
-      Instruction_Type = procedure_labels[[q_edu]],
-      W_Statistic = round(test_result$statistic, 1),
-      P_Value = round(test_result$p.value, 3)
+
+  # Extract values and convert to numeric, ensuring consistency
+  edu_data <- Educator_Data_Clean %>%
+    select(Response = all_of(q_edu)) %>%
+    mutate(Response = as.numeric(Response), Group = "Educator") %>%
+    filter(!is.na(Response))
+
+  emp_data <- Employer_Data_Clean %>%
+    select(Response = all_of(q_emp)) %>%
+    mutate(Response = as.numeric(Response), Group = "Employer") %>%
+    filter(!is.na(Response))
+
+  # Combine data for the current skill
+  combined_skill_data <- bind_rows(edu_data, emp_data)
+
+  # Ensure both groups have at least 2 observations to run test
+  if (n_distinct(combined_skill_data$Group) == 2 &&
+      sum(combined_skill_data$Group == "Educator") >= 2 &&
+      sum(combined_skill_data$Group == "Employer") >= 2) {
+
+    # Ensure 'Group' is a factor with desired order for consistent sign of r_rb
+    # A positive r_rb means the group listed second (Educator) tends to have higher values.
+    combined_skill_data$Group <- factor(combined_skill_data$Group, levels = c("Employer", "Educator"))
+
+    # Perform Wilcoxon test (result kept for p-value)
+    # Using exact=FALSE for larger N as done in previous example
+    test_result <- wilcox.test(Response ~ Group, data = combined_skill_data, exact = FALSE)
+
+    # Calculate ranked-biserial correlation using rank_biserial()
+    r_rb_object <- effectsize::rank_biserial(Response ~ Group, data = combined_skill_data)
+    r_rb <- r_rb_object$r_rank_biserial # Extract the specific value
+
+    # Calculate medians
+    med_edu <- median(edu_data$Response, na.rm = TRUE)
+    med_emp <- median(emp_data$Response, na.rm = TRUE)
+
+    # Store results
+    current_result <- tibble(
+      Skill_ID = q_edu,
+      p_value = test_result$p.value,
+      r_rb = r_rb,
+      median_educator = med_edu,
+      median_employer = med_emp,
+      n_educators = nrow(edu_data),
+      n_employers = nrow(emp_data)
     )
+    all_mw_results_df_s8 <- bind_rows(all_mw_results_df_s8, current_result)
   } else {
-    mw_results[[q_edu]] <- list(
-      Instruction_Type = procedure_labels[[q_edu]],
-      W_Statistic = "-",
-      P_Value = "-"
+    # Handle cases where a test can't be run (e.g., insufficient data in one group)
+    current_result <- tibble(
+      Skill_ID = q_edu,
+      p_value = NA, # Assign NA for p-value if test not run
+      r_rb = NA,    # Assign NA for r_rb if test not run
+      median_educator = median(edu_data$Response, na.rm = TRUE),
+      median_employer = median(emp_data$Response, na.rm = TRUE),
+      n_educators = nrow(edu_data),
+      n_employers = nrow(emp_data)
     )
+    all_mw_results_df_s8 <- bind_rows(all_mw_results_df_s8, current_result)
   }
 }
 
-# Combine results into a data frame
-mw_df <- do.call(rbind, lapply(mw_results, as.data.frame)) %>% as.data.frame()
-
-# Add significance and notes
-mw_df <- mw_df %>%
+# Add significance stars and readable labels for final table
+final_results_table_s8 <- all_mw_results_df_s8 %>%
   mutate(
-    Significance = case_when(
-      P_Value == "-" ~ "-",
-      as.numeric(P_Value) <= 0.001 ~ "***",
-      as.numeric(P_Value) <= 0.01 ~ "**",
-      as.numeric(P_Value) <= 0.05 ~ "*",
-      as.numeric(P_Value) <= 0.1 ~ ".",
-      TRUE ~ "ns"
-    ),
-    Notes = ifelse(P_Value == "-", "Insufficient data", "Test performed")
-  )
+    Skill = recode(Skill_ID, !!!procedure_labels_map), # Use the new labels map
+    stars = cut(p_value,
+                breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+                labels = c("***", "**", "*", ".", "")),
+    P_Value = ifelse(is.na(p_value), "N/A", ifelse(stars != "", paste0(sprintf("%.3f", p_value), " ", stars), sprintf("%.3f", p_value))),
+    # Median values to be printed with no float (integers)
+    `Median (Educator)` = sprintf("%.0f", median_educator),
+    `Median (Employer)` = sprintf("%.0f", median_employer),
+    `n (Educator / Employer)` = paste0(n_educators, " / ", n_employers),
+    `Ranked-Biserial Correlation (r_rb)` = sprintf("%.2f", r_rb),
+    Interpretation = case_when(
+      is.na(r_rb) ~ "N/A (Insufficient Data)",
+      abs(r_rb) >= 0.50 ~ paste0("Large ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      abs(r_rb) >= 0.30 ~ paste0("Medium ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      abs(r_rb) >= 0.10 ~ paste0("Small ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      TRUE ~ "Negligible effect"
+    )
+  ) %>%
+    # Filter out rows where P_Value is "N/A"
+    filter(P_Value != "N/A") %>%
+  # Rename columns directly in select() for kableExtra
+  select(
+    Skill,
+    `Med (Edu)` = `Median (Educator)`, # Concise header
+    `Med (Emp)` = `Median (Employer)`, # Concise header
+    `N (Edu / Emp)` = `n (Educator / Employer)`, # Concise header
+    `P-Value` = P_Value, # Consistent capitalization, remove space for LaTeX
+    `r_rb` = `Ranked-Biserial Correlation (r_rb)`, # Concise header
+    Interpretation
+  ) %>%
+  arrange(`P-Value`) # Arrange by the new column name
 
-# Remove rownames before table
-rownames(mw_df) <- NULL
-
-# Render kable table
-kable(mw_df, caption = "Mann-Whitney U-Test Results for Clinical Procedures", align = "c")
+# Render the final table with kableExtra for advanced formatting
+# Adjust column headers for better display and tightness
+kable(final_results_table_s8,
+      caption = "Mann-Whitney U-Test Results for Clinical Procedures",
+      align = "c",
+      row.names = FALSE,
+      escape = FALSE, # Allows LaTeX in headers and content
+      latex_options = c("scale_down", "HOLD_position", "striped") # latex_options belongs INSIDE kable()
+      ) %>%
+  # Use add_header_above for multi-line headers, make them more concise
+  add_header_above(c(" " = 1,
+                     "Median" = 2,
+                     "N" = 1,
+                     " " = 1,
+                     "Effect Size" = 1,
+                     " " = 1),
+                   line = FALSE) %>%
+  # Significantly reduce column widths to tighten the table.
+  # Adjusted widths for a tighter fit.
+  column_spec(1, width = "1.3in") %>%  # Skill - might need more space for longer procedure names
+  column_spec(2, width = "0.5in") %>% # Med (Edu)
+  column_spec(3, width = "0.5in") %>% # Med (Emp)
+  column_spec(4, width = "0.65in") %>%  # N (Edu / Emp)
+  column_spec(5, width = "0.55in") %>%  # P-Value
+  column_spec(6, width = "0.75in") %>% # r_rb
+  column_spec(7, width = "1.1in")   # Interpretation
 ```
+
+Nearly every skill reported a median of 4 with exception to the Feline Open Extraction - Canines/Multiple Roots whose central tendency was 3.  Note that this exception was the only row that report fewer responses than the others.  Small but consistent differences were found for several clinical procedures, with educators tending to rate certain skills as more important than employers.
+
+Specifically, educators rated the following procedures as more important (higher median values) compared to employers:
+
+- Feline closed extraction (effect size: $r = 0.27$)
+- Canine open extraction – single root ($r = 0.27$)
+- Feline open extraction – single root ($r = 0.23$)
+- Canine open extraction – canines/multiple roots ($r = 0.23$)
+- Feline open extraction – canines/multiple roots ($r = 0.26$)
+- Radiographic interpretation ($r = 0.12$)
+- Canine closed extraction ($r = 0.11$)
+
+All of these showed small positive effect sizes, indicating that educators placed slightly more emphasis on these procedures than employers. However, none of these differences reached conventional levels of statistical significance (i.e., $p < 0.05$), though some were marginal ($p ≈ 0.06–0.09$).  Negligible differences were found for the following skills:
+
+- Radiographic positioning ($r = -0.10$)
+- Scaling ($r = -0.09$)
+- Polishing ($r = -0.03$)
+- Oral examination/charting ($r = 0.03$)
+
+These results suggest that educators and employers generally agreed on the importance of these particular skills, with only very small or no measurable differences between groups.
+
+Overall, while the effect sizes for several procedures suggest that educators may value certain clinical extraction skills and radiographic interpretation slightly more than employers, the differences were not statistically significant. The negligible effect sizes for basic procedures like polishing and oral exams indicate broad consensus between the two groups on those skills.
 
 # Discussion/Conclusion
 
@@ -2044,5 +2246,4 @@ ggplot(plot_summary, aes(x = factor(response), y = count_signed, fill = group)) 
 ## Final Thoughts
 
 # Appendix
-
 
