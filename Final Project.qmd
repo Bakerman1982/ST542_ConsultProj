@@ -1014,18 +1014,22 @@ This question asks participants to enter a number related to the number of denta
 To assess whether there are differences in perceptions of new graduate competence in dentistry, educators and employers were asked a parallel question (Q4). Employers were asked to rate their expectation that early career veterinarians can competently perform 12 specific dental skills on their first day of employment. Educators were asked to rate whether they believe new graduates can perform those same skills competently. Responses were recorded on a 4-point Likert scale from 1 (Strongly Disagree) to 4 (Strongly Agree).
 
 
-We used the Mann-Whitney U test to compare the responses between educators and employers for each skill. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. Median scores and group sizes were also reported to support interpretation of the findings.
+We used the Mann-Whitney U test to compare educator and employer responses for each skill, as this non-parametric test is well-suited for ordinal data from two independent groups. In addition to p-values, we calculated the ranked-biserial correlation (r_rb) to assess effect sizes and provide insight into the magnitude and direction of observed differences. Results are summarized with median ratings for each group, sample sizes, and effect size interpretations (e.g., small, medium, large). Significance stars were added to highlight results below conventional thresholds (e.g., p < 0.05), and results were sorted by p-value to aid interpretation.
+
 
 ```{r}
-#| label: setup_mw_test
+#| label: full_q4_mannwhitney
 #| echo: false
 #| warning: false
 #| message: false
-#| include: false
+#| fig-align: center
+
 
 library(dplyr)
 library(tidyr)
 library(purrr)
+library(effectsize)
+library(kableExtra)
 
 # Add group identifiers
 educator_cleaned <- Educator_Data_Clean %>%
@@ -1058,48 +1062,93 @@ q4_long <- combined_data %>%
   mutate(Rating_num = as.numeric(Rating_num)) %>%
   filter(!is.na(Rating_num))
 
-# Mann-Whitney test
-mw_results <- q4_long %>%
+
+# Perform Mann-Whitney U tests + effect size
+mw_results_q4 <- q4_long %>%
   group_by(Skill) %>%
+  filter(n_distinct(group) == 2) %>%
   summarise(
-    p_value = wilcox.test(Rating_num ~ group)$p.value,
+    p_value = wilcox.test(Rating_num ~ group, exact = FALSE)$p.value,
+    r_rb = effectsize::rank_biserial(Rating_num ~ group)$r_rank_biserial,
     median_educator = median(Rating_num[group == "Educator"]),
     median_employer = median(Rating_num[group == "Employer"]),
     n_educator = sum(group == "Educator"),
     n_employer = sum(group == "Employer"),
     .groups = "drop"
   ) %>%
-  arrange(p_value)
-
-# Clean column names
-mw_results_clean <- mw_results %>%
-  rename(
-    `Skill` = Skill,
-    `p-value` = p_value,
-    `Median (Educator)` = median_educator,
-    `Median (Employer)` = median_employer,
-    `n (Educator)` = n_educator,
-    `n (Employer)` = n_employer
+  mutate(
+    stars = cut(p_value,
+                breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+                labels = c("***", "**", "*", ".", "")),
+    P_Value = ifelse(is.na(p_value), "N/A",
+                     ifelse(stars != "", paste0(sprintf("%.3f", p_value), " ", stars),
+                            sprintf("%.3f", p_value))),
+    `Med (Edu)` = sprintf("%.0f", median_educator),
+    `Med (Emp)` = sprintf("%.0f", median_employer),
+    `N (Edu / Emp)` = paste0(n_educator, " / ", n_employer),
+    r_rb_fmt = sprintf("%.2f", r_rb),
+    Interpretation = case_when(
+      is.na(r_rb) ~ "N/A (Insufficient Data)",
+      abs(r_rb) >= 0.50 ~ paste0("Large ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      abs(r_rb) >= 0.30 ~ paste0("Medium ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      abs(r_rb) >= 0.10 ~ paste0("Small ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      TRUE ~ "Negligible effect"
+    )
+  ) %>%
+  arrange(p_value) %>%
+  select(
+    Skill,
+    `Med (Edu)`,
+    `Med (Emp)`,
+    `N (Edu / Emp)`,
+    `P-Value` = P_Value,
+    `r_rb` = r_rb_fmt,
+    Interpretation
   )
 
-library(gt)
+# Optional: Create a map of human-friendly skill names
+skill_labels <- c(
+  "Q04_01" = "Periodontal probing",
+  "Q04_02" = "Dental radiography - positioning",
+  "Q04_03" = "Dental radiography - interpretation",
+  "Q04_04" = "Scaling",
+  "Q04_05" = "Polishing",
+  "Q04_06" = "Simple extractions - canine",
+  "Q04_07" = "Simple extractions - feline",
+  "Q04_08" = "Open extractions - canine (single root)",
+  "Q04_09" = "Open extractions - feline (single root)",
+  "Q04_10" = "Open extractions - canine (multi-root)",
+  "Q04_11" = "Open extractions - feline (multi-root)",
+  "Q04_12" = "Fluoride treatment"
+)
+
+# Replace skill codes with readable labels
+mw_results_q4$Skill <- recode(mw_results_q4$Skill, !!!skill_labels)
+
+# Create formatted table
+kable(mw_results_q4,
+      caption = "Mann-Whitney U-Test Results for Q04 Competency Ratings",
+      align = "c",
+      row.names = FALSE,
+      escape = FALSE,
+      latex_options = c("scale_down", "HOLD_position", "striped")
+      ) %>%
+  add_header_above(c(" " = 1,
+                     "Median" = 2,
+                     "N" = 1,
+                     " " = 1,
+                     "Effect Size" = 1,
+                     " " = 1),
+                   line = FALSE) %>%
+  column_spec(1, width = "1.6in") %>%
+  column_spec(2, width = "0.6in") %>%
+  column_spec(3, width = "0.6in") %>%
+  column_spec(4, width = "0.8in") %>%
+  column_spec(5, width = "0.75in") %>%
+  column_spec(6, width = "0.75in") %>%
+  column_spec(7, width = "1.3in")
 ```
 
-```{r}
-#| label: question_1
-#| echo: false
-#| warning: false
-#| fig-cap: " "
-#| fig-align: center
-
-mw_results_clean %>%
-  gt() %>%
-  tab_header(
-    title = "Mann-Whitney U Test Results by Skill"
-  ) %>%
-  fmt_number(columns = c(`p-value`), decimals = 3)
-
-```
 
 ### S2 Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum for recent graduates?
 
@@ -1109,143 +1158,6 @@ To evaluate whether differences exist between DVM educators and employers in the
 After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. 
 
 
-```{r}
-#| label: question_2prep
-#| echo: false
-#| warning: false
-#| message: false
-#| include: false
-library(dplyr)
-library(tidyr)
-
-# 1. Educator Q12 data (Q12_01 to Q12_07)
-educator_q12 <- Educator_Data_Clean %>%
-  select(Q12_01:Q12_07) %>%
-  mutate(group = "Educator")
-
-colnames(educator_q12)[1:7] <- paste0("Q12_", sprintf("%02d", 1:7))
-
-# 2. Employer Q16 data (only Q16_01 to Q16_10)
-employer_q16 <- Employer_Data_Clean %>%
-  select(Q16_01:Q16_10) %>%  # select only first 10 Q16 columns
-  mutate(group = "Employer")
-
-colnames(employer_q16)[1:10] <- paste0("Q16_", sprintf("%02d", 1:10))
-
-# 3. Combine datasets
-combined_raw <- bind_rows(educator_q12, employer_q16)
-
-# 4. Convert Q columns to character to avoid pivot issues
-combined_raw_clean <- combined_raw %>%
-  mutate(across(starts_with("Q"), as.character))
-
-# 5. Pivot longer
-combined_long <- combined_raw_clean %>%
-  pivot_longer(
-    cols = starts_with("Q"),
-    names_to = "Skill_Format",
-    values_to = "Taught_raw"
-  ) %>%
-  mutate(
-    Taught = na_if(Taught_raw, "N/A"),
-    Taught = na_if(Taught, ""),
-    Taught = as.numeric(Taught)
-  ) %>%
-  select(Skill_Format, group, Taught)
-
-# 6. Confirm columns included
-combined_long %>%
-  filter(grepl("^Q16_", Skill_Format)) %>%
-  distinct(Skill_Format)
-
-
-
-
-combined_long %>%
-  filter(grepl("^Q16_", Skill_Format)) %>%
-  group_by(Skill_Format) %>%
-  summarise(
-    total_responses = n(),
-    missing = sum(is.na(Taught)),
-    non_missing = total_responses - missing,
-    prop_non_missing = non_missing / total_responses
-  )
-
-# 1. Rename employer Q16 columns to Q12 labels for matching skills
-employer_q16 <- Employer_Data_Clean %>%
-  select(Q16_01:Q16_07) %>%
-  rename_with(~ paste0("Q12_", sprintf("%02d", 1:7)), .cols = everything()) %>%
-  mutate(group = "Employer")
-
-# 2. Select educator Q12 columns and label group
-educator_q12 <- Educator_Data_Clean %>%
-  select(Q12_01:Q12_07) %>%
-  mutate(group = "Educator")
-
-# 3. Combine the two datasets
-combined_q12_q16 <- bind_rows(educator_q12, employer_q16)
-
-# 4. Convert Q columns to character (to avoid pivot issues)
-combined_raw_clean <- combined_q12_q16 %>%
-  mutate(across(starts_with("Q12_"), as.character))
-
-# 5. Pivot to long format
-combined_long <- combined_raw_clean %>%
-  pivot_longer(
-    cols = starts_with("Q12_"),
-    names_to = "Skill_Format",
-    values_to = "Taught_raw"
-  ) %>%
-  mutate(
-    Taught = na_if(Taught_raw, "N/A"),
-    Taught = na_if(Taught, ""),
-    Taught = as.numeric(Taught)
-  ) %>%
-  filter(!is.na(Taught), group %in% c("Educator", "Employer"))
-
-# 6. Run Fisher's exact test on valid 2x2 tables
-test_results <- combined_long %>%
-  group_by(Skill_Format) %>%
-  summarise(
-    tab = list(table(group, Taught)),
-    .groups = "drop"
-  ) %>%
-  rowwise() %>%
-  mutate(
-    dims = list(dim(tab)),
-    is_valid = !is.null(dims[[1]]) && all(dims[[1]] >= 2)
-  ) %>%
-  filter(is_valid) %>%
-  mutate(
-    p_value = tryCatch(fisher.test(tab)$p.value, error = function(e) NA_real_),
-    n_educator = if ("Educator" %in% rownames(tab)) sum(tab["Educator", ]) else NA_integer_,
-    n_employer = if ("Employer" %in% rownames(tab)) sum(tab["Employer", ]) else NA_integer_,
-    prop_educator = if ("Educator" %in% rownames(tab) && "1" %in% colnames(tab)) {
-      tab["Educator", "1"] / sum(tab["Educator", ])
-    } else NA_real_,
-    prop_employer = if ("Employer" %in% rownames(tab) && "1" %in% colnames(tab)) {
-      tab["Employer", "1"] / sum(tab["Employer", ])
-    } else NA_real_
-  ) %>%
-  ungroup() %>%
-  select(-tab, -is_valid, -dims) %>%
-  arrange(p_value)
-
-```
-
-```{r}
-#| label: question_2
-#| echo: false
-#| warning: false
-#| fig-cap: " "
-#| fig-align: center
-
-kable(test_results, 
-      digits = 3,
-      caption = "Fisher's Exact Test Results by Skill",
-      format = "markdown")  # use "latex" for PDF, "html" for HTML output
-
-```
 
 ### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
