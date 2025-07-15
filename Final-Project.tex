@@ -1,4 +1,5 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -8,22 +9,24 @@
   letterpaper,
   DIV=11,
   numbers=noendperiod]{scrartcl}
-
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{2}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
-    \setmainfont[]{Times New Roman}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmainfont[]{Times New Roman}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -41,10 +44,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{2}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -70,8 +69,7 @@
 \makeatother
 
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -96,6 +94,8 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -130,6 +130,18 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -149,6 +161,8 @@
 \KOMAoption{captions}{tableheading}
 \numberwithin{figure}{section}
 \numberwithin{table}{section}
+\usepackage{etoolbox}
+\patchcmd{\maketitle}{\thispagestyle{plain}}{\thispagestyle{plain}\newpage}{}{}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -190,11 +204,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={Bridging the Gap:},
   pdfauthor={Brock Akerman, Hanan Ali, Taylor Cesarski},
@@ -217,7 +229,6 @@
 Dentistry}
 \author{Brock Akerman, Hanan Ali, Taylor Cesarski}
 \date{2025-06-25}
-
 \begin{document}
 \maketitle
 
@@ -590,7 +601,10 @@ These questions use a Likert scale with response options: Strongly
 Agree, Agree, Disagree, and Strongly Disagree across a variety of skills
 and procedures. Given the ordinal nature of these responses, we will use
 diverging stacked bar charts and summary tables to visually explore the
-data, followed by a Mann-Whitney U Test for formal hypothesis testing.
+data. We will then use Mann-Whitney U Tests for formal hypothesis
+testing differences between groups. Finally, a Ranked-Biserial
+Correlation (RBC) of effect size to find direction and magnitude of
+differences between groups.
 
 The Mann-Whitney U Test is a non-parametric test used to assess whether
 there is a statistically significant difference in the distributions of
@@ -645,8 +659,55 @@ U Test:
   approximation.
 \end{itemize}
 
-P-values will be utilized for each statistical question listed above in
-order to formally analyze the data.
+To complement the Mann-Whitney U tests, effect sizes were calculated
+using the rank-biserial correlation (RBC). While the p-value assesses
+whether a statistically significant difference exists between groups,
+the rank-biserial correlation quantifies the magnitude and direction of
+that difference---adding a layer of practical interpretation. An RBC
+value near 0 suggests little to no effect, while values near -1 or 1
+suggest large differences favoring one group over the other.
+
+Formally, the RBC is calculated directly from the Mann-Whitney U
+statistic:
+
+\(r_{rb} = \frac{2U}{n_1n_2} - 1\)
+
+Where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(U\) is the Mann-Whitney U statistic (typically the smaller of
+  \(U_1\) and \(U_2\))\\
+\item
+  \(n_1\) and \(n_2\) are the sample sizes of the two independent groups
+\end{itemize}
+
+This formula scales \(U\) into the \([-1,1]\) interval, where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(r_{rb} = 0\) implies overlapping ranks (no difference)\\
+\item
+  \(r_{rb} = 1\) implies every value in group 1 exceeds every value in
+  group 2\\
+\item
+  \(r_{rb} = -1\) implies every value in group 2 exceeds every value in
+  group 1
+\end{itemize}
+
+\(U\) is derived by jointly ranking all observation across groups. The
+sum or ranks (\(R_1\) and \(R_2\)) are then used to calculate:
+
+\(U_1 = R_1 - \frac{n_1(n_1+1)}{2}\),\\
+\(U_2 = R_2 - \frac{n_2(n_2+1)}{2}\)
+
+Then U = min(\(U_1\),\(U_2\)) and this value is substituted for
+\(r_{rb}\).
+
+P-values and an RBC value will be applied to each statistical question
+listed above in order to formally analyze the data.
 
 \paragraph{Select all that apply questions (statistical questions \#2,
 5, and
@@ -1039,7 +1100,7 @@ Mann--Whitney U-test results, summary statistics, effect sizes, and
 ranked-biserial correlation outputs.
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.0in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
-\caption{Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
+\caption{\label{tab:6a_MannWhit_Table}Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
@@ -1280,7 +1341,7 @@ the Mann--Whitney U-testresults, summary statistics, effect sizes, and
 ranked-biserial correlation outputs.
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.3in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
-\caption{Mann-Whitney U-Test Results for Clinical Procedures}\\
+\caption{\label{tab:8a_MannWhit_Table}Mann-Whitney U-Test Results for Clinical Procedures}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
