@@ -1118,7 +1118,7 @@ mw_results_q4$Skill <- recode(mw_results_q4$Skill, !!!skill_labels)
 kable(mw_results_q4,
       format = "latex",
       booktabs = TRUE,
-      caption = "Mann-Whitney U-Test Results for Q04 Competency Ratings",
+      caption = "Mann-Whitney U-Test Results for Competency Ratings",
       align = "c",
       row.names = FALSE) %>%
   kable_styling(latex_options = c("striped", "hold_position", "scale_down"))
@@ -1353,7 +1353,7 @@ invisible(mw_results_q3)
 #| fig-align: center
 
 kable(mw_results_q3,
-      caption = "Mann-Whitney U-Test Results for Q13/Q17 Beliefs about Pre-Clinical Dentistry Training",
+      caption = "Mann-Whitney U-Test Results for Pre-Clinical Dentistry Training",
       align = "c",
       row.names = FALSE,
       escape = FALSE,
