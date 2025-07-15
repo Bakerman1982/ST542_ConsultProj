@@ -1261,7 +1261,7 @@ kable(test_results,
 
 To assess whether educators and employers differ in their beliefs about which dental skills should be included in the pre-clinical DVM curriculum, we analyzed responses to parallel Likert-scale questions: Q13 (educators) and Q17 (employers). Both groups rated the importance of teaching 12 specific dentistry skills using a 4-point Likert scale ranging from 1 (Strongly Disagree) to 4 (Strongly Agree). 
 
-Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. 
+Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. The results table presents medians for each group, sample sizes, p-values with significance indicators, effect size estimates (rank-biserial correlation), and an interpretation of the magnitude and direction of group differences. 
 
 
 
@@ -1272,31 +1272,48 @@ Because the data were ordinal and responses came from two independent groups, th
 #| warning: false
 #| message: false
 #| include: false
-# Load required packages
+
 library(dplyr)
 library(tidyr)
-library(gt)
+library(purrr)
+library(effectsize)
+library(kableExtra)
 
-# 1. Select relevant Q13 (educators) and Q17 (employers) columns
+# Skill name lookup
+skill_labels_q3 <- c(
+  "Skill_01" = "Periodontal probing",
+  "Skill_02" = "Dental radiography - positioning",
+  "Skill_03" = "Dental radiography - interpretation",
+  "Skill_04" = "Scaling",
+  "Skill_05" = "Polishing",
+  "Skill_06" = "Simple extractions - canine",
+  "Skill_07" = "Simple extractions - feline",
+  "Skill_08" = "Open extractions - canine (single root)",
+  "Skill_09" = "Open extractions - feline (single root)",
+  "Skill_10" = "Open extractions - canine (multi-root)",
+  "Skill_11" = "Open extractions - feline (multi-root)",
+  "Skill_12" = "Fluoride treatment"
+)
+
+# 1. Load and standardize data
 q13_vars <- paste0("Q13_", sprintf("%02d", 1:12))  # Educators
 q17_vars <- paste0("Q17_", sprintf("%02d", 1:12))  # Employers
 
 educator_q13 <- Educator_Data_Clean %>%
   select(all_of(q13_vars)) %>%
+  rename_with(~ paste0("Skill_", sprintf("%02d", 1:12)), .cols = everything()) %>%
   mutate(group = "Educator")
 
 employer_q17 <- Employer_Data_Clean %>%
   select(all_of(q17_vars)) %>%
+  rename_with(~ paste0("Skill_", sprintf("%02d", 1:12)), .cols = everything()) %>%
   mutate(group = "Employer")
 
-# 2. Combine and standardize column names
-colnames(educator_q13)[1:12] <- paste0("Skill_", sprintf("%02d", 1:12))
-colnames(employer_q17)[1:12] <- paste0("Skill_", sprintf("%02d", 1:12))
 
-combined_data <- bind_rows(educator_q13, employer_q17)
+# 2. Combine and reshape
+combined_q3 <- bind_rows(educator_q13, employer_q17)
 
-# 3. Reshape to long format
-q3_long <- combined_data %>%
+q3_long <- combined_q3 %>%
   pivot_longer(
     cols = starts_with("Skill_"),
     names_to = "Skill",
@@ -1305,38 +1322,82 @@ q3_long <- combined_data %>%
   mutate(Rating_num = as.numeric(Rating_num)) %>%
   filter(!is.na(Rating_num))
 
-# 4. Run Mann-Whitney U tests
-q3_results <- q3_long %>%
+# 3. Run Mann-Whitney U test with effect sizes
+mw_results_q3 <- q3_long %>%
   group_by(Skill) %>%
+  filter(n_distinct(group) == 2) %>%
   summarise(
-    p_value = wilcox.test(Rating_num ~ group)$p.value,
-    median_educator = median(Rating_num[group == "Educator"], na.rm = TRUE),
-    median_employer = median(Rating_num[group == "Employer"], na.rm = TRUE),
+    p_value = wilcox.test(Rating_num ~ group, exact = FALSE)$p.value,
+    r_rb = effectsize::rank_biserial(Rating_num ~ group)$r_rank_biserial,
+    median_educator = median(Rating_num[group == "Educator"]),
+    median_employer = median(Rating_num[group == "Employer"]),
     n_educator = sum(group == "Educator"),
     n_employer = sum(group == "Employer"),
     .groups = "drop"
   ) %>%
-  arrange(p_value)
-
-# 5. Clean column names
-q3_results_clean <- q3_results %>%
-  rename(
-    `p-value` = p_value,
-    `Median (Educator)` = median_educator,
-    `Median (Employer)` = median_employer,
-    `n (Educator)` = n_educator,
-    `n (Employer)` = n_employer
+  mutate(
+    stars = cut(p_value,
+                breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+                labels = c("***", "**", "*", ".", "")),
+    P_Value = ifelse(is.na(p_value), "N/A",
+                     ifelse(stars != "", paste0(sprintf("%.3f", p_value), " ", stars),
+                            sprintf("%.3f", p_value))),
+    `Med (Edu)` = sprintf("%.0f", median_educator),
+    `Med (Emp)` = sprintf("%.0f", median_employer),
+    `N (Edu / Emp)` = paste0(n_educator, " / ", n_employer),
+    r_rb_fmt = sprintf("%.2f", r_rb),
+    Interpretation = case_when(
+      is.na(r_rb) ~ "N/A (Insufficient Data)",
+      abs(r_rb) >= 0.50 ~ paste0("Large ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      abs(r_rb) >= 0.30 ~ paste0("Medium ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      abs(r_rb) >= 0.10 ~ paste0("Small ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
+      TRUE ~ "Negligible effect"
+    )
+  ) %>%
+  arrange(p_value) %>%
+  mutate(Skill = recode(Skill, !!!skill_labels_q3)) %>%
+  select(
+    Skill,
+    `Med (Edu)`,
+    `Med (Emp)`,
+    `N (Edu / Emp)`,
+    `P-Value` = P_Value,
+    `r_rb` = r_rb_fmt,
+    Interpretation
   )
 
-# 6. Display results as table
-q3_results_clean %>%
-  gt() %>%
-  tab_header(
-    title = "Mann-Whitney U Test: Pre-Clinical Skill Training Beliefs"
-  ) %>%
-  fmt_number(columns = c(`p-value`), decimals = 3)
+```
+
+```{r}
+#| label: question_3
+#| echo: false
+#| warning: false
+#| fig-align: center
+
+kable(mw_results_q3,
+      caption = "Mann-Whitney U-Test Results for Q13/Q17 Beliefs about Pre-Clinical Dentistry Training",
+      align = "c",
+      row.names = FALSE,
+      escape = FALSE,
+      latex_options = c("scale_down", "HOLD_position", "striped")) %>%
+  add_header_above(c(" " = 1,
+                     "Median" = 2,
+                     "N" = 1,
+                     " " = 1,
+                     "Effect Size" = 1,
+                     " " = 1),
+                   line = FALSE) %>%
+  column_spec(1, width = "1.6in") %>%
+  column_spec(2, width = "0.6in") %>%
+  column_spec(3, width = "0.6in") %>%
+  column_spec(4, width = "0.8in") %>%
+  column_spec(5, width = "0.75in") %>%
+  column_spec(6, width = "0.75in") %>%
+  column_spec(7, width = "1.3in")
 
 ```
+
+
 
 ### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
 
