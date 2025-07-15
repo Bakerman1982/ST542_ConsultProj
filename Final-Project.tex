@@ -156,6 +156,8 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
+\usepackage{caption}
+\usepackage{anyfontsize}
 \KOMAoption{captions}{tableheading}
 \numberwithin{figure}{section}
 \numberwithin{table}{section}
@@ -944,6 +946,24 @@ non-parametric alternative to the independent samples t-test---to
 compare the distributions of responses between educators and employers
 for each clinical setting. This test is appropriate when comparing two
 independent groups without assuming normality or equal variances.
+
+\begin{table}
+\caption*{
+{\large \textbf{Mann-Whitney U Test: Expected Number of Dental Procedures}} \\ 
+{\small Comparison of Educator and Employer Expectations by Clinical Setting}
+} 
+\fontsize{12.0pt}{14.4pt}\selectfont
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}cccccccc}
+\toprule
+Clinical Setting & Median (Educator) & Median (Employer) & N (Educator) & N (Employer) & P-Value & r\_rb & Effect Size Interpretation \\ 
+\midrule\addlinespace[2.5pt]
+Dentistry\_Rotation & 4.0 & 6.5 & 24 & 10 & 0.080 . & -0.39 & Medium negative effect \\ 
+Lab\_Animal & 0.0 & 0.0 & 16 & 9 & 0.222 & 0.24 & Small positive effect \\ 
+Shelter\_Medicine & 2.0 & 0.0 & 19 & 9 & 0.235 & 0.27 & Small positive effect \\ 
+Primary\_Care & 3.0 & 4.0 & 27 & 10 & 0.287 & -0.23 & Small negative effect \\ 
+\bottomrule
+\end{tabular*}
+\end{table}
 
 \subsubsection{S5 Is there difference between the instructional formats
 in dentistry reported by DVM programs and the formats perceived by
