@@ -1,5 +1,4 @@
 % Options for packages loaded elsewhere
-% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -9,24 +8,22 @@
   letterpaper,
   DIV=11,
   numbers=noendperiod]{scrartcl}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
+
 \usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{2}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
+  \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else
-  % xetex/luatex font selection
-  \setmainfont[]{Times New Roman}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+    \setmainfont[]{Times New Roman}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -44,6 +41,10 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{2}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -69,7 +70,8 @@
 \makeatother
 
 
-\usepackage{longtable,booktabs,array}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -94,8 +96,6 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
-
-
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -130,18 +130,6 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-
-
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
-
-
- 
-
-
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -156,9 +144,15 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
+\usepackage{caption}
+\usepackage{anyfontsize}
 \KOMAoption{captions}{tableheading}
 \numberwithin{figure}{section}
 \numberwithin{table}{section}
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\maketitle}{\thispagestyle{plain}}{\thispagestyle{plain}\newpage}{}{}
+\makeatother
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -200,9 +194,11 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+
 \usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
+\urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Bridging the Gap:},
   pdfauthor={Brock Akerman, Hanan Ali, Taylor Cesarski},
@@ -224,7 +220,8 @@
 \subtitle{Comparing Employer and Educator Expectations in Small Animal
 Dentistry}
 \author{Brock Akerman, Hanan Ali, Taylor Cesarski}
-\date{2025-06-25}
+\date{2025-07-28}
+
 \begin{document}
 \maketitle
 
@@ -271,13 +268,6 @@ primary care veterinary educators. Both surveys included similar
 questions regarding what early-career veterinarians are expected to have
 learned during their education and the skills they are expected to
 perform in practice.
-
-This research has the potential to improve veterinary care by ensuring
-new graduates are better prepared to meet clinical demands. It could
-also support a smoother transition into practice for early-career
-veterinarians, reduce the burden of on-the-job training for employers,
-and promote overall workforce readiness in the field of small animal
-primary care.
 
 \subsection{Research Question}\label{research-question}
 
@@ -595,6 +585,8 @@ After all preprocessing steps, the final cleaned datasets consisted of
 
 \section{Statistical Methods}\label{statistical-methods}
 
+\subsection{Method Description}\label{method-description}
+
 \paragraph{Likert scale questions (statistical questions \#1,3, 6, and
 8)}\label{likert-scale-questions-statistical-questions-13-6-and-8}
 
@@ -602,7 +594,10 @@ These questions use a Likert scale with response options: Strongly
 Agree, Agree, Disagree, and Strongly Disagree across a variety of skills
 and procedures. Given the ordinal nature of these responses, we will use
 diverging stacked bar charts and summary tables to visually explore the
-data, followed by a Mann-Whitney U Test for formal hypothesis testing.
+data. We will then use Mann-Whitney U Tests for formal hypothesis
+testing differences between groups. Finally, a Ranked-Biserial
+Correlation (RBC) of effect size to find direction and magnitude of
+differences between groups.
 
 The Mann-Whitney U Test is a non-parametric test used to assess whether
 there is a statistically significant difference in the distributions of
@@ -657,10 +652,55 @@ U Test:
   approximation.
 \end{itemize}
 
-P-values will be utilized for each statistical question listed above in
-order to formally analyze the data.
+To complement the Mann-Whitney U tests, effect sizes were calculated
+using the rank-biserial correlation (RBC). While the p-value assesses
+whether a statistically significant difference exists between groups,
+the rank-biserial correlation quantifies the magnitude and direction of
+that difference---adding a layer of practical interpretation. An RBC
+value near 0 suggests little to no effect, while values near -1 or 1
+suggest large differences favoring one group over the other.
 
-ADD MENTION HERE OF EFFECT SIZE CALCULATIONS.
+Formally, the RBC is calculated directly from the Mann-Whitney U
+statistic:
+
+\(r_{rb} = \frac{2U}{n_1n_2} - 1\)
+
+Where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(U\) is the Mann-Whitney U statistic (typically the smaller of
+  \(U_1\) and \(U_2\))\\
+\item
+  \(n_1\) and \(n_2\) are the sample sizes of the two independent groups
+\end{itemize}
+
+This formula scales \(U\) into the \([-1,1]\) interval, where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(r_{rb} = 0\) implies overlapping ranks (no difference)\\
+\item
+  \(r_{rb} = 1\) implies every value in group 1 exceeds every value in
+  group 2\\
+\item
+  \(r_{rb} = -1\) implies every value in group 2 exceeds every value in
+  group 1
+\end{itemize}
+
+\(U\) is derived by jointly ranking all observation across groups. The
+sum or ranks (\(R_1\) and \(R_2\)) are then used to calculate:
+
+\(U_1 = R_1 - \frac{n_1(n_1+1)}{2}\),\\
+\(U_2 = R_2 - \frac{n_2(n_2+1)}{2}\)
+
+Then U = min(\(U_1\),\(U_2\)) and this value is substituted for
+\(r_{rb}\).
+
+P-values and an RBC value will be applied to each statistical question
+listed above in order to formally analyze the data.
 
 \paragraph{Select all that apply questions (statistical questions \#2,
 5, and
@@ -680,7 +720,9 @@ design from the client, it is again reasonable to assume that these two
 groups are independent. In this context, Fisher's Exact Test is
 preferred over Chi-Squared Tests due to the small sample size and
 therefore not meeting the expected count threshold that is required to
-proceed with Chi-Squared Tests.
+proceed with Chi-Squared Tests. Given the small sample sizes, we
+acknowledge the limited power of these analyses and may consider post
+hoc power analyses for these tests.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.3288}}
@@ -741,9 +783,7 @@ the distributions, we will then conduct either a two-sample t-test or a
 Mann-Whitney U Test. As mentioned above, the Mann Whitney U test is a
 non-parametric test that does not depend on the assumption of normality.
 If the assumption on normality is met, we can consider a two-sample t
-test for this analysis. However, from examination of the data, normality
-is not met and we will therefore utilize a Mann-Whitney U Test. The test
-follows the same method above as statistical questions \#2, 5, and 7.
+test for this analysis.
 
 \section{Results}\label{results}
 
@@ -763,42 +803,37 @@ they believe new graduates can perform those same skills competently.
 Responses were recorded on a 4-point Likert scale from 1 (Strongly
 Disagree) to 4 (Strongly Agree).
 
-We used the Mann-Whitney U test to compare educator and employer
-responses for each skill, as this non-parametric test is well-suited for
-ordinal data from two independent groups. In addition to p-values, we
-calculated the ranked-biserial correlation (r\_rb) to assess effect
-sizes and provide insight into the magnitude and direction of observed
-differences. Results are summarized with median ratings for each group,
-sample sizes, and effect size interpretations (e.g., small, medium,
-large). Significance stars were added to highlight results below
-conventional thresholds (e.g., p \textless{} 0.05), and results were
-sorted by p-value to aid interpretation.
+We used the Mann-Whitney U test to compare the responses between
+educators and employers for each skill. This non-parametric test is
+appropriate for comparing ordinal data between two independent groups,
+especially when the assumptions for parametric tests may not hold.
+Ratings were reshaped into long format and analyzed skill-by-skill.
+Median scores and group sizes were also reported to support
+interpretation of the findings.
 
-\begin{table}[!h]
-\centering
-\caption{\label{tab:full_q4_mannwhitney}Mann-Whitney U-Test Results for Competency Ratings}
-\centering
-\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
-\begin{tabular}[t]{ccccccc}
+\begin{table}
+\caption*{
+{\large Mann-Whitney U Test Results by Skill}
+} 
+\fontsize{12.0pt}{14.4pt}\selectfont
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr}
 \toprule
-Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
-\midrule
-\cellcolor{gray!10}{Periodontal probing} & \cellcolor{gray!10}{4} & \cellcolor{gray!10}{4} & \cellcolor{gray!10}{28 / 13} & \cellcolor{gray!10}{1.000} & \cellcolor{gray!10}{0.00} & \cellcolor{gray!10}{Negligible effect}\\
-Dental radiography - positioning & 3 & 2 & 27 / 12 & 0.369 & 0.18 & Small positive effect\\
-\cellcolor{gray!10}{Dental radiography - interpretation} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{28 / 12} & \cellcolor{gray!10}{0.052 .} & \cellcolor{gray!10}{0.36} & \cellcolor{gray!10}{Medium positive effect}\\
-Scaling & 4 & 4 & 27 / 13 & 0.552 & -0.10 & Negligible effect\\
-\cellcolor{gray!10}{Polishing} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{28 / 13} & \cellcolor{gray!10}{0.242} & \cellcolor{gray!10}{0.21} & \cellcolor{gray!10}{Small positive effect}\\
-\addlinespace
-Simple extractions - canine & 3 & 3 & 28 / 13 & 0.374 & 0.16 & Small positive effect\\
-\cellcolor{gray!10}{Simple extractions - feline} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{28 / 13} & \cellcolor{gray!10}{1.000} & \cellcolor{gray!10}{0.00} & \cellcolor{gray!10}{Negligible effect}\\
-Open extractions - canine (single root) & 3 & 3 & 28 / 13 & 0.769 & -0.06 & Negligible effect\\
-\cellcolor{gray!10}{Open extractions - feline (single root)} & \cellcolor{gray!10}{2} & \cellcolor{gray!10}{2} & \cellcolor{gray!10}{27 / 13} & \cellcolor{gray!10}{0.613} & \cellcolor{gray!10}{-0.10} & \cellcolor{gray!10}{Negligible effect}\\
-Open extractions - canine (multi-root) & 2 & 3 & 28 / 13 & 0.289 & -0.20 & Small negative effect\\
-\addlinespace
-\cellcolor{gray!10}{Open extractions - feline (multi-root)} & \cellcolor{gray!10}{1} & \cellcolor{gray!10}{1} & \cellcolor{gray!10}{7 / 4} & \cellcolor{gray!10}{0.778} & \cellcolor{gray!10}{-0.11} & \cellcolor{gray!10}{Small negative effect}\\
-Fluoride treatment & 3 & 4 & 2 / 1 & 1.000 & -0.50 & Large negative effect\\
+Skill & p-value & Median (Educator) & Median (Employer) & n (Educator) & n (Employer) \\ 
+\midrule\addlinespace[2.5pt]
+Q04\_03 & 0.052 & 3 & 3.0 & 28 & 12 \\ 
+Q04\_05 & 0.242 & 3 & 3.0 & 28 & 13 \\ 
+Q04\_10 & 0.289 & 2 & 3.0 & 28 & 13 \\ 
+Q04\_02 & 0.369 & 3 & 2.5 & 27 & 12 \\ 
+Q04\_06 & 0.374 & 3 & 3.0 & 28 & 13 \\ 
+Q04\_04 & 0.552 & 4 & 4.0 & 27 & 13 \\ 
+Q04\_09 & 0.613 & 2 & 2.0 & 27 & 13 \\ 
+Q04\_08 & 0.769 & 3 & 3.0 & 28 & 13 \\ 
+Q04\_11 & 0.778 & 1 & 1.0 & 7 & 4 \\ 
+Q04\_01 & 1.000 & 4 & 4.0 & 28 & 13 \\ 
+Q04\_07 & 1.000 & 3 & 3.0 & 28 & 13 \\ 
+Q04\_12 & 1.000 & 3 & 4.0 & 2 & 1 \\ 
 \bottomrule
-\end{tabular}}
+\end{tabular*}
 \end{table}
 
 \subsubsection{S2 Is there a difference between educators and practice
@@ -828,16 +863,16 @@ which both groups provided non-missing responses were included in the
 final analysis.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.4082}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0816}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1122}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1122}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1429}}
-  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1429}}@{}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1831}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1127}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1549}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1549}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1972}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1972}}@{}}
 \caption{Fisher's Exact Test Results by Skill}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-Skill
+Skill\_Format
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 p\_value
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
@@ -853,7 +888,7 @@ prop\_employer
 \endfirsthead
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-Skill
+Skill\_Format
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 p\_value
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
@@ -869,15 +904,13 @@ prop\_employer
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Dental radiograph acquisition & 0.307 & 28 & 13 & 0.714 & 0.538 \\
-Oral examination and charting & 0.399 & 28 & 13 & 0.786 & 0.923 \\
-Simple extraction technique & 0.469 & 28 & 13 & 0.750 & 0.615 \\
-Instrument identification and handling & 0.732 & 28 & 13 & 0.643 &
-0.538 \\
-Dental cleaning (scaling and polishing) & 0.742 & 28 & 13 & 0.536 &
-0.615 \\
-Local nerve blocks & 0.742 & 28 & 13 & 0.607 & 0.538 \\
-Dental radiograph interpretation & 1.000 & 28 & 13 & 0.643 & 0.615 \\
+Q12\_03 & 0.307 & 28 & 13 & 0.714 & 0.538 \\
+Q12\_01 & 0.399 & 28 & 13 & 0.786 & 0.923 \\
+Q12\_05 & 0.469 & 28 & 13 & 0.750 & 0.615 \\
+Q12\_07 & 0.732 & 28 & 13 & 0.643 & 0.538 \\
+Q12\_02 & 0.742 & 28 & 13 & 0.536 & 0.615 \\
+Q12\_06 & 0.742 & 28 & 13 & 0.607 & 0.538 \\
+Q12\_04 & 1.000 & 28 & 13 & 0.643 & 0.615 \\
 \end{longtable}
 
 \subsubsection{S3 Is there a difference between educators and practice
@@ -898,36 +931,7 @@ employer ratings for each skill individually. This non-parametric test
 is appropriate for comparing ordinal data between two independent
 groups, especially when the assumptions for parametric tests may not
 hold. Ratings were reshaped into long format and analyzed
-skill-by-skill. The results table presents medians for each group,
-sample sizes, p-values with significance indicators, effect size
-estimates (rank-biserial correlation), and an interpretation of the
-magnitude and direction of group differences.
-
-\begingroup\fontsize{9}{11}\selectfont
-
-\begin{longtable}[t]{>{\centering\arraybackslash}p{1.4in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.7in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{1.1in}}
-\caption{\label{tab:unnamed-chunk-12}Mann-Whitney U-Test Results for Pre-Clinical Dentistry Training}\\
-\toprule
-\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
-\textbf{Skill} & \textbf{Med (Edu)} & \textbf{Med (Emp)} & \textbf{N (Edu / Emp)} & \textbf{P-Value} & \textbf{r\_rb} & \textbf{Interpretation}\\
-\midrule
-Open extractions - feline (multi-root) & 3 & 4 & 17 / 13 & 0.002 ** & -0.60 & Large negative effect\\
-Fluoride treatment & 1 & 3 & 3 / 9 & 0.013 * & -1.00 & Large negative effect\\
-Open extractions - canine (multi-root) & 4 & 4 & 26 / 13 & 0.079 . & -0.29 & Small negative effect\\
-Open extractions - canine (single root) & 4 & 4 & 26 / 13 & 0.084 . & -0.29 & Small negative effect\\
-Open extractions - feline (single root) & 4 & 4 & 27 / 13 & 0.093 . & -0.28 & Small negative effect\\
-\addlinespace
-Simple extractions - feline & 4 & 4 & 26 / 13 & 0.136 & -0.26 & Small negative effect\\
-Dental radiography - interpretation & 4 & 4 & 28 / 12 & 0.164 & 0.13 & Small positive effect\\
-Scaling & 4 & 4 & 28 / 13 & 0.403 & 0.14 & Small positive effect\\
-Polishing & 4 & 4 & 28 / 12 & 0.480 & 0.12 & Small positive effect\\
-Periodontal probing & 4 & 4 & 28 / 13 & 0.599 & 0.04 & Negligible effect\\
-\addlinespace
-Dental radiography - positioning & 4 & 4 & 27 / 11 & 0.726 & 0.07 & Negligible effect\\
-Simple extractions - canine & 4 & 4 & 28 / 13 & 0.788 & -0.05 & Negligible effect\\
-\bottomrule
-\end{longtable}
-\endgroup{}
+skill-by-skill.
 
 \subsubsection{S4 Do employers and educators differ in their
 expectations about how many dental procedures new graduates should
@@ -986,10 +990,10 @@ case rounds when dental cases are chosen to present.''
 Educators and employers differed in their perceptions of clinical dental
 instruction formats completed by early career veterinarians. While a
 majority in both groups acknowledged didactic instruction, educators
-reported higher rates of wet lab (75\% vs.~46.2\%) and live patient
-training (96.4\% vs.~38.5\%) compared to employers. Conversely,
+reported higher rates of wet lab (73.3\% vs.~46.2\%) and live patient
+training (93.3\% vs.~38.5\%) compared to employers. Conversely,
 employers more frequently identified simulation training (30.8\%
-vs.~14.3\%) than educators. These differences suggest varying
+vs.~16.7\%) than educators. These differences suggest varying
 expectations or awareness between the two groups regarding dental
 training experiences of recent graduates.
 
@@ -1004,23 +1008,23 @@ by Early Career Veterinarians}
 
 \end{figure}%
 
-Figure 5.1 shows the percentages of each format selected and Table 5.2
+Figure 5.1 shows the percentages of each format selected and Table 3
 shows the p-value associated with performing Fisher's Exact Test on each
 format.
 
-Didactic instruction was selected by 57.1\% of educators and 61.5\% of
+Didactic instruction was selected by 53.3\% of educators and 61.5\% of
 employers, with no statistically significant difference between the
-groups (p=1). There was also no statistically significant difference in
-simulation (p=0.237) and wet lab instruction (p=0.0885).
+groups (p=0.743). There was also no statistically significant difference
+in simulation (p=0.417) and wet lab instruction (p=0.162).
 
-On the other hand, live patient instruction was selected by 96.4\% of
+On the other hand, live patient instruction was selected by 93.3\% of
 educators, but only 38.5\% of employers. This difference was found to be
-statistically significant with a p-value of 0.000105.
+statistically significant with a p-value of 0.0003.
 
 ``None of these'' was also found to be statistically significant at the
-5\% level. No educators selected that none of these formats were
-believed to have been used, but 23.1\% of employers selected that none
-of the formats were believed to be utilized in the clinical year.
+5\% level. No educators selected that none of these formats were used,
+but 23.1\% of employers selected that none of the formats were believed
+to be utilized in the clinical year.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 6\tabcolsep) * \real{0.1867}}
@@ -1089,7 +1093,7 @@ Mann--Whitney U-test results, summary statistics, effect sizes, and
 ranked-biserial correlation outputs.
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.0in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
-\caption{\label{tab:6a_MannWhit_Table}Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
+\caption{Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
@@ -1268,7 +1272,7 @@ Fluoride Treatment & 3.6 & 15.4 & 0.232 \\
 None of These & 21.4 & 0.0 & 0.152 \\
 \end{longtable}
 
-Figure 5.3 shows the percentage of employers and educators who selected
+Figure 5.2 shows the percentage of employers and educators who selected
 the given skills and Table 4 shows the p-values associated with Fisher's
 Exact Test and their significance.
 
@@ -1283,29 +1287,27 @@ employers and educators was found to be significant for seven skills:
 \begin{itemize}
 \tightlist
 \item
-  Radiographic Positioning (p=0.0284)
+  Scaling
 \item
-  Scaling (p=0.0084)
+  Polishing
 \item
-  Polishing (p=0.00331)
+  Canine Closed Extraction
 \item
-  Canine Closed Extraction (p=0.0102)
+  Feline Closed Extraction
 \item
-  Feline Closed Extraction (p=0.0102)
+  Canine Open Extraction - Single Root
 \item
-  Canine Open Extraction - Single Root (p=0.0102)
+  Feline Open Extraction - Single Root
 \item
-  Feline Open Extraction - Single Root (p=0.0193)
-\item
-  Canine Open Extraction - Canines/Multiple Roots (p=0.0193)
+  Canine Open Extraction - Canines/Multiple Roots
 \end{itemize}
 
 For all skills with statistically significant differences, educators
 reported higher percentages than employers.
 
 The most significant difference was found in polishing. Educators
-selected this skill 82.1\% of the time, while employers selected this
-skill only 30.8\% of the time. The resulting p-value was 0.00331.
+selected this skill 76.7\% of the time, while employers selected this
+skill only 30.8\% of the time. The resulting p-value was 0.00672.
 
 \subsubsection{S8 Do educators and employers differ in their opinions
 about which clinical dentistry skills DVM students should be required to
@@ -1332,7 +1334,7 @@ the Mann--Whitney U-testresults, summary statistics, effect sizes, and
 ranked-biserial correlation outputs.
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.3in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
-\caption{\label{tab:8a_MannWhit_Table}Mann-Whitney U-Test Results for Clinical Procedures}\\
+\caption{Mann-Whitney U-Test Results for Clinical Procedures}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
