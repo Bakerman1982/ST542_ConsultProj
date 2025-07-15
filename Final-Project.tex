@@ -156,8 +156,6 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
-\usepackage{caption}
-\usepackage{anyfontsize}
 \KOMAoption{captions}{tableheading}
 \numberwithin{figure}{section}
 \numberwithin{table}{section}
@@ -776,28 +774,32 @@ large). Significance stars were added to highlight results below
 conventional thresholds (e.g., p \textless{} 0.05), and results were
 sorted by p-value to aid interpretation.
 
-\begin{longtable}[t]{>{\centering\arraybackslash}p{1.6in}>{\centering\arraybackslash}p{0.6in}>{\centering\arraybackslash}p{0.6in}>{\centering\arraybackslash}p{0.8in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.3in}}
-\caption{\label{tab:full_q4_mannwhitney}Mann-Whitney U-Test Results for Q04 Competency Ratings}\\
+\begin{table}[!h]
+\centering
+\caption{\label{tab:full_q4_mannwhitney}Mann-Whitney U-Test Results for Q04 Competency Ratings}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\begin{tabular}[t]{ccccccc}
 \toprule
-\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
 \midrule
-Dental radiography - interpretation & 3 & 3 & 28 / 12 & 0.052 . & 0.36 & Medium positive effect\\
-Polishing & 3 & 3 & 28 / 13 & 0.242 & 0.21 & Small positive effect\\
-Open extractions - canine (multi-root) & 2 & 3 & 28 / 13 & 0.289 & -0.20 & Small negative effect\\
+\cellcolor{gray!10}{Periodontal probing} & \cellcolor{gray!10}{4} & \cellcolor{gray!10}{4} & \cellcolor{gray!10}{28 / 13} & \cellcolor{gray!10}{1.000} & \cellcolor{gray!10}{0.00} & \cellcolor{gray!10}{Negligible effect}\\
 Dental radiography - positioning & 3 & 2 & 27 / 12 & 0.369 & 0.18 & Small positive effect\\
-Simple extractions - canine & 3 & 3 & 28 / 13 & 0.374 & 0.16 & Small positive effect\\
-\addlinespace
+\cellcolor{gray!10}{Dental radiography - interpretation} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{28 / 12} & \cellcolor{gray!10}{0.052 .} & \cellcolor{gray!10}{0.36} & \cellcolor{gray!10}{Medium positive effect}\\
 Scaling & 4 & 4 & 27 / 13 & 0.552 & -0.10 & Negligible effect\\
-Open extractions - feline (single root) & 2 & 2 & 27 / 13 & 0.613 & -0.10 & Negligible effect\\
-Open extractions - canine (single root) & 3 & 3 & 28 / 13 & 0.769 & -0.06 & Negligible effect\\
-Open extractions - feline (multi-root) & 1 & 1 & 7 / 4 & 0.778 & -0.11 & Small negative effect\\
-Periodontal probing & 4 & 4 & 28 / 13 & 1.000 & 0.00 & Negligible effect\\
+\cellcolor{gray!10}{Polishing} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{28 / 13} & \cellcolor{gray!10}{0.242} & \cellcolor{gray!10}{0.21} & \cellcolor{gray!10}{Small positive effect}\\
 \addlinespace
-Simple extractions - feline & 3 & 3 & 28 / 13 & 1.000 & 0.00 & Negligible effect\\
+Simple extractions - canine & 3 & 3 & 28 / 13 & 0.374 & 0.16 & Small positive effect\\
+\cellcolor{gray!10}{Simple extractions - feline} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{3} & \cellcolor{gray!10}{28 / 13} & \cellcolor{gray!10}{1.000} & \cellcolor{gray!10}{0.00} & \cellcolor{gray!10}{Negligible effect}\\
+Open extractions - canine (single root) & 3 & 3 & 28 / 13 & 0.769 & -0.06 & Negligible effect\\
+\cellcolor{gray!10}{Open extractions - feline (single root)} & \cellcolor{gray!10}{2} & \cellcolor{gray!10}{2} & \cellcolor{gray!10}{27 / 13} & \cellcolor{gray!10}{0.613} & \cellcolor{gray!10}{-0.10} & \cellcolor{gray!10}{Negligible effect}\\
+Open extractions - canine (multi-root) & 2 & 3 & 28 / 13 & 0.289 & -0.20 & Small negative effect\\
+\addlinespace
+\cellcolor{gray!10}{Open extractions - feline (multi-root)} & \cellcolor{gray!10}{1} & \cellcolor{gray!10}{1} & \cellcolor{gray!10}{7 / 4} & \cellcolor{gray!10}{0.778} & \cellcolor{gray!10}{-0.11} & \cellcolor{gray!10}{Small negative effect}\\
 Fluoride treatment & 3 & 4 & 2 / 1 & 1.000 & -0.50 & Large negative effect\\
 \bottomrule
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 \subsubsection{S2 Is there a difference between educators and practice
 owners in their reports (educators' actual teaching vs.~owners'
@@ -901,11 +903,13 @@ sample sizes, p-values with significance indicators, effect size
 estimates (rank-biserial correlation), and an interpretation of the
 magnitude and direction of group differences.
 
-\begin{longtable}[t]{>{\centering\arraybackslash}p{1.6in}>{\centering\arraybackslash}p{0.6in}>{\centering\arraybackslash}p{0.6in}>{\centering\arraybackslash}p{0.8in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.3in}}
-\caption{\label{tab:question_3}Mann-Whitney U-Test Results for Q13/Q17 Beliefs about Pre-Clinical Dentistry Training}\\
+\begingroup\fontsize{9}{11}\selectfont
+
+\begin{longtable}[t]{>{\centering\arraybackslash}p{1.4in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.7in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{1.1in}}
+\caption{\label{tab:unnamed-chunk-12}Mann-Whitney U-Test Results for Q13/Q17 Beliefs about Pre-Clinical Dentistry Training}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
-Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
+\textbf{Skill} & \textbf{Med (Edu)} & \textbf{Med (Emp)} & \textbf{N (Edu / Emp)} & \textbf{P-Value} & \textbf{r\_rb} & \textbf{Interpretation}\\
 \midrule
 Open extractions - feline (multi-root) & 3 & 4 & 17 / 13 & 0.002 ** & -0.60 & Large negative effect\\
 Fluoride treatment & 1 & 3 & 3 / 9 & 0.013 * & -1.00 & Large negative effect\\
@@ -923,6 +927,7 @@ Dental radiography - positioning & 4 & 4 & 27 / 11 & 0.726 & 0.07 & Negligible e
 Simple extractions - canine & 4 & 4 & 28 / 13 & 0.788 & -0.05 & Negligible effect\\
 \bottomrule
 \end{longtable}
+\endgroup{}
 
 \subsubsection{S4 Do employers and educators differ in their
 expectations about how many dental procedures new graduates should
@@ -946,24 +951,6 @@ non-parametric alternative to the independent samples t-test---to
 compare the distributions of responses between educators and employers
 for each clinical setting. This test is appropriate when comparing two
 independent groups without assuming normality or equal variances.
-
-\begin{table}
-\caption*{
-{\large \textbf{Mann-Whitney U Test: Expected Number of Dental Procedures}} \\ 
-{\small Comparison of Educator and Employer Expectations by Clinical Setting}
-} 
-\fontsize{12.0pt}{14.4pt}\selectfont
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}cccccccc}
-\toprule
-Clinical Setting & Median (Educator) & Median (Employer) & N (Educator) & N (Employer) & P-Value & r\_rb & Effect Size Interpretation \\ 
-\midrule\addlinespace[2.5pt]
-Dentistry\_Rotation & 4.0 & 6.5 & 24 & 10 & 0.080 . & -0.39 & Medium negative effect \\ 
-Lab\_Animal & 0.0 & 0.0 & 16 & 9 & 0.222 & 0.24 & Small positive effect \\ 
-Shelter\_Medicine & 2.0 & 0.0 & 19 & 9 & 0.235 & 0.27 & Small positive effect \\ 
-Primary\_Care & 3.0 & 4.0 & 27 & 10 & 0.287 & -0.23 & Small negative effect \\ 
-\bottomrule
-\end{tabular*}
-\end{table}
 
 \subsubsection{S5 Is there difference between the instructional formats
 in dentistry reported by DVM programs and the formats perceived by

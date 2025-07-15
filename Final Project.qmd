@@ -1024,7 +1024,6 @@ We used the Mann-Whitney U test to compare educator and employer responses for e
 #| message: false
 #| fig-align: center
 
-
 library(dplyr)
 library(tidyr)
 library(purrr)
@@ -1041,29 +1040,19 @@ employer_cleaned <- Employer_Data_Clean %>%
 # Define Q4 variable names
 q4_vars <- paste0("Q04_", sprintf("%02d", 1:12))
 
-# Subset and label
-educator_q4 <- educator_cleaned %>%
-  select(all_of(q4_vars)) %>%
-  mutate(group = "Educator")
+# Subset and combine
+combined_data <- bind_rows(
+  educator_cleaned %>% select(all_of(q4_vars)) %>% mutate(group = "Educator"),
+  employer_cleaned %>% select(all_of(q4_vars)) %>% mutate(group = "Employer")
+)
 
-employer_q4 <- employer_cleaned %>%
-  select(all_of(q4_vars)) %>%
-  mutate(group = "Employer")
-
-# Combine and reshape
-combined_data <- bind_rows(educator_q4, employer_q4)
-
+# Reshape and clean
 q4_long <- combined_data %>%
-  pivot_longer(
-    cols = starts_with("Q04_"),
-    names_to = "Skill",
-    values_to = "Rating_num"
-  ) %>%
+  pivot_longer(cols = all_of(q4_vars), names_to = "Skill", values_to = "Rating_num") %>%
   mutate(Rating_num = as.numeric(Rating_num)) %>%
   filter(!is.na(Rating_num))
 
-
-# Perform Mann-Whitney U tests + effect size
+# Run tests and format
 mw_results_q4 <- q4_long %>%
   group_by(Skill) %>%
   filter(n_distinct(group) == 2) %>%
@@ -1076,37 +1065,38 @@ mw_results_q4 <- q4_long %>%
     n_employer = sum(group == "Employer"),
     .groups = "drop"
   ) %>%
-  mutate(
-    stars = cut(p_value,
-                breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
-                labels = c("***", "**", "*", ".", "")),
-    P_Value = ifelse(is.na(p_value), "N/A",
+mutate(
+  stars = cut(p_value,
+              breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
+              labels = c("***", "**", "*", ".", "")),
+  `P-Value` = ifelse(is.na(p_value), "N/A",
                      ifelse(stars != "", paste0(sprintf("%.3f", p_value), " ", stars),
                             sprintf("%.3f", p_value))),
-    `Med (Edu)` = sprintf("%.0f", median_educator),
-    `Med (Emp)` = sprintf("%.0f", median_employer),
-    `N (Edu / Emp)` = paste0(n_educator, " / ", n_employer),
-    r_rb_fmt = sprintf("%.2f", r_rb),
-    Interpretation = case_when(
-      is.na(r_rb) ~ "N/A (Insufficient Data)",
-      abs(r_rb) >= 0.50 ~ paste0("Large ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
-      abs(r_rb) >= 0.30 ~ paste0("Medium ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
-      abs(r_rb) >= 0.10 ~ paste0("Small ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
-      TRUE ~ "Negligible effect"
-    )
-  ) %>%
-  arrange(p_value) %>%
-  select(
-    Skill,
-    `Med (Edu)`,
-    `Med (Emp)`,
-    `N (Edu / Emp)`,
-    `P-Value` = P_Value,
-    `r_rb` = r_rb_fmt,
-    Interpretation
+  `Med (Edu)` = sprintf("%.0f", median_educator),
+  `Med (Emp)` = sprintf("%.0f", median_employer),
+  `N (Edu / Emp)` = paste0(n_educator, " / ", n_employer),
+  r_rb_num = as.numeric(r_rb),
+  r_rb_fmt = ifelse(is.na(r_rb_num), "N/A", sprintf("%.2f", r_rb_num)),
+  Interpretation = case_when(
+    is.na(r_rb_num) ~ "N/A (Insufficient Data)",
+    abs(r_rb_num) >= 0.50 ~ paste0("Large ", ifelse(r_rb_num > 0, "positive", "negative"), " effect"),
+    abs(r_rb_num) >= 0.30 ~ paste0("Medium ", ifelse(r_rb_num > 0, "positive", "negative"), " effect"),
+    abs(r_rb_num) >= 0.10 ~ paste0("Small ", ifelse(r_rb_num > 0, "positive", "negative"), " effect"),
+    TRUE ~ "Negligible effect"
   )
+) %>%
+select(
+  Skill,
+  `Med (Edu)`,
+  `Med (Emp)`,
+  `N (Edu / Emp)`,
+  `P-Value`,
+  `r_rb` = r_rb_fmt,
+  Interpretation
+)
 
-# Optional: Create a map of human-friendly skill names
+
+# Human-readable skill names
 skill_labels <- c(
   "Q04_01" = "Periodontal probing",
   "Q04_02" = "Dental radiography - positioning",
@@ -1122,31 +1112,18 @@ skill_labels <- c(
   "Q04_12" = "Fluoride treatment"
 )
 
-# Replace skill codes with readable labels
 mw_results_q4$Skill <- recode(mw_results_q4$Skill, !!!skill_labels)
 
-# Create formatted table
+# Compact table formatting
 kable(mw_results_q4,
+      format = "latex",
+      booktabs = TRUE,
       caption = "Mann-Whitney U-Test Results for Q04 Competency Ratings",
       align = "c",
-      row.names = FALSE,
-      escape = FALSE,
-      latex_options = c("scale_down", "HOLD_position", "striped")
-      ) %>%
-  add_header_above(c(" " = 1,
-                     "Median" = 2,
-                     "N" = 1,
-                     " " = 1,
-                     "Effect Size" = 1,
-                     " " = 1),
-                   line = FALSE) %>%
-  column_spec(1, width = "1.6in") %>%
-  column_spec(2, width = "0.6in") %>%
-  column_spec(3, width = "0.6in") %>%
-  column_spec(4, width = "0.8in") %>%
-  column_spec(5, width = "0.75in") %>%
-  column_spec(6, width = "0.75in") %>%
-  column_spec(7, width = "1.3in")
+      row.names = FALSE) %>%
+  kable_styling(latex_options = c("striped", "hold_position", "scale_down"))
+
+
 ```
 
 
@@ -1165,6 +1142,7 @@ After cleaning and reshaping the data into long format, we filtered out invalid 
 #| warning: false
 #| message: false
 #| include: false
+#| fig-align: center
 
 # 1. Define skill name lookup table
 skill_lookup <- tibble::tibble(
@@ -1266,12 +1244,12 @@ Because the data were ordinal and responses came from two independent groups, th
 
 
 
-```{r}
+```{r question_3prep, include=FALSE}
 #| label: question_3prep
+#| include: false
 #| echo: false
 #| warning: false
 #| message: false
-#| include: false
 
 library(dplyr)
 library(tidyr)
@@ -1295,7 +1273,7 @@ skill_labels_q3 <- c(
   "Skill_12" = "Fluoride treatment"
 )
 
-# 1. Load and standardize data
+# Select and format data
 q13_vars <- paste0("Q13_", sprintf("%02d", 1:12))  # Educators
 q17_vars <- paste0("Q17_", sprintf("%02d", 1:12))  # Employers
 
@@ -1309,8 +1287,6 @@ employer_q17 <- Employer_Data_Clean %>%
   rename_with(~ paste0("Skill_", sprintf("%02d", 1:12)), .cols = everything()) %>%
   mutate(group = "Employer")
 
-
-# 2. Combine and reshape
 combined_q3 <- bind_rows(educator_q13, employer_q17)
 
 q3_long <- combined_q3 %>%
@@ -1322,7 +1298,6 @@ q3_long <- combined_q3 %>%
   mutate(Rating_num = as.numeric(Rating_num)) %>%
   filter(!is.na(Rating_num))
 
-# 3. Run Mann-Whitney U test with effect sizes
 mw_results_q3 <- q3_long %>%
   group_by(Skill) %>%
   filter(n_distinct(group) == 2) %>%
@@ -1366,12 +1341,15 @@ mw_results_q3 <- q3_long %>%
     Interpretation
   )
 
+invisible(mw_results_q3)
+
 ```
 
+
 ```{r}
-#| label: question_3
 #| echo: false
 #| warning: false
+#| message: false
 #| fig-align: center
 
 kable(mw_results_q3,
@@ -1387,16 +1365,17 @@ kable(mw_results_q3,
                      "Effect Size" = 1,
                      " " = 1),
                    line = FALSE) %>%
-  column_spec(1, width = "1.6in") %>%
-  column_spec(2, width = "0.6in") %>%
-  column_spec(3, width = "0.6in") %>%
-  column_spec(4, width = "0.8in") %>%
-  column_spec(5, width = "0.75in") %>%
-  column_spec(6, width = "0.75in") %>%
-  column_spec(7, width = "1.3in")
+  column_spec(1, width = "1.4in") %>%
+  column_spec(2, width = "0.5in") %>%
+  column_spec(3, width = "0.5in") %>%
+  column_spec(4, width = "0.7in") %>%
+  column_spec(5, width = "0.65in") %>%
+  column_spec(6, width = "0.65in") %>%
+  column_spec(7, width = "1.1in") %>%
+  kable_styling(font_size = 9, full_width = FALSE, position = "center", latex_options = "scale_down") %>%
+  row_spec(0, bold = TRUE)
 
 ```
-
 
 
 ### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
@@ -1406,112 +1385,7 @@ To assess whether educators and practice owners differ in their expectations for
 
 Before selecting an appropriate statistical test, we assessed normality using the Shapiro-Wilk test, which showed that the data were not normally distributed in any group-setting combination (all p-values < 0.05). Given the non-normal distribution and the ordinal or skewed nature of the data, we used the Mann-Whitney U test—a non-parametric alternative to the independent samples t-test—to compare the distributions of responses between educators and employers for each clinical setting. This test is appropriate when comparing two independent groups without assuming normality or equal variances.
 
-```{r}
-#| label: question_4
-#| echo: false
-#| warning: false
-#| message: false
-#| fig-align: center
 
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(effectsize)
-library(gt)
-
-# 1. Define variables
-educator_vars <- paste0("Q19_0", 1:4)
-employer_vars <- paste0("Q24_0", 1:4)
-setting_labels <- c("Primary_Care", "Dentistry_Rotation", "Shelter_Medicine", "Lab_Animal")
-
-# 2. Select and rename columns
-educator_proc <- Educator_Data_Clean %>%
-  select(all_of(educator_vars)) %>%
-  mutate(group = "Educator")
-employer_proc <- Employer_Data_Clean %>%
-  select(all_of(employer_vars)) %>%
-  mutate(group = "Employer")
-
-colnames(educator_proc)[1:4] <- setting_labels
-colnames(employer_proc)[1:4] <- setting_labels
-
-# 3. Combine and reshape
-combined_proc <- bind_rows(educator_proc, employer_proc) %>%
-  pivot_longer(
-    cols = all_of(setting_labels),
-    names_to = "Setting",
-    values_to = "Procedure_Count"
-  ) %>%
-  filter(!is.na(Procedure_Count)) %>%
-  mutate(Procedure_Count = as.numeric(Procedure_Count))
-
-# 4. Calculate Mann-Whitney and effect size
-mw_results <- combined_proc %>%
-  group_by(Setting) %>%
-  summarise(
-    p_value = wilcox.test(Procedure_Count ~ group)$p.value,
-    r_rb = effectsize::rank_biserial(Procedure_Count ~ group)$r_rank_biserial,
-    median_educator = median(Procedure_Count[group == "Educator"]),
-    median_employer = median(Procedure_Count[group == "Employer"]),
-    n_educator = sum(group == "Educator"),
-    n_employer = sum(group == "Employer"),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    stars = cut(p_value,
-                breaks = c(-Inf, 0.001, 0.01, 0.05, 0.1, Inf),
-                labels = c("***", "**", "*", ".", "")),
-    P_Value = ifelse(is.na(p_value), "N/A",
-                     ifelse(stars != "", paste0(sprintf("%.3f", p_value), " ", stars),
-                            sprintf("%.3f", p_value))),
-    r_rb_fmt = sprintf("%.2f", r_rb),
-    Interpretation = case_when(
-      is.na(r_rb) ~ "N/A (Insufficient Data)",
-      abs(r_rb) >= 0.50 ~ paste0("Large ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
-      abs(r_rb) >= 0.30 ~ paste0("Medium ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
-      abs(r_rb) >= 0.10 ~ paste0("Small ", ifelse(r_rb > 0, "positive", "negative"), " effect"),
-      TRUE ~ "Negligible effect"
-    )
-  ) %>%
-  arrange(p_value) %>%
-  select(
-    Setting,
-    median_educator,
-    median_employer,
-    n_educator,
-    n_employer,
-    P_Value,
-    r_rb_fmt,
-    Interpretation
-  )
-
-# 5. Render table with gt
-mw_results %>%
-  gt() %>%
-  tab_header(
-    title = md("**Mann-Whitney U Test: Expected Number of Dental Procedures**"),
-    subtitle = "Comparison of Educator and Employer Expectations by Clinical Setting"
-  ) %>%
-  cols_label(
-    Setting = "Clinical Setting",
-    median_educator = "Median (Educator)",
-    median_employer = "Median (Employer)",
-    n_educator = "N (Educator)",
-    n_employer = "N (Employer)",
-    P_Value = "P-Value",
-    r_rb_fmt = "r_rb",
-    Interpretation = "Effect Size Interpretation"
-  ) %>%
-  cols_align(align = "center") %>%
-  fmt_number(columns = vars(median_educator, median_employer), decimals = 1) %>%
-  fmt_number(columns = vars(P_Value), decimals = 3) %>%
-  fmt_number(columns = vars(r_rb_fmt), decimals = 2) %>%
-  tab_options(
-    data_row.padding = px(3)
-  )
-
-
-```
 
 ### S5 Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
 
