@@ -2,7 +2,7 @@
 title: "Bridging the Gap:"
 subtitle: "Comparing Employer and Educator Expectations in Small Animal Dentistry"
 author: Brock Akerman, Hanan Ali, Taylor Cesarski
-date: "June, 25, 2025"
+date: "July, 28, 2025"
 bibliography: references.bib
 # csl: apa.csl  # Optional: uncomment and provide a CSL file for citation styling (e.g., APA, MLA)
 format:
@@ -30,8 +30,9 @@ header-includes:
   - \numberwithin{figure}{section}
   - \numberwithin{table}{section}
   - \usepackage{etoolbox}
+  - \makeatletter
   - \patchcmd{\maketitle}{\thispagestyle{plain}}{\thispagestyle{plain}\newpage}{}{}
-
+  - \makeatother
 ---
 
 
