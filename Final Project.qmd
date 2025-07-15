@@ -1159,6 +1159,103 @@ After cleaning and reshaping the data into long format, we filtered out invalid 
 
 
 
+```{r}
+#| label: question_2prep
+#| echo: false
+#| warning: false
+#| message: false
+#| include: false
+
+# 1. Define skill name lookup table
+skill_lookup <- tibble::tibble(
+  Skill_Format = c("Q12_01", "Q12_02", "Q12_03", "Q12_04", "Q12_05", "Q12_06", "Q12_07"),
+  Skill = c(
+    "Oral examination and charting",
+    "Dental cleaning (scaling and polishing)",
+    "Dental radiograph acquisition",
+    "Dental radiograph interpretation",
+    "Simple extraction technique",
+    "Local nerve blocks",
+    "Instrument identification and handling"
+  )
+)
+
+# 2. Prepare Employer data (rename Q16_01–07 to Q12_01–07)
+employer_q16 <- Employer_Data_Clean %>%
+  select(Q16_01:Q16_07) %>%
+  rename_with(~ paste0("Q12_", sprintf("%02d", 1:7)), .cols = everything()) %>%
+  mutate(group = "Employer")
+
+# 3. Prepare Educator data
+educator_q12 <- Educator_Data_Clean %>%
+  select(Q12_01:Q12_07) %>%
+  mutate(group = "Educator")
+
+# 4. Combine both datasets
+combined_q12_q16 <- bind_rows(educator_q12, employer_q16)
+
+# 5. Pivot to long format for analysis
+combined_long <- combined_q12_q16 %>%
+  mutate(across(starts_with("Q12_"), as.character)) %>%
+  pivot_longer(
+    cols = starts_with("Q12_"),
+    names_to = "Skill_Format",
+    values_to = "Taught_raw"
+  ) %>%
+  mutate(
+    Taught = na_if(Taught_raw, "N/A"),
+    Taught = na_if(Taught, ""),
+    Taught = as.numeric(Taught)
+  ) %>%
+  filter(!is.na(Taught), group %in% c("Educator", "Employer"))
+
+# 6. Run Fisher’s exact tests
+test_results <- combined_long %>%
+  group_by(Skill_Format) %>%
+  summarise(
+    tab = list(table(group, Taught)),
+    .groups = "drop"
+  ) %>%
+  rowwise() %>%
+  mutate(
+    dims = list(dim(tab)),
+    is_valid = !is.null(dims[[1]]) && all(dims[[1]] >= 2)
+  ) %>%
+  filter(is_valid) %>%
+  mutate(
+    p_value = tryCatch(fisher.test(tab)$p.value, error = function(e) NA_real_),
+    n_educator = if ("Educator" %in% rownames(tab)) sum(tab["Educator", ]) else NA_integer_,
+    n_employer = if ("Employer" %in% rownames(tab)) sum(tab["Employer", ]) else NA_integer_,
+    prop_educator = if ("Educator" %in% rownames(tab) && "1" %in% colnames(tab)) {
+      tab["Educator", "1"] / sum(tab["Educator", ])
+    } else NA_real_,
+    prop_employer = if ("Employer" %in% rownames(tab) && "1" %in% colnames(tab)) {
+      tab["Employer", "1"] / sum(tab["Employer", ])
+    } else NA_real_
+  ) %>%
+  ungroup() %>%
+  select(-tab, -is_valid, -dims) %>%
+  left_join(skill_lookup, by = "Skill_Format") %>%
+  select(Skill, p_value, n_educator, n_employer, prop_educator, prop_employer) %>%
+  arrange(p_value)
+
+```
+
+```{r}
+#| label: question_2
+#| echo: false
+#| warning: false
+#| fig-align: center
+
+kable(test_results,
+      digits = 3,
+      caption = "Fisher's Exact Test Results by Skill",
+      format = "markdown")  # or "latex"/"html" based on output
+
+```
+
+
+
 ### S3 Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
 
