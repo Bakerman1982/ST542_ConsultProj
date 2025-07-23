@@ -2650,7 +2650,7 @@ While the effect sizes for several procedures suggest that educators may place s
 
 ## Interpretation of Results
 
-The results across questions 1-4 suggest that educators and employers are largely aligned in their perceptions of dental training and graduate competence, with no statistically significant differences observed in most areas. Both groups reported similar beliefs about which skills are taught preclinically and how many procedures should be completed during clinical training. However, a few notable trends emerged: employers tended to place slightly more importance on teaching advanced extractions and expected more hands on experience during dentistry rotations, while educators were slightly more confident in graduates' ability to interpret radiographs. Although these differences were not always statistically significant, they point to subtle mismatches in expectations that could be addressed through improved communication and curriculum transparency.
+The results across suggest that educators and employers are largely aligned in their perceptions of dental training and graduate competence, with no statistically significant differences observed in most areas. Both groups reported similar beliefs about which skills are taught preclinically and how many procedures should be completed during clinical training. However, a few notable trends emerged: employers tended to place slightly more importance on teaching advanced extractions and expected more hands on experience during dentistry rotations, while educators were slightly more confident in graduates' ability to interpret radiographs. Although these differences were not always statistically significant, they point to subtle mismatches in expectations that could be addressed through improved communication and curriculum transparency.
 
 
 
@@ -2669,53 +2669,24 @@ Finally, these findings underscore the importance of ongoing collaboration betwe
 
 ## Limitations
 
-1. Small and Uneven Sample Sizes:
+This study had several limitations that should be considered when interpreting the results. The sample sizes were relatively small, particularly for the employer group, which had only 13 respondents after data cleaning. This limited the statistical power of the analyses and may reduce the generalizability of the findings. In addition, the uneven group sizes restricted the types of statistical tests that could be used and increased the potential for Type II errors, where real differences may not have been detected.
 
-The sample sizes were relatively small, particularly in the employer group (n = 13 after cleaning), which limits statistical power and may reduce the generalizability of the findings. Uneven group sizes also restricted the types of statistical tests that could be used and increased the potential for Type II errors.
+The recruitment process may have introduced sampling bias. Participants were recruited through professional networks and personal outreach, which can result in self selection bias. The employer sample was disproportionately composed of practice owners compared to national demographics, which could have skewed the results toward the perspectives of individuals with more authority or stronger opinions about training and graduate readiness.
 
-2. Sampling Bias:
+There were also geographic and institutional limitations. Most employer responses came from practices located on the U.S. East Coast, while educator responses were more geographically diverse and included some international institutions. This imbalance may limit the applicability of the findings to rural clinics or educational contexts outside of North America.
 
-Participants were recruited through professional networks and personal outreach, which may have introduced self selection bias. Practice owners were overrepresented in the employer sample compared to national demographics, potentially skewing responses toward individuals with greater decision making authority or specific views about training.
+All data were self reported, which introduces additional concerns such as recall bias, social desirability bias, and variation in how participants interpret survey items. For example, the concept of “competency” may be understood differently across respondents, even if they selected similar response options on the Likert scale.
 
-3. Geographic and Institutional Limitations:
+Missing data was another concern. Several participants did not complete the entire survey, and certain questions had high rates of missing or invalid responses. These gaps led to the exclusion of some data points and may have affected the robustness of the results for specific comparisons.
 
-Most employer responses were concentrated along the U.S. East Coast, while educators were more geographically dispersed, including a few international institutions. This may limit the generalizability of findings, particularly to rural practices or global educational settings.
-
-4. Self Reported Data and Interpretation Variability:
-
-The surveys relied on self reported data, which may be influenced by recall bias, individual interpretation of terminology, or response desirability. For example, what one respondent considers a “competency” may differ from another’s interpretation, even if they selected the same Likert scale response.
-
-5. Missing Data and Incomplete Responses:
-
-Several participants did not complete the full survey, and some questions had high rates of missing or invalid responses. This led to the exclusion of certain data points from analysis and may have impacted the robustness of the results for specific items.
-
-6. Limited Validation of Survey Instrument:
-
-The survey instruments were designed for this study and were not validated through formal pilot testing. While the questions were thoughtfully constructed, the absence of established reliability or validity measures may affect the precision of the findings.
+Lastly, the survey instruments were developed specifically for this project and were not subjected to formal pilot testing or validation. Although the questions were designed carefully and reviewed by subject matter experts, the lack of established reliability and validity measures may affect the accuracy and consistency of the data collected.
 
 
 ## Recommendations
 
-1. Improve Communication Between Educators and Employers: 
+To improve alignment between veterinary educators and employers, several strategies should be considered. Communication between veterinary schools and employers should be strengthened, as employers often underestimated the level of preclinical and clinical dental training reported by educators. Programs can address this perception gap by sharing curricular details and competency expectations through mechanisms such as externship evaluations, employer advisory boards, or structured graduate transition reports. Clinical exposure to dental procedures should also be enhanced, particularly in dentistry rotations, where employers tended to expect a higher number of completed procedures. Increasing hands on opportunities in core dental skills, especially extractions and radiograph interpretation, can better align training with workplace expectations.
 
-A recurring theme in the findings was a perception gap employers often underestimated the level of preclinical and clinical training reported by educators. Veterinary programs should proactively share information about curricular content and clinical competencies with employers, perhaps through externship feedback loops, advisory boards, or graduate transition reports.
-
-2. Enhance Clinical Exposure to Dentistry Procedures:
-
-Employers tended to expect a higher number of completed procedures during clinical training especially in dentistry rotations. Veterinary programs may consider increasing hands on opportunities in core dental procedures, particularly extractions and radiograph interpretation, to better align with employer expectations and prepare graduates for general practice.
-
-3. Clarify Learning Objectives and Competency Standards:
-
-Clear, shared definitions of competence for core dental skills would help both educators and employers assess readiness more consistently. Standardizing learning outcomes,  especially for skills like open extractions and dental radiograph interpretation could improve mutual understanding of what “preparedness” means.
-
-4. Address Gaps in Perceived Importance of Certain Skills:
-
-Skills such as fluoride treatment and multirooted feline extractions showed the greatest disagreement in perceived importance for pre clinical instruction. These differences should be discussed within curriculum committees and employer advisory groups to determine whether curricular adjustments or expectation setting is warranted.
-
-5. Continue Dialogue Through Stakeholder Collaboration:
-
-Veterinary schools should maintain active collaboration with employers to ensure curricula remain responsive to the evolving needs of clinical practice. Regular stakeholder surveys, curriculum feedback sessions, and alumni follow up can foster ongoing alignment between training and workplace realities.
-
+Clarifying learning objectives and defining shared competency standards is another important step. By standardizing what constitutes competence in key skills, educators and employers can more consistently assess graduate preparedness. This is especially relevant for procedures like open extractions and radiographic interpretation. Additionally, perceived discrepancies in the importance of certain skills, such as fluoride treatment and multirooted feline extractions, should be discussed within curriculum committees and employer advisory groups. These conversations can help determine whether changes in instruction or clearer expectation setting are needed. Ongoing dialogue between veterinary programs and employers through stakeholder surveys, curriculum reviews, and alumni feedback is essential to keeping curricula responsive to the evolving demands of clinical practice.
 
 ## Summary of Key Findings
 
