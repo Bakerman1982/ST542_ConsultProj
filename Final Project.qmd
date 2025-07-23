@@ -501,19 +501,6 @@ edu_q_cols_sorted <- mixedsort(edu_q_cols)
 Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)]
 ```
 
-# Abstract
-
-Authors of each section
-
-Introduction - Taylor Cesarski
-Data - Brock Akerman
-Methods - Taylor Cesarski
-Results - All
-
-* Questions 1-4 -  Hanan Ali
-* Questions 5,7 - Taylor Cesarski
-* Questions 6,8 - Brock Akerman
-
 # Introduction
 
 Dr. Mariea Ross-Estrada, a faculty member at North Carolina State University's College of Veterinary Medicine, is exploring whether there are differences between the expectations of small animal primary care veterinary employers and veterinary educators regarding new graduates' competencies in dentistry. Through her own professional experience and conversations with colleagues, Dr. Ross-Estrada observed that many veterinarians must rely on on-the-job training to gain the skills necessary in small animal dentistry. These shared experiences prompted her to investigate whether there is a misalignment in what is taught in veterinary programs and what is expected in clinical practice.
@@ -597,7 +584,7 @@ ggplot() +
   theme_minimal()
 ```
 
-Survey completion time differed by group. Educators, on average, spent more time completing the survey than employers. While no follow-up question asked participants to explain their response time, this discrepancy may reflect greater engagement or a tendency for more elaborated responses among educators. It may also suggest a greater willingness among educators to participate more thoughtfully. The box plot below illustrates the distribution of survey duration (in minutes) by group.
+Survey completion time differed by group. Educators, on average, spent more time completing the survey than employers. While no follow-up question asked participants to explain their response time, this discrepancy may reflect greater engagement or a tendency for more elaborated responses among educators. It may also suggest a greater willingness among educators to participate more thoughtfully. The box plot above illustrates the distribution of survey duration (in minutes) by group.
 
 ```{r}
 #| label: Data_Desc_02
@@ -619,7 +606,7 @@ ggplot(combined_progress, aes(x = progress, fill = group)) +
 
 ```
 
-Regarding the proportion of the survey completed, employer responses were more variable—spanning the full range from partial to full completion. In contrast, educators tended to complete more of the survey, with a concentration near full completion and a less pronounced left tail. The density plot below visualizes these differences in survey progress across groups.
+Regarding the proportion of the survey completed, employer responses were more variable—spanning the full range from partial to full completion. In contrast, educators tended to complete more of the survey, with a concentration near full completion and a less pronounced left tail. The density plot above visualizes these differences in survey progress across groups.
 
 ```{r}
 #| label: Data_Desc_03
@@ -777,7 +764,7 @@ p2 <- ggplot(Educator_Data_DESC03, aes(x = q41_1_binned)) +
 p1 + p2 + plot_layout(widths = c(1, 1))
 ```
 
-Figure 3.3 provides an overview of the survey participants and their institutions. Most respondents reported having between 2 and 4 years of experience teaching veterinary students in clinical training. The distribution of years taught appears approximately normal, with fewer educators at the lower and upper ends of the experience range. Respondents also reported the number of dental procedures performed by their primary care service each week. While some outliers from busier institutions reported higher volumes, most educators estimated performing between 1 and 8 procedures per week.
+Figure 3.4 provides an overview of the survey participants and their institutions. Most respondents reported having between 2 and 4 years of experience teaching veterinary students in clinical training. The distribution of years taught appears approximately normal, with fewer educators at the lower and upper ends of the experience range. Respondents also reported the number of dental procedures performed by their primary care service each week. While some outliers from busier institutions reported higher volumes, most educators estimated performing between 1 and 8 procedures per week.
 
 #### Employer metrics
 
@@ -994,9 +981,6 @@ Then U = min($U_1$,$U_2$) and this value is substituted for $r_{rb}$.
 
 P-values and an RBC value will be applied to each statistical question listed above in order to formally analyze the data. 
 
-ADD MENTION HERE OF EFFECT SIZE CALCULATIONS.
-
-
 #### Select all that apply questions (statistical questions #2, 5, and 7)
 
 These questions asked the participants to “select all that apply” as it relates to skills in pre-clinical curriculum, format of dental instruction, and skills for clinical training respectively. We will utilize frequency tables and bar plots to explore the data for these questions and use Fisher’s Exact Test as a formal inference procedure for the comparison of the two groups. Dot plots will also be utilized for questions with many options to avoid crowding in bar graphs.
@@ -1151,7 +1135,6 @@ kable(mw_results_q4,
       align = "c",
       row.names = FALSE) %>%
   kable_styling(latex_options = c("striped", "hold_position", "scale_down"))
-
 
 ```
 
@@ -1417,13 +1400,11 @@ Several other extraction-related skills showed small negative effect sizes and b
 
 
 ### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
-
 To assess whether educators and practice owners differ in their expectations for the number of dental procedures students should complete during clinical training, we compared responses from Question 19 of the educator survey and Question 24 of the employer survey. Respondents indicated the number of procedures they believe should be completed in four clinical settings: primary care, dentistry rotations, shelter medicine, and lab animal medicine. 
-
 
 Before selecting an appropriate statistical test, we assessed normality using the Shapiro-Wilk test, which showed that the data were not normally distributed in any group-setting combination (all p-values < 0.05). Given the non-normal distribution and the ordinal or skewed nature of the data, we used the Mann-Whitney U test—a non-parametric alternative to the independent samples t-test—to compare the distributions of responses between educators and employers for each clinical setting. This test is appropriate when comparing two independent groups without assuming normality or equal variances.
 
-```{r question_4prep, include=FALSE}
+```{r}
 #| label: question_4prep
 #| include: false
 #| echo: false
@@ -1505,6 +1486,7 @@ mw_results <- combined_proc %>%
 
 ```{r}
 #| echo: false
+#| label: q4graph
 #| warning: false
 #| message: false
 #| fig-align: center
@@ -1560,7 +1542,7 @@ Since the question was of the format "select all that apply," participants were 
 
 Educators and employers were also given the option to enter their own responses to the question. One employer opted to write in "Cadaver." Two educators entered their own responses with one saying "rounds" and the other saying "topic seminars do occur with some rotations during case rounds when dental cases are chosen to present."
 
-Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (75% vs. 46.2%) and live patient training (96.4% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 14.3%) than educators. These differences suggest varying expectations or awareness between the two groups regarding dental training experiences of recent graduates.
+Educators and employers differed in their perceptions of clinical dental instruction formats completed by early career veterinarians. While a majority in both groups acknowledged didactic instruction, educators reported higher rates of wet lab (75% vs. 46.2%) and live patient training (96.4% vs. 38.5%) compared to employers. Conversely, employers more frequently identified simulation training (30.8% vs. 14.3%) than educators.
 
 ```{r}
 #| label: formatgraph
@@ -1629,7 +1611,7 @@ ggplot(combined_percent, aes(x = option, y = percent, fill = group)) +
           vjust = -0.3, size = 3)
 ```
 
-Figure 5.1 shows the percentages of each format selected and Table 5.2 shows the p-value associated with performing Fisher's Exact Test on each format.
+Figure 5.1 shows the percentages of each format selected and Table 5.4 shows the p-value associated with performing Fisher's Exact Test on each format.
 
 Didactic instruction was selected by 57.1% of educators and 61.5% of employers, with no statistically significant difference between the groups (p=1). There was also no statistically significant difference in simulation (p=0.237) and wet lab instruction (p=0.0885).
 
@@ -2274,7 +2256,7 @@ final_table <- final_table %>%
 kable(final_table, caption = "Perceived Skills Learned of Clinical Dental Instruction in DVM Programs", align = "lrr", booktabs=TRUE)
 ```
 
-Figure 5.3 shows the percentage of employers and educators who selected the given skills and Table 4 shows the p-values associated with Fisher's Exact Test and their significance.
+Figure 5.3 shows the percentage of employers and educators who selected the given skills and Table 5.6 shows the p-values associated with Fisher's Exact Test and their significance.
 
 For eleven of the thirteen skills, educators reported a higher percentage of selection. The two skills for which employers reported higher perceived learning were feline open extraction - canines/multiple roots and fluoride treatment.
 
@@ -2291,7 +2273,7 @@ At the 5% significance level, the difference in skill selection between employer
 
 For all skills with statistically significant differences, educators reported higher percentages than employers.
 
-The most significant difference was found in polishing. Educators selected this skill 82.1% of the time, while employers selected this skill only 30.8% of the time. The resulting p-value was 0.00331.
+The largest difference was found in polishing. Educators selected this skill 82.1% of the time, while employers selected this skill only 30.8% of the time. The resulting p-value was 0.00331.
 
 ### S8 Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
@@ -2301,7 +2283,7 @@ In question #26 of the employers’ version of the survey, participants were ask
 
 The corresponding question for educators was survey question #21.
 
-This question aimed to assess opinions on which clinical dentistry skills should be required in DVM student training. Table 5.5 presents the Mann–Whitney U-testresults, summary statistics, effect sizes, and ranked-biserial correlation outputs.
+This question aimed to assess opinions on which clinical dentistry skills should be required in DVM student training. Table 5.5 presents the Mann–Whitney U-test results, summary statistics, effect sizes, and ranked-biserial correlation outputs.
 
 
 ```{r question_8a}
@@ -2465,7 +2447,7 @@ kable(final_results_table_s8,
   column_spec(7, width = "1.1in")   # Interpretation
 ```
 
-Nearly every skill reported a median of 4 with exception to the Feline Open Extraction - Canines/Multiple Roots whose central tendency was 3.  Note that this exception was the only row that report fewer responses than the others.  Small but consistent differences were found for several clinical procedures, with educators tending to rate certain skills as more important than employers.
+Nearly every skill reported a median of 4 with exception to the Feline Open Extraction - Canines/Multiple Roots whose central tendency was 3.  Note that this exception is the only row that report fewer responses than the others.  Small but consistent differences were found for several clinical procedures, with educators tending to rate certain skills as more important than employers.
 
 Specifically, educators rated the following procedures as more important (higher median values) compared to employers:
 
@@ -2652,13 +2634,13 @@ While the effect sizes for several procedures suggest that educators may place s
 
 The results across suggest that educators and employers are largely aligned in their perceptions of dental training and graduate competence, with no statistically significant differences observed in most areas. Both groups reported similar beliefs about which skills are taught preclinically and how many procedures should be completed during clinical training. However, a few notable trends emerged. Employers tended to place slightly more importance on teaching advanced extractions and expected more hands on experience during dentistry rotations, while educators were slightly more confident in graduates' ability to interpret radio-graphs. Although these differences were not always statistically significant, they point to subtle mismatches in expectations that could be addressed through improved communication and curriculum transparency.
 
-
+The findings suggest a disconnect between educators and employers in how they perceive both student preparedness and the methods used to develop clinical skills. Educators consistently rated students as more proficient across a range of skills, indicating greater confidence in the effectiveness of current training approaches. On the other hand, employers were more cautious in their assessments, which could reflect different expectations, experiences with new graduates, or varying standards in clinical practice. The significant difference in views on instructional formats also highlights a potential misalignment in how each group understands or values different types of training. Additionally, the fact that some employers believed none of the instructional methods were being used raises concerns about transparency or awareness of educational practices. Overall, these differences point to a need for stronger collaboration between academic programs and the veterinary industry to ensure students are being prepared in ways that are both educationally sound and professionally relevant.
 
 ## Implications of the Study
 
 The findings of this study have several important implications for veterinary education and the transition of new graduates into clinical practice. Overall, the results suggest that educators and small animal primary care employers are largely aligned in their expectations and beliefs about dental competencies but key perception gaps remain that may influence workforce readiness.
 
-First, while both groups generally agreed on the importance of dental training and reported similar expectations about preclinical and clinical instruction, employers consistently underestimated the extent of instruction that educators reported providing. This misalignment may contribute to a lack of confidence in new graduates and increase reliance on on the job training. Improved transparency and communication between DVM programs and employers could help align expectations and strengthen trust in the educational process.
+First, while both groups generally agreed on the importance of dental training and reported similar expectations about pre-clinical and clinical instruction, employers consistently underestimated the extent of instruction that educators reported providing. This misalignment may contribute to a lack of confidence in new graduates and increase reliance on on the job training. Improved transparency and communication between DVM programs and employers could help align expectations and strengthen trust in the educational process.
 
 Second, differences in perceived importance of specific skills especially in areas like complex extractions and fluoride treatments highlight opportunities to review and potentially revise preclinical curriculum content. Employers placed greater emphasis on advanced skills than educators, suggesting a need to evaluate whether current curricula fully reflect the demands of entry level practice.
 
