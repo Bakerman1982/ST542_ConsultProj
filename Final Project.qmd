@@ -54,6 +54,7 @@ library(kableExtra) # For advanced kable features like column_spec and styling
 library(magrittr)
 library(forcats) # For fct_rev and fct_relevel
 library(scales)  # For scales::label_percent()
+
 ```
 
 ```{r Employer Data load, echo=FALSE, message=FALSE, warning=FALSE, results="hide",include=FALSE, error=FALSE}
@@ -500,7 +501,7 @@ edu_q_cols_sorted <- mixedsort(edu_q_cols)
 #Reorder the data frame
 Educator_Data_Clean <- Educator_Data_Clean[, c(edu_meta_cols, edu_q_cols_sorted)]
 ```
-
+\newpage
 # Introduction
 
 Dr. Mariea Ross-Estrada, a faculty member at North Carolina State University's College of Veterinary Medicine, is exploring whether there are differences between the expectations of small animal primary care veterinary employers and veterinary educators regarding new graduates' competencies in dentistry. Through her own professional experience and conversations with colleagues, Dr. Ross-Estrada observed that many veterinarians must rely on on-the-job training to gain the skills necessary in small animal dentistry. These shared experiences prompted her to investigate whether there is a misalignment in what is taught in veterinary programs and what is expected in clinical practice.
@@ -671,7 +672,7 @@ ggplot() +
        color = "Group")
 ```
 
-Since our analysis focused on the representativeness of the United States, we identified three sets of coordinates in the educator dataset corresponding to international institutions: the University of Guelph in Ontario, Canada; Zanzibar University in Chake, Tanzania; and Chiba University in Chiba, Japan. Employer survey participants were predominantly sampled from locations along the eastern seaboard of the United States, while educators were more widely distributed across the country. We highlight this to illustrate that perceptions of veterinary dental students—particularly among employers—may differ for individuals located far from the regions where most participants were sampled. Additionally, because many of the responses came from major metropolitan areas, our findings may underrepresent opinions regarding student knowledge gaps in more rural settings.
+Our analysis focused only on those responses from the United States. Using the metadata that came with the Qualtric survey output, we were able to leverage geographical datapoints and eliminate three responses from our working dataset. Employer survey participants were predominantly sampled from locations along the eastern seaboard of the United States, while educators were more widely distributed across the country. We highlight this to illustrate that perceptions of veterinary dental students—particularly among employers—may differ for individuals located far from the regions where most participants were sampled. Additionally, because many of the responses came from major metropolitan areas, it is possible that our findings may underrepresent sentiments regarding student knowledge gaps in rural locations.
 
 #### Educator metrics
 
@@ -1029,19 +1030,13 @@ To assess whether there are differences in perceptions of new graduate competenc
 
 We used the Mann-Whitney U test to compare educator and employer responses for each skill, as this non-parametric test is well-suited for ordinal data from two independent groups. In addition to p-values, we calculated the ranked-biserial correlation (r_rb) to assess effect sizes and provide insight into the magnitude and direction of observed differences. Results are summarized with median ratings for each group, sample sizes, and effect size interpretations (e.g., small, medium, large). Significance stars were added to highlight results below conventional thresholds (e.g., p < 0.05), and results were sorted by p-value to aid interpretation.
 
-
 ```{r}
 #| label: full_q4_mannwhitney
 #| echo: false
+#| fig-cap: " "
 #| warning: false
 #| message: false
 #| fig-align: center
-
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(effectsize)
-library(kableExtra)
 
 # Add group identifiers
 educator_cleaned <- Educator_Data_Clean %>%
@@ -1158,6 +1153,7 @@ After cleaning and reshaping the data into long format, we filtered out invalid 
 #| message: false
 #| include: false
 #| fig-align: center
+#| fig-cap: " "
 
 # 1. Define skill name lookup table
 skill_lookup <- tibble::tibble(
@@ -1255,23 +1251,15 @@ Overall, educators and employers showed general agreement about which dental ski
 
 To assess whether educators and employers differ in their beliefs about which dental skills should be included in the pre-clinical DVM curriculum, we analyzed responses to parallel Likert-scale questions: Q13 (educators) and Q17 (employers). Both groups rated the importance of teaching 12 specific dentistry skills using a 4-point Likert scale ranging from 1 (Strongly Disagree) to 4 (Strongly Agree). 
 
-Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. The results table presents medians for each group, sample sizes, p-values with significance indicators, effect size estimates (rank-biserial correlation), and an interpretation of the magnitude and direction of group differences. 
+Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. The results table presents medians for each group, sample sizes, p-values with significance indicators, effect size estimates (rank-biserial correlation), and an interpretation of the magnitude and direction of group differences.
 
-
-
-
-```{r question_3prep, include=FALSE}
+```{r}
 #| label: question_3prep
-#| include: false
+#| include: true
 #| echo: false
 #| warning: false
 #| message: false
-
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(effectsize)
-library(kableExtra)
+#| fig-align: center # This was from the second chunk
 
 # Skill name lookup
 skill_labels_q3 <- c(
@@ -1357,17 +1345,7 @@ mw_results_q3 <- q3_long %>%
     Interpretation
   )
 
-invisible(mw_results_q3)
-
-```
-
-
-```{r}
-#| echo: false
-#| warning: false
-#| message: false
-#| fig-align: center
-
+# Output the kable table
 kable(mw_results_q3,
       caption = "Mann-Whitney U-Test Results for Pre-Clinical Dentistry Training",
       align = "c",
@@ -1390,8 +1368,8 @@ kable(mw_results_q3,
   column_spec(7, width = "1.1in") %>%
   kable_styling(font_size = 9, full_width = FALSE, position = "center", latex_options = "scale_down") %>%
   row_spec(0, bold = TRUE)
-
 ```
+
 
 Educators and employers generally agreed on the importance of teaching core dental skills in the pre-clinical DVM curriculum, with most skills receiving high median ratings (4 = Strongly Agree) from both groups. However, statistically significant differences were observed for two skills. Open extractions skill, feline (multi-root) showed a significant difference (p = 0.002) with a large negative effect size (r_rb = -0.60), indicating employers placed greater importance on teaching this skill than educators. Fluoride treatment also differed significantly (p = 0.013) with a very large negative effect size (r_rb = -1.00), though the very small sample of educators (n = 3) limits interpretation.
 
@@ -1406,7 +1384,7 @@ Before selecting an appropriate statistical test, we assessed normality using th
 
 ```{r}
 #| label: question_4prep
-#| include: false
+#| include: true
 #| echo: false
 #| warning: false
 #| message: false
