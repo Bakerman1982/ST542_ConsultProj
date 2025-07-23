@@ -2650,13 +2650,13 @@ While the effect sizes for several procedures suggest that educators may place s
 
 ## Interpretation of Results
 
-The results across suggest that educators and employers are largely aligned in their perceptions of dental training and graduate competence, with no statistically significant differences observed in most areas. Both groups reported similar beliefs about which skills are taught preclinically and how many procedures should be completed during clinical training. However, a few notable trends emerged: employers tended to place slightly more importance on teaching advanced extractions and expected more hands on experience during dentistry rotations, while educators were slightly more confident in graduates' ability to interpret radiographs. Although these differences were not always statistically significant, they point to subtle mismatches in expectations that could be addressed through improved communication and curriculum transparency.
+The results across suggest that educators and employers are largely aligned in their perceptions of dental training and graduate competence, with no statistically significant differences observed in most areas. Both groups reported similar beliefs about which skills are taught preclinically and how many procedures should be completed during clinical training. However, a few notable trends emerged. Employers tended to place slightly more importance on teaching advanced extractions and expected more hands on experience during dentistry rotations, while educators were slightly more confident in graduates' ability to interpret radio-graphs. Although these differences were not always statistically significant, they point to subtle mismatches in expectations that could be addressed through improved communication and curriculum transparency.
 
 
 
 ## Implications of the Study
 
-The findings of this study have several important implications for veterinary education and the transition of new graduates into clinical practice. Overall, the results suggest that educators and small animal primary care employers are largely aligned in their expectations and beliefs about dental competenciesn but key perception gaps remain that may influence workforce readiness.
+The findings of this study have several important implications for veterinary education and the transition of new graduates into clinical practice. Overall, the results suggest that educators and small animal primary care employers are largely aligned in their expectations and beliefs about dental competencies but key perception gaps remain that may influence workforce readiness.
 
 First, while both groups generally agreed on the importance of dental training and reported similar expectations about preclinical and clinical instruction, employers consistently underestimated the extent of instruction that educators reported providing. This misalignment may contribute to a lack of confidence in new graduates and increase reliance on on the job training. Improved transparency and communication between DVM programs and employers could help align expectations and strengthen trust in the educational process.
 
@@ -2669,17 +2669,15 @@ Finally, these findings underscore the importance of ongoing collaboration betwe
 
 ## Limitations
 
-This study had several limitations that should be considered when interpreting the results. The sample sizes were relatively small, particularly for the employer group, which had only 13 respondents after data cleaning. This limited the statistical power of the analyses and may reduce the generalizability of the findings. In addition, the uneven group sizes restricted the types of statistical tests that could be used and increased the potential for Type II errors, where real differences may not have been detected.
+This study had several limitations that should be considered when interpreting the results. The sample sizes were relatively small, particularly for the employer group, which had only 13 respondents after data cleaning. This limited the statistical power of the analyses and may reduce the generalizability of the findings. In addition, the uneven group sizes restricted the types of statistical tests that could be used.
 
 The recruitment process may have introduced sampling bias. Participants were recruited through professional networks and personal outreach, which can result in self selection bias. The employer sample was disproportionately composed of practice owners compared to national demographics, which could have skewed the results toward the perspectives of individuals with more authority or stronger opinions about training and graduate readiness.
 
-There were also geographic and institutional limitations. Most employer responses came from practices located on the U.S. East Coast, while educator responses were more geographically diverse and included some international institutions. This imbalance may limit the applicability of the findings to rural clinics or educational contexts outside of North America.
+There were also geographic and institutional limitations. Most employer responses came from practices located on the U.S. East Coast, while educator responses were more geographically diverse. This imbalance may limit the applicability of the findings to rural clinics or educational contexts outside of North America.
 
-All data were self reported, which introduces additional concerns such as recall bias, social desirability bias, and variation in how participants interpret survey items. For example, the concept of “competency” may be understood differently across respondents, even if they selected similar response options on the Likert scale.
+All data were self reported which introduces additional concerns such as variation in how participants interpret survey items. For example, the concept of “competency” may be understood differently across respondents, even if they selected similar response options on the Likert scale.
 
-Missing data was another concern. Several participants did not complete the entire survey, and certain questions had high rates of missing or invalid responses. These gaps led to the exclusion of some data points and may have affected the robustness of the results for specific comparisons.
-
-Lastly, the survey instruments were developed specifically for this project and were not subjected to formal pilot testing or validation. Although the questions were designed carefully and reviewed by subject matter experts, the lack of established reliability and validity measures may affect the accuracy and consistency of the data collected.
+Lastly, missing data was another concern. Several participants did not complete the entire survey, and certain questions had high rates of missing or invalid responses. These gaps led to the exclusion of some data points and may have affected the robustness of the results for specific comparisons.
 
 
 ## Recommendations
@@ -2694,7 +2692,7 @@ There was broad agreement between educators and employers regarding new graduate
 
 ## Final Thoughts
 
-This analysis highlights generally strong alignment between educators and employers on core dental competencies, but also reveals subtle perception gaps—particularly in the expected number of clinical procedures and the importance of teaching advanced extractions and fluoride treatment. Employers tended to underestimate the scope of preclinical training and expected more procedural experience during clinical rotations. These differences, though not always statistically significant, point to a need for improved communication and transparency between veterinary programs and the profession to ensure shared expectations and better prepare graduates for clinical practice.
+This analysis highlights generally strong alignment between educators and employers on core dental competencies, but also reveals subtle perception gaps, particularly in the expected number of clinical procedures and the importance of teaching advanced extractions and fluoride treatment. Employers tended to underestimate the scope of preclinical training and expected more procedural experience during clinical rotations. These differences, though not always statistically significant, point to a need for improved communication and transparency between veterinary programs and the profession to ensure shared expectations and better prepare graduates for clinical practice.
 
 # Appendix
 
