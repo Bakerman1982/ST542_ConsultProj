@@ -1,4 +1,5 @@
 % Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
@@ -8,22 +9,24 @@
   letterpaper,
   DIV=11,
   numbers=noendperiod]{scrartcl}
-
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{2}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math}
+  \usepackage{unicode-math} % this also loads fontspec
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else  
-    % xetex/luatex font selection
-    \setmainfont[]{Times New Roman}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+  \setmainfont[]{Times New Roman}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -41,10 +44,6 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{2}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -70,8 +69,7 @@
 \makeatother
 
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -96,6 +94,8 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
+
+
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -130,6 +130,18 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -144,8 +156,6 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
-\usepackage{caption}
-\usepackage{anyfontsize}
 \KOMAoption{captions}{tableheading}
 \numberwithin{figure}{section}
 \numberwithin{table}{section}
@@ -194,11 +204,9 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-
 \usepackage{bookmark}
-
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same} % disable monospaced font for URLs
+\urlstyle{same}
 \hypersetup{
   pdftitle={Bridging the Gap:},
   pdfauthor={Brock Akerman, Hanan Ali, Taylor Cesarski},
@@ -221,7 +229,6 @@
 Dentistry}
 \author{Brock Akerman, Hanan Ali, Taylor Cesarski}
 \date{2025-07-28}
-
 \begin{document}
 \maketitle
 
@@ -803,9 +810,26 @@ large). Significance stars were added to highlight results below
 conventional thresholds (e.g., p \textless{} 0.05), and results were
 sorted by p-value to aid interpretation.
 
+Overall, educators and employers had generally similar perceptions about
+new graduate competence in most dental skills, with no statistically
+significant differences observed at the conventional p \textless{} 0.05
+threshold. However, some notable trends emerged. Dental radiography,
+interpretation showed a borderline significant result (p = 0.052) with a
+medium positive effect size (r\_rb = 0.36), suggesting that educators
+may be slightly more confident than employers in new graduates' ability
+to interpret dental radiographs. For most other skills, effect sizes
+were negligible or small, and p-values were well above 0.05, indicating
+no meaningful differences in perceived competence between groups. In a
+few cases, such as open extractions, canine (multi-root), employers had
+slightly higher confidence than educators (small negative effect size),
+but again, these differences were not statistically significant. The
+fluoride treatment item had a large effect size, but due to the very
+small sample (2 educators, 1 employer), it is not meaningful or
+generalizable.
+
 \begin{table}[!h]
 \centering
-\caption{Mann-Whitney U-Test Results for Competency Ratings}
+\caption{\label{tab:full_q4_mannwhitney}Mann-Whitney U-Test Results for Competency Ratings}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{ccccccc}
@@ -829,23 +853,6 @@ Fluoride treatment & 3 & 4 & 2 / 1 & 1.000 & -0.50 & Large negative effect\\
 \bottomrule
 \end{tabular}}
 \end{table}
-
-Overall, educators and employers had generally similar perceptions about
-new graduate competence in most dental skills, with no statistically
-significant differences observed at the conventional p \textless{} 0.05
-threshold. However, some notable trends emerged. Dental radiography,
-interpretation showed a borderline significant result (p = 0.052) with a
-medium positive effect size (r\_rb = 0.36), suggesting that educators
-may be slightly more confident than employers in new graduates' ability
-to interpret dental radiographs. For most other skills, effect sizes
-were negligible or small, and p-values were well above 0.05, indicating
-no meaningful differences in perceived competence between groups. In a
-few cases, such as open extractions, canine (multi-root), employers had
-slightly higher confidence than educators (small negative effect size),
-but again, these differences were not statistically significant. The
-fluoride treatment item had a large effect size, but due to the very
-small sample (2 educators, 1 employer), it is not meaningful or
-generalizable.
 
 \subsubsection{S2 Is there a difference between educators and practice
 owners in their reports (educators' actual teaching vs.~owners'
@@ -872,6 +879,19 @@ categorical (yes/no) outcomes in small samples, especially when
 comparing proportions between two independent groups. Only skills for
 which both groups provided non-missing responses were included in the
 final analysis.
+
+Overall, educators and employers showed general agreement about which
+dental skills are taught in the pre-clinical DVM curriculum, with no
+statistically significant differences found across any of the seven
+skills analyzed. Proportions of reported instruction were similar
+between groups, with slight variations. For example, more educators than
+employers reported that dental radiograph acquisition and simple
+extraction techniques are taught, while more employers believed that
+oral examination and charting and dental cleaning are included. However,
+none of these differences reached significance, and all p-values were
+well above 0.05. These findings suggest a shared but imperfect
+understanding between groups, with minor discrepancies that are not
+statistically meaningful.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.4082}}
@@ -926,19 +946,6 @@ Local nerve blocks & 0.742 & 28 & 13 & 0.607 & 0.538 \\
 Dental radiograph interpretation & 1.000 & 28 & 13 & 0.643 & 0.615 \\
 \end{longtable}
 
-Overall, educators and employers showed general agreement about which
-dental skills are taught in the pre-clinical DVM curriculum, with no
-statistically significant differences found across any of the seven
-skills analyzed. Proportions of reported instruction were similar
-between groups, with slight variations. For example, more educators than
-employers reported that dental radiograph acquisition and simple
-extraction techniques are taught, while more employers believed that
-oral examination and charting and dental cleaning are included. However,
-none of these differences reached significance, and all p-values were
-well above 0.05. These findings suggest a shared but imperfect
-understanding between groups, with minor discrepancies that are not
-statistically meaningful.
-
 \subsubsection{S3 Is there a difference between educators and practice
 owners in their level of agreement about whether specific dental skills
 should be taught
@@ -962,10 +969,29 @@ sample sizes, p-values with significance indicators, effect size
 estimates (rank-biserial correlation), and an interpretation of the
 magnitude and direction of group differences.
 
+Educators and employers generally agreed on the importance of teaching
+core dental skills in the pre-clinical DVM curriculum, with most skills
+receiving high median ratings (4 = Strongly Agree) from both groups.
+However, statistically significant differences were observed for two
+skills. Open extractions skill, feline (multi-root) showed a significant
+difference (p = 0.002) with a large negative effect size (r\_rb =
+-0.60), indicating employers placed greater importance on teaching this
+skill than educators. Fluoride treatment also differed significantly (p
+= 0.013) with a very large negative effect size (r\_rb = -1.00), though
+the very small sample of educators (n = 3) limits interpretation.
+
+Several other extraction-related skills showed small negative effect
+sizes and borderline p-values, suggesting a trend toward employers
+assigning slightly more importance to teaching advanced extractions
+pre-clinically, though these differences did not reach statistical
+significance. For all other skills, differences were negligible or
+small, and p-values were well above 0.05, indicating broad consensus on
+their pre-clinical importance.
+
 \begingroup\fontsize{9}{11}\selectfont
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.4in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.7in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{1.1in}}
-\caption{Mann-Whitney U-Test Results for Pre-Clinical Dentistry Training}\\
+\caption{\label{tab:question_3prep}Mann-Whitney U-Test Results for Pre-Clinical Dentistry Training}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 \textbf{Skill} & \textbf{Med (Edu)} & \textbf{Med (Emp)} & \textbf{N (Edu / Emp)} & \textbf{P-Value} & \textbf{r\_rb} & \textbf{Interpretation}\\
@@ -987,25 +1013,6 @@ Simple extractions - canine & 4 & 4 & 28 / 13 & 0.788 & -0.05 & Negligible effec
 \bottomrule
 \end{longtable}
 \endgroup{}
-
-Educators and employers generally agreed on the importance of teaching
-core dental skills in the pre-clinical DVM curriculum, with most skills
-receiving high median ratings (4 = Strongly Agree) from both groups.
-However, statistically significant differences were observed for two
-skills. Open extractions skill, feline (multi-root) showed a significant
-difference (p = 0.002) with a large negative effect size (r\_rb =
--0.60), indicating employers placed greater importance on teaching this
-skill than educators. Fluoride treatment also differed significantly (p
-= 0.013) with a very large negative effect size (r\_rb = -1.00), though
-the very small sample of educators (n = 3) limits interpretation.
-
-Several other extraction-related skills showed small negative effect
-sizes and borderline p-values, suggesting a trend toward employers
-assigning slightly more importance to teaching advanced extractions
-pre-clinically, though these differences did not reach statistical
-significance. For all other skills, differences were negligible or
-small, and p-values were well above 0.05, indicating broad consensus on
-their pre-clinical importance.
 
 \subsubsection{S4 Do employers and educators differ in their
 expectations about how many dental procedures new graduates should
@@ -1030,24 +1037,6 @@ compare the distributions of responses between educators and employers
 for each clinical setting. This test is appropriate when comparing two
 independent groups without assuming normality or equal variances.
 
-\begin{table}
-\caption*{
-{\large \textbf{Mann-Whitney U Test: Expected Number of Dental Procedures}} \\ 
-{\small Comparison of Educator and Employer Expectations by Clinical Setting}
-} 
-\fontsize{7.5pt}{9.0pt}\selectfont
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}cccccccc}
-\toprule
-Setting & Med (Edu) & Med (Emp) & N (Edu) & N (Emp) & P-Value & r\_rb & Effect Size \\ 
-\midrule\addlinespace[2.5pt]
-Dentistry\_Rotation & 4.0 & 6.5 & 24 & 10 & 0.080 . & -0.39 & Medium negative effect \\ 
-Lab\_Animal & 0.0 & 0.0 & 16 & 9 & 0.222 & 0.24 & Small positive effect \\ 
-Shelter\_Medicine & 2.0 & 0.0 & 19 & 9 & 0.235 & 0.27 & Small positive effect \\ 
-Primary\_Care & 3.0 & 4.0 & 27 & 10 & 0.287 & -0.23 & Small negative effect \\ 
-\bottomrule
-\end{tabular*}
-\end{table}
-
 Educators and employers showed broad agreement on the number of dental
 procedures that students should complete during clinical training, with
 no statistically significant differences across the four clinical
@@ -1064,6 +1053,24 @@ meaningful disagreement between groups. These findings suggest that
 while general expectations are aligned, employers may place slightly
 greater emphasis on procedural experience in dedicated dentistry
 rotations.
+
+\begin{table}[!h]
+\centering
+\caption{\label{tab:question_4prep}Mann-Whitney U Test: Expected Dental Procedures by Group and Setting}
+\centering
+\resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
+\fontsize{8}{10}\selectfont
+\begin{tabular}[t]{cccccccc}
+\toprule
+Setting & Med (Edu) & Med (Emp) & N (Edu) & N (Emp) & P-Value & r\_rb & Effect Size\\
+\midrule
+\cellcolor{gray!10}{Dentistry\_Rotation} & \cellcolor{gray!10}{4} & \cellcolor{gray!10}{6.5} & \cellcolor{gray!10}{24} & \cellcolor{gray!10}{10} & \cellcolor{gray!10}{0.080 .} & \cellcolor{gray!10}{-0.39} & \cellcolor{gray!10}{Medium negative effect}\\
+Lab\_Animal & 0 & 0.0 & 16 & 9 & 0.222 & 0.24 & Small positive effect\\
+\cellcolor{gray!10}{Shelter\_Medicine} & \cellcolor{gray!10}{2} & \cellcolor{gray!10}{0.0} & \cellcolor{gray!10}{19} & \cellcolor{gray!10}{9} & \cellcolor{gray!10}{0.235} & \cellcolor{gray!10}{0.27} & \cellcolor{gray!10}{Small positive effect}\\
+Primary\_Care & 3 & 4.0 & 27 & 10 & 0.287 & -0.23 & Small negative effect\\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \subsubsection{S5 Is there difference between the instructional formats
 in dentistry reported by DVM programs and the formats perceived by
@@ -1200,7 +1207,7 @@ Mann--Whitney U-test results, summary statistics, effect sizes, and
 ranked-biserial correlation outputs.
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.0in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
-\caption{Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
+\caption{\label{tab:6a_MannWhit_Table}Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
@@ -1443,7 +1450,7 @@ the Mann--Whitney U-test results, summary statistics, effect sizes, and
 ranked-biserial correlation outputs.
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.3in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
-\caption{Mann-Whitney U-Test Results for Clinical Procedures}\\
+\caption{\label{tab:8a_MannWhit_Table}Mann-Whitney U-Test Results for Clinical Procedures}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\

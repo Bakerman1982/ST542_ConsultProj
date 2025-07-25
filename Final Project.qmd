@@ -1030,6 +1030,9 @@ To assess whether there are differences in perceptions of new graduate competenc
 
 We used the Mann-Whitney U test to compare educator and employer responses for each skill, as this non-parametric test is well-suited for ordinal data from two independent groups. In addition to p-values, we calculated the ranked-biserial correlation (r_rb) to assess effect sizes and provide insight into the magnitude and direction of observed differences. Results are summarized with median ratings for each group, sample sizes, and effect size interpretations (e.g., small, medium, large). Significance stars were added to highlight results below conventional thresholds (e.g., p < 0.05), and results were sorted by p-value to aid interpretation.
 
+Overall, educators and employers had generally similar perceptions about new graduate competence in most dental skills, with no statistically significant differences observed at the conventional p < 0.05 threshold. However, some notable trends emerged. Dental radiography, interpretation showed a borderline significant result (p = 0.052) with a medium positive effect size (r_rb = 0.36), suggesting that educators may be slightly more confident than employers in new graduates’ ability to interpret dental radiographs. For most other skills, effect sizes were negligible or small, and p-values were well above 0.05, indicating no meaningful differences in perceived competence between groups. In a few cases, such as open extractions, canine (multi-root), employers had slightly higher confidence than educators (small  negative effect size), but again, these differences were not statistically significant. The fluoride treatment item had a large effect size, but due to the very small sample (2 educators, 1 employer), it is not meaningful or generalizable.
+
+
 ```{r}
 #| label: full_q4_mannwhitney
 #| echo: false
@@ -1133,7 +1136,6 @@ kable(mw_results_q4,
 
 ```
 
-Overall, educators and employers had generally similar perceptions about new graduate competence in most dental skills, with no statistically significant differences observed at the conventional p < 0.05 threshold. However, some notable trends emerged. Dental radiography, interpretation showed a borderline significant result (p = 0.052) with a medium positive effect size (r_rb = 0.36), suggesting that educators may be slightly more confident than employers in new graduates’ ability to interpret dental radiographs. For most other skills, effect sizes were negligible or small, and p-values were well above 0.05, indicating no meaningful differences in perceived competence between groups. In a few cases, such as open extractions, canine (multi-root), employers had slightly higher confidence than educators (small  negative effect size), but again, these differences were not statistically significant. The fluoride treatment item had a large effect size, but due to the very small sample (2 educators, 1 employer), it is not meaningful or generalizable.
 
 
 
@@ -1144,6 +1146,8 @@ To evaluate whether differences exist between DVM educators and employers in the
 
 After cleaning and reshaping the data into long format, we filtered out invalid or missing entries and conducted Fisher’s Exact Tests for each skill. This non-parametric test is appropriate for evaluating categorical (yes/no) outcomes in small samples, especially when comparing proportions between two independent groups. Only skills for which both groups provided non-missing responses were included in the final analysis. 
 
+
+Overall, educators and employers showed general agreement about which dental skills are taught in the pre-clinical DVM curriculum, with no statistically significant differences found across any of the seven skills analyzed. Proportions of reported instruction were similar between groups, with slight variations. For example, more educators than employers reported that dental radiograph acquisition and simple extraction techniques are taught, while more employers believed that oral examination and charting and dental cleaning are included. However, none of these differences reached significance, and all p-values were well above 0.05. These findings suggest a shared but imperfect understanding between groups, with minor discrepancies that are not statistically meaningful.
 
 
 ```{r}
@@ -1243,7 +1247,6 @@ kable(test_results,
 
 ```
 
-Overall, educators and employers showed general agreement about which dental skills are taught in the pre-clinical DVM curriculum, with no statistically significant differences found across any of the seven skills analyzed. Proportions of reported instruction were similar between groups, with slight variations. For example, more educators than employers reported that dental radiograph acquisition and simple extraction techniques are taught, while more employers believed that oral examination and charting and dental cleaning are included. However, none of these differences reached significance, and all p-values were well above 0.05. These findings suggest a shared but imperfect understanding between groups, with minor discrepancies that are not statistically meaningful.
 
 
 
@@ -1252,6 +1255,10 @@ Overall, educators and employers showed general agreement about which dental ski
 To assess whether educators and employers differ in their beliefs about which dental skills should be included in the pre-clinical DVM curriculum, we analyzed responses to parallel Likert-scale questions: Q13 (educators) and Q17 (employers). Both groups rated the importance of teaching 12 specific dentistry skills using a 4-point Likert scale ranging from 1 (Strongly Disagree) to 4 (Strongly Agree). 
 
 Because the data were ordinal and responses came from two independent groups, the Mann-Whitney U test was used to compare educator and employer ratings for each skill individually. This non-parametric test is appropriate for comparing ordinal data between two independent groups, especially when the assumptions for parametric tests may not hold. Ratings were reshaped into long format and analyzed skill-by-skill. The results table presents medians for each group, sample sizes, p-values with significance indicators, effect size estimates (rank-biserial correlation), and an interpretation of the magnitude and direction of group differences.
+
+Educators and employers generally agreed on the importance of teaching core dental skills in the pre-clinical DVM curriculum, with most skills receiving high median ratings (4 = Strongly Agree) from both groups. However, statistically significant differences were observed for two skills. Open extractions skill, feline (multi-root) showed a significant difference (p = 0.002) with a large negative effect size (r_rb = -0.60), indicating employers placed greater importance on teaching this skill than educators. Fluoride treatment also differed significantly (p = 0.013) with a very large negative effect size (r_rb = -1.00), though the very small sample of educators (n = 3) limits interpretation.
+
+Several other extraction-related skills showed small negative effect sizes and borderline p-values, suggesting a trend toward employers assigning slightly more importance to teaching advanced extractions pre-clinically, though these differences did not reach statistical significance. For all other skills, differences were negligible or small, and p-values were well above 0.05, indicating broad consensus on their pre-clinical importance.
 
 ```{r}
 #| label: question_3prep
@@ -1371,29 +1378,28 @@ kable(mw_results_q3,
 ```
 
 
-Educators and employers generally agreed on the importance of teaching core dental skills in the pre-clinical DVM curriculum, with most skills receiving high median ratings (4 = Strongly Agree) from both groups. However, statistically significant differences were observed for two skills. Open extractions skill, feline (multi-root) showed a significant difference (p = 0.002) with a large negative effect size (r_rb = -0.60), indicating employers placed greater importance on teaching this skill than educators. Fluoride treatment also differed significantly (p = 0.013) with a very large negative effect size (r_rb = -1.00), though the very small sample of educators (n = 3) limits interpretation.
 
-Several other extraction-related skills showed small negative effect sizes and borderline p-values, suggesting a trend toward employers assigning slightly more importance to teaching advanced extractions pre-clinically, though these differences did not reach statistical significance. For all other skills, differences were negligible or small, and p-values were well above 0.05, indicating broad consensus on their pre-clinical importance.
 
 
 
 ### S4 Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+
+
 To assess whether educators and practice owners differ in their expectations for the number of dental procedures students should complete during clinical training, we compared responses from Question 19 of the educator survey and Question 24 of the employer survey. Respondents indicated the number of procedures they believe should be completed in four clinical settings: primary care, dentistry rotations, shelter medicine, and lab animal medicine. 
 
 Before selecting an appropriate statistical test, we assessed normality using the Shapiro-Wilk test, which showed that the data were not normally distributed in any group-setting combination (all p-values < 0.05). Given the non-normal distribution and the ordinal or skewed nature of the data, we used the Mann-Whitney U test—a non-parametric alternative to the independent samples t-test—to compare the distributions of responses between educators and employers for each clinical setting. This test is appropriate when comparing two independent groups without assuming normality or equal variances.
 
-```{r}
-#| label: question_4prep
-#| include: true
-#| echo: false
-#| warning: false
-#| message: false
 
+Educators and employers showed broad agreement on the number of dental procedures that students should complete during clinical training, with no statistically significant differences across the four clinical settings evaluated. However, a notable trend was observed in the dentistry rotation, where employers had higher expectations than educators (median = 6.5 vs. 4.0), with a borderline p-value (p = 0.080) and a medium negative effect size (r_rb = -0.39), suggesting that employers may expect more hands-on experience in this setting.
+
+In the remaining settings—lab animal medicine, shelter medicine, and primary care—differences in medians were small, and effect sizes were negligible to small, with p-values well above 0.05, indicating no meaningful disagreement between groups. These findings suggest that while general expectations are aligned, employers may place slightly greater emphasis on procedural experience in dedicated dentistry rotations.
+
+```{r question_4prep, echo=FALSE, warning=FALSE, message=FALSE}
 library(dplyr)
 library(tidyr)
-library(purrr)
 library(effectsize)
-library(gt)
+library(knitr)
+library(kableExtra)
 
 # 1. Define variables
 educator_vars <- paste0("Q19_0", 1:4)
@@ -1404,6 +1410,7 @@ setting_labels <- c("Primary_Care", "Dentistry_Rotation", "Shelter_Medicine", "L
 educator_proc <- Educator_Data_Clean %>%
   select(all_of(educator_vars)) %>%
   mutate(group = "Educator")
+
 employer_proc <- Employer_Data_Clean %>%
   select(all_of(employer_vars)) %>%
   mutate(group = "Employer")
@@ -1421,7 +1428,7 @@ combined_proc <- bind_rows(educator_proc, employer_proc) %>%
   filter(!is.na(Procedure_Count)) %>%
   mutate(Procedure_Count = as.numeric(Procedure_Count))
 
-# 4. Calculate Mann-Whitney and effect size
+# 4. Calculate Mann-Whitney U and effect size
 mw_results <- combined_proc %>%
   group_by(Setting) %>%
   summarise(
@@ -1460,52 +1467,25 @@ mw_results <- combined_proc %>%
     r_rb_fmt,
     Interpretation
   )
+
+# 5. Render table
+kable(
+  mw_results,
+  format = "latex",
+  booktabs = TRUE,
+  caption = "Mann-Whitney U Test: Expected Dental Procedures by Group and Setting",
+  col.names = c("Setting", "Med (Edu)", "Med (Emp)", "N (Edu)", "N (Emp)", "P-Value", "r_rb", "Effect Size"),
+  align = "c",
+  digits = c(NA, 1, 1, 0, 0, 3, 2, NA),
+  escape = TRUE
+) %>%
+  kable_styling(
+    latex_options = c("hold_position", "scale_down", "striped"),
+    font_size = 8,
+    full_width = FALSE,
+    position = "center"
+  )
 ```
-
-```{r}
-#| echo: false
-#| label: q4graph
-#| warning: false
-#| message: false
-#| fig-align: center
-
-
-mw_results %>%
-  gt() %>%
-  tab_header(
-    title = md("**Mann-Whitney U Test: Expected Number of Dental Procedures**"),
-    subtitle = "Comparison of Educator and Employer Expectations by Clinical Setting"
-  ) %>%
-  cols_label(
-    Setting = "Setting",
-    median_educator = "Med (Edu)",
-    median_employer = "Med (Emp)",
-    n_educator = "N (Edu)",
-    n_employer = "N (Emp)",
-    P_Value = "P-Value",
-    r_rb_fmt = "r_rb",
-    Interpretation = "Effect Size"
-  ) %>%
-  cols_align(align = "center") %>%
-  fmt_number(columns = vars(median_educator, median_employer), decimals = 1) %>%
-  fmt_number(columns = vars(P_Value), decimals = 3) %>%
-  fmt_number(columns = vars(r_rb_fmt), decimals = 2) %>%
-  tab_options(
-    data_row.padding = px(1),
-    table.font.size = px(10),
-    heading.title.font.size = px(14),
-    heading.subtitle.font.size = px(11),
-    column_labels.font.size = px(11),
-    source_notes.font.size = px(9)
-  ) %>%
-  opt_align_table_header("center")
-```
-
-
-Educators and employers showed broad agreement on the number of dental procedures that students should complete during clinical training, with no statistically significant differences across the four clinical settings evaluated. However, a notable trend was observed in the dentistry rotation, where employers had higher expectations than educators (median = 6.5 vs. 4.0), with a borderline p-value (p = 0.080) and a medium negative effect size (r_rb = -0.39), suggesting that employers may expect more hands-on experience in this setting.
-
-In the remaining settings—lab animal medicine, shelter medicine, and primary care—differences in medians were small, and effect sizes were negligible to small, with p-values well above 0.05, indicating no meaningful disagreement between groups. These findings suggest that while general expectations are aligned, employers may place slightly greater emphasis on procedural experience in dedicated dentistry rotations.
-
 
 
 ### S5 Is there difference between the instructional formats in dentistry reported by DVM programs and the formats perceived by employers to have been completed by early career veterinarians?
