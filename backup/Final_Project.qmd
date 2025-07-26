@@ -4,13 +4,13 @@ subtitle: "Comparing Employer and Educator Expectations in Small Animal Dentistr
 author: Brock Akerman, Hanan Ali, Taylor Cesarski
 date: "July 28, 2025"
 bibliography: references.bib
-csl: apa.csl
+csl: apa.csl  # Uncommented to apply APA citation style
 format:
   pdf:
     pdf-engine: xelatex
     mainfont: "Times New Roman"
-    fontsize: 12pt
-    line-height: 2
+    fontsize: 12pt         # APA prefers 12pt
+    line-height: 2         # Double-spacing
     toc: true
     toc-depth: 2
     number-sections: true
@@ -26,42 +26,13 @@ format:
 editor_options: 
   chunk_output_type: console
 header-includes:
-  - \usepackage{etoolbox}
-  - \usepackage{titling}
   - \numberwithin{figure}{section}
   - \numberwithin{table}{section}
-  - \usepackage{fancyhdr} 
-  - \pagestyle{fancy}
-  - \fancyhf{}
-  - \fancyhead[L]{\MakeUppercase{Bridging the Gap}}
-  - \fancyhead[R]{\thepage}
-  - \renewcommand{\headrulewidth}{0pt}
+  - \usepackage{etoolbox}
   - \makeatletter
   - \patchcmd{\maketitle}{\thispagestyle{plain}}{\thispagestyle{plain}\newpage}{}{}
-  - |
-    \renewcommand{\maketitle}{
-      \thispagestyle{plain}
-      \begin{center}
-        \vspace*{4em}
-        {\Huge\bfseries \@title \par}
-        \vspace{0.5em}
-        {\large\bfseries \@subtitle \par}
-        \vspace{1.5em}
-        {\large \@author \par}
-        \vspace{1em}
-        {\large North Carolina State University \par}
-        \vspace{1em}
-        {\large ST 542: Statistical Practice \par}
-        \vspace{0.5em}
-        {\large Dr. Dan Harris \par}
-        \vspace{0.5em}
-        {\large July 28, 2025 \par}
-        \vspace*{4em}
-      \end{center}
-      \newpage
-    }
   - \makeatother
-  - \pretocmd{\tableofcontents}{\clearpage}{}{}
+  #- \pretocmd{\tableofcontents}{\clearpage}{}{}
 ---
 
 ```{r}
@@ -136,6 +107,7 @@ colnames(Employer_Data_Clean) <- emp_pad_question_ids(colnames(Employer_Data_Cle
 
 #Removes Qualtric metadata from the first two rows
 Employer_Data_Clean <- Employer_Data_Clean %>% slice(-1, -2)
+
 
 
 ### QUESTION-BY-QUESTION Cleaning
@@ -626,7 +598,7 @@ ggplot() +
   geom_boxplot(data = clean_educator,
                aes(x = group, y = duration_minutes),
                fill = "darkorange", alpha = 0.6) +
-  coord_cartesian(ylim = c(0, 80)) +
+  coord_cartesian(ylim = c(0, 80)) +  # Optional: zoom to 0–60 minutes
   labs(
     title = "Survey Completion Time (converted to minutes) by Group",
     x = "Respondent Group",
@@ -848,7 +820,7 @@ q33_labels <- c(
 
 # Clean and map responses, remove first two metadata rows
 q33_clean <- Employer_Data[["q33"]] %>%
-  .[-c(1,2)] %>%  # Remove first two metadata rows
+  .[-c(1,2)] %>%                          # Remove first two metadata rows
   na.omit() %>%
   as.character() %>%
   recode(!!!q33_labels)
@@ -873,7 +845,7 @@ q37_labels <- c(
 
 # Clean and map responses for Q37
 q37_clean <- Employer_Data[["q37"]] %>%
-  .[-c(1,2)] %>% # Remove metadata rows
+  .[-c(1,2)] %>%             # Remove metadata rows
   na.omit() %>%
   as.character() %>%
   recode(!!!q37_labels)
@@ -901,10 +873,10 @@ Figure 2.5 shows that procedure counts tend to be lower in the employer group co
 
 # Clean and prepare data
 Employer_Clean <- Employer_Data %>%
-  slice(-c(1,2)) %>% # remove metadata rows
+  slice(-c(1,2)) %>%                       # remove metadata rows
   mutate(q36_1 = as.numeric(q36_1)) %>%
   filter(!is.na(q36_1)) %>%
-  mutate(q36_1_binned = ceiling(q36_1))
+  mutate(q36_1_binned = ceiling(q36_1))   # binning like p2
 
 # Calculate max count for y-axis scaling
 max_count_p36_1 <- Employer_Clean %>%
@@ -996,6 +968,7 @@ mw_data <- data.frame(
   `Mean Rank` = c("R₁ / n₁", "R₂ / n₂")
 )
 
+#kable(mw_data, align = "lrrr", caption = "Mann-Whitney U Rank Summary Table", booktabs = TRUE)
 kable(mw_data, align = "lrrr", caption = "Mann-Whitney U Rank Summary Table", booktabs = TRUE) %>%
   kable_styling(latex_options = c("striped", "hold_position", "scale_down"))
 
@@ -1300,7 +1273,7 @@ The results of these comparisons are summarized in Table 4.3.
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-align: center
+#| fig-align: center # This was from the second chunk
 
 # Skill name lookup
 skill_labels_q3 <- c(
@@ -1545,7 +1518,6 @@ Educators and employers were also allowed to write in their own responses. One e
 #| warning: false
 #| fig-cap: "Perceived Clinical Instruction Formats in Dentistry Completed by Early Career Veterinarians"
 #| fig-align: center
-
 #Add custom labels to final bar graph
 option_labels <- c(
   "01" = "Didactic",
@@ -1711,6 +1683,7 @@ final_table <- final_table %>%
     `P-value` = paste0(`P-value`, " ", Significance)
   ) %>%
   select(-Significance)
+  # Optional: remove extra column if not needed
 
 kable(final_table, 
       caption = "Perceived Formats of Clinical Dental Instruction in DVM Programs", 
@@ -1725,7 +1698,7 @@ kable(final_table,
     position = "center"
   ) %>%
   row_spec(0, bold = FALSE) %>%
-  row_spec(seq(1, nrow(final_table), by = 2), background = "#F7F7F7")
+  row_spec(seq(1, nrow(final_table), by = 2), background = "#F7F7F7")  # staggered shading
 
 ```
 
@@ -1769,7 +1742,7 @@ instruction_labels <- c(
 "Q17_04" = "Live Patient", "Q21_04" = "Live Patient",
 "Q17_05" = "None of these", "Q21_05" = "None of these",
 "Q17_06" = "Other",  "Q21_06" = "Other",
-"Q17_07" = "Other - Text (Specify)"
+"Q17_07" = "Other - Text (Specify)" # Clarified label
 )
 
 # Initialize a data frame to store all results
@@ -1780,7 +1753,7 @@ q_edu <- educator_cols[i]
 q_emp <- employer_cols[i]
 
 # Extract values and convert to numeric, ensuring consistency
-edu_data <- Educator_Data_Clean |> 
+edu_data <- Educator_Data_Clean |> # Using base R pipe |> (R 4.1+)
  select(Response = all_of(q_edu)) |>
  mutate(Response = as.numeric(Response), Group = "Educator") |>
  filter(!is.na(Response))
@@ -1863,14 +1836,14 @@ mutate(
   filter(P_Value != "N/A") |>
 select(
  Skill,
- `Med (Edu)` = `Median (Educator)`, 
- `Med (Emp)` = `Median (Employer)`, 
- `N (Edu / Emp)` = `n (Educator / Employer)`, 
- `P-Value` = P_Value, 
- `r_rb` = `Ranked-Biserial Correlation (r_rb)`, 
+ `Med (Edu)` = `Median (Educator)`, # Concise header
+ `Med (Emp)` = `Median (Employer)`, # Concise header
+ `N (Edu / Emp)` = `n (Educator / Employer)`, # Concise header
+ `P-Value` = P_Value, # Consistent capitalization, remove space for LaTeX
+ `r_rb` = `Ranked-Biserial Correlation (r_rb)`, # Concise header
  Interpretation
 ) |>
-arrange(`P-Value`) 
+arrange(`P-Value`) # Arrange by the new column name
 
 # Render the final table with kableExtra for advanced formatting
 kable(final_results_table,
@@ -1894,7 +1867,7 @@ kable(final_results_table,
   column_spec(5, width = "0.55in") |>
   column_spec(6, width = "0.75in") |>
   column_spec(7, width = "1.1in") |>
-  kable_styling(font_size = 9, 
+  kable_styling(font_size = 9,  # reduce font by 1pt if default was 10
                 latex_options = c("striped", "scale_down", "HOLD_position"))
 
 ```
@@ -1911,11 +1884,15 @@ Figure 4.2 presents the proportional distribution of responses for each group. W
 #| warning: false
 #| message: false
 #| include: true
-#| fig-height: 8 
-#| fig-width: 10 
+#| fig-height: 8 # Adjust height as needed for readability
+#| fig-width: 10 # Adjust width as needed for readability
 #| fig-cap: "Diverging Stacked Bar Chart of Perceived Importance/Competence of Clinical Instruction Formats by Group (Educator vs. Employer)."
 
-
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(forcats) # For fct_rev and fct_relevel
+library(scales)  # For scales::label_percent()
 
 # Define the matching question columns (from your S6 code)
 educator_cols <- paste0("Q17_", sprintf("%02d", 1:7))
@@ -1929,7 +1906,7 @@ instruction_labels <- c(
   "Q17_04" = "Live Patient", "Q21_04" = "Live Patient",
   "Q17_05" = "None of these", "Q21_05" = "None of these",
   "Q17_06" = "Other", "Q21_06" = "Other",
-  "Q17_07" = "Other - Text (Specify)" 
+  "Q17_07" = "Other - Text (Specify)" # Clarified label
 )
 
 # --- 1. Prepare and Combine Data ---
@@ -1957,7 +1934,7 @@ emp_long <- Employer_Data_Clean |>
 
 # Combine both datasets
 combined_data_s6 <- bind_rows(edu_long, emp_long) |>
-  filter(!is.na(Response)) 
+  filter(!is.na(Response)) # Remove NA responses
 
 # --- 2. Create a unified "Skill" label for plotting and Likert factor ---
 full_label_map <- instruction_labels[c("Q17_01", "Q17_02", "Q17_03", "Q17_04")]
@@ -2018,10 +1995,10 @@ ggplot(plot_data_s6, aes(y = Skill)) +
 
   # Update N label positioning for new group layout
   geom_text(data = total_n_s6 |> filter(Group == "Educator"),
-            aes(x = -0.05, y = Skill, label = paste0("N=", N)), 
+            aes(x = -0.05, y = Skill, label = paste0("N=", N)), # Position left of center for Educator
             hjust = 1, size = 3, color = "black") +
   geom_text(data = total_n_s6 |> filter(Group == "Employer"),
-            aes(x = 0.05, y = Skill, label = paste0("N=", N)), 
+            aes(x = 0.05, y = Skill, label = paste0("N=", N)), # Position right of center for Employer
             hjust = 0, size = 3, color = "black") +
 
   scale_x_continuous(
@@ -2041,7 +2018,7 @@ ggplot(plot_data_s6, aes(y = Skill)) +
     title = "Perceived Importance/Competence of Clinical Instruction Formats",
     subtitle = "Distribution of Likert Scale Responses by Group (Educator vs. Employer)",
     x = "Proportion of Responses",
-    y = "Clinical Instruction" 
+    y = "Clinical Instruction" # === UPDATED Y-AXIS LABEL ===
   ) +
   theme_minimal() +
   theme(
@@ -2054,9 +2031,9 @@ ggplot(plot_data_s6, aes(y = Skill)) +
     axis.title.y = element_text(face = "bold")
   ) +
   # Update group labels for new layout
-  annotate("text", x = -0.75, y = Inf, label = "Educator", 
+  annotate("text", x = -0.75, y = Inf, label = "Educator", # Educator label on left
            vjust = 1.5, hjust = 0.5, size = 4, fontface = "bold", color = "black") +
-  annotate("text", x = 0.75, y = Inf, label = "Employer", 
+  annotate("text", x = 0.75, y = Inf, label = "Employer", # Employer label on right
            vjust = 1.5, hjust = 0.5, size = 4, fontface = "bold", color = "black")
 ```
 
@@ -2097,8 +2074,6 @@ Figure 4.3 shows the percentage of employers and educators who selected the give
 #| fig-align: center
 #| fig.width: 10
 #| fig.height: 7
-
-
 # Labels for each skill
 option_labels <- c(
   "01" = "Oral Exam/Charting",
@@ -2179,7 +2154,7 @@ ggplot(combined_percent, aes(x = percent, y = Label, color = Group)) +
 ```
 
 Table 4.7 shows the p-values associated with Fisher's Exact Test and their significance.  For eleven of the thirteen skills, educators reported a higher percentage of selection. The two skills for which employers reported higher perceived learning were feline open extraction—canines/multiple roots—and fluoride treatment.
-\newpage
+
 ```{r}
 #| label: 4_7_table
 #| echo: false
@@ -2215,7 +2190,7 @@ get_counts <- function(data, vars, n_total) {
     pivot_longer(everything(), names_to = "option", values_to = "count") %>%
     mutate(
       percent = count / n_total * 100,
-      option = str_replace(option, "Q[0-9]+_", "")
+      option = str_replace(option, "Q[0-9]+_", "")  # Remove question prefix
     )
 }
 
@@ -2277,7 +2252,7 @@ final_table <- final_table %>%
     ),
     `P-value` = paste0(`P-value`, " ", Significance)
   ) %>%
-  select(-Significance) 
+  select(-Significance)  # Optional: remove extra column if not needed
 
 
 # Print a clean table
@@ -2446,14 +2421,14 @@ final_results_table_s8 <- all_mw_results_df_s8 %>%
   # Rename columns directly in select() for kableExtra
   select(
     Skill,
-    `Med (Edu)` = `Median (Educator)`,
-    `Med (Emp)` = `Median (Employer)`,
-    `N (Edu / Emp)` = `n (Educator / Employer)`,
-    `P-Value` = P_Value, 
-    `r_rb` = `Ranked-Biserial Correlation (r_rb)`,
+    `Med (Edu)` = `Median (Educator)`, # Concise header
+    `Med (Emp)` = `Median (Employer)`, # Concise header
+    `N (Edu / Emp)` = `n (Educator / Employer)`, # Concise header
+    `P-Value` = P_Value, # Consistent capitalization, remove space for LaTeX
+    `r_rb` = `Ranked-Biserial Correlation (r_rb)`, # Concise header
     Interpretation
   ) %>%
-  arrange(`P-Value`) 
+  arrange(`P-Value`) # Arrange by the new column name
 
 # Render the final table with kableExtra for advanced formatting
 # Adjust column headers for better display and tightness
@@ -2461,8 +2436,8 @@ kable(final_results_table_s8,
       caption = "Mann-Whitney U-Test Results for Clinical Procedures",
       align = "c",
       row.names = FALSE,
-      escape = FALSE, 
-      latex_options = c("scale_down", "HOLD_position", "striped") 
+      escape = FALSE, # Allows LaTeX in headers and content
+      latex_options = c("scale_down", "HOLD_position", "striped") # latex_options inside kable
 ) %>%
   add_header_above(c(" " = 1,
                      "Median" = 2,
@@ -2471,14 +2446,14 @@ kable(final_results_table_s8,
                      "Effect Size" = 1,
                      " " = 1),
                    line = FALSE) %>%
-  column_spec(1, width = "1.3in") %>%  # Skill
+  column_spec(1, width = "1.3in") %>%  # Skill - might need more space
   column_spec(2, width = "0.5in") %>%  # Med (Edu)
   column_spec(3, width = "0.5in") %>%  # Med (Emp)
   column_spec(4, width = "0.65in") %>% # N (Edu / Emp)
   column_spec(5, width = "0.55in") %>% # P-Value
   column_spec(6, width = "0.75in") %>% # r_rb
   column_spec(7, width = "1.1in") %>%  # Interpretation
-  kable_styling(font_size = 10,
+  kable_styling(font_size = 10,      # Set font size to 10pt
                 latex_options = c("striped", "scale_down", "HOLD_position"))
 
 ```
@@ -2521,7 +2496,7 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-# --- Define ALL necessary objects ---
+# --- (STEP 1) Define ALL necessary objects ---
 
 # Define the question columns from your S8 analysis
 educator_cols_s8 <- paste0("Q21_", sprintf("%02d", 1:12))
@@ -2548,6 +2523,7 @@ edu_long_s8 <- Educator_Data_Clean |>
   select(all_of(educator_cols_s8)) |>
   mutate(Group = "Educator", ID = row_number()) |>
   pivot_longer(cols = -c(Group, ID), names_to = "Question_ID", values_to = "Response") |>
+  # Filter out responses that contain a comma (e.g., "1,4")
   filter(!grepl(",", Response))
 
 # Pivot employer data from wide to long format
@@ -2557,11 +2533,12 @@ emp_long_s8 <- Employer_Data_Clean |>
   pivot_longer(cols = -c(Group, ID), names_to = "Question_ID", values_to = "Response")
 
 
-# --- Filter data and calculate proportions ---
+# --- (STEP 2) Filter data and calculate proportions ---
 
 # Combine, filter, and create factors
 combined_data_s8_filtered <- bind_rows(edu_long_s8, emp_long_s8) |>
   filter(!is.na(Response)) |>
+  # Ensure Response is numeric before converting to factor, as it might be character due to filtering
   mutate(Response = as.numeric(Response)) |>
   mutate(Skill = recode(Question_ID, !!!procedure_labels_s8)) |>
   filter(Skill != "Fluoride treatment") |>
@@ -2587,7 +2564,7 @@ plot_data_s8 <- combined_data_s8_filtered |>
   left_join(total_n_s8, by = c("Skill", "Group"))
 
 
-# --- Create the chart ---
+# --- (STEP 3) Create the chart ---
 
 # Define the display order for skills based on the Mann Whitney U table
 # UPDATED: This order now matches your provided Mann-Whitney U table.
@@ -2597,7 +2574,7 @@ custom_skill_order_s8 <- c(
   "Feline open extraction - Single root",
   "Canine open extraction - Canines/multiple roots",
   "Radiographic interpretation",
-  "Feline open extraction - Canines/multiple roots",
+  "Feline open extraction - Canines/multiple roots", # Included again as it appears in your table
   "Canine closed extraction",
   "Radiographic positioning",
   "Scaling",
@@ -2666,7 +2643,7 @@ ggplot(plot_data_s8, aes(y = Skill)) +
 
 # Discussion/Conclusion
 
-## Interpretation of Results
+Interpretation of Results
 
 The results across suggest that educators and employers are largely aligned in their perceptions of dental training and graduate competence, with no statistically significant differences observed in most areas. Both groups reported similar beliefs about which skills are taught preclinically and how many procedures should be completed during clinical training. However, a few notable trends emerged. Employers tended to place slightly more importance on teaching advanced extractions and expected more hands on experience during dentistry rotations, while educators were slightly more confident in graduates' ability to interpret radio-graphs. Although these differences were not always statistically significant, they point to subtle mismatches in expectations that could be addressed through improved communication and curriculum transparency.
 
@@ -2677,7 +2654,7 @@ The findings suggest a disconnect between educators and employers in how they pe
 
 
 
-## Implications of the Study
+Implications of the Study
 
 The findings of this study have several important implications for veterinary education and the transition of new graduates into clinical practice. Overall, the results suggest that educators and small animal primary care employers are largely aligned in their expectations and beliefs about dental competencies but key perception gaps remain that may influence workforce readiness.
 
@@ -2690,7 +2667,7 @@ Third, the trend for employers to expect a higher number of completed procedures
 Finally, these findings underscore the importance of ongoing collaboration between academia and clinical practice. By fostering dialogue between educators and employers, DVM programs can ensure that their graduates are not only technically competent, but also perceived as well prepared by those who hire and supervise them. Closing perception gaps may help reduce onboarding burdens, promote early career confidence, and ultimately enhance the quality of care delivered in small animal dentistry.
 
 
-## Limitations
+Limitations
 
 This study had several limitations that should be considered when interpreting the results. The sample sizes were relatively small, particularly for the employer group, which had only 13 respondents after data cleaning. This limited the statistical power of the analyses and may reduce the generalizability of the findings. In addition, the uneven group sizes restricted the types of statistical tests that could be used.
 
@@ -2703,17 +2680,17 @@ All data were self reported which introduces additional concerns such as variati
 Lastly, missing data was another concern. Several participants did not complete the entire survey, and certain questions had high rates of missing or invalid responses. These gaps led to the exclusion of some data points and may have affected the robustness of the results for specific comparisons.
 
 
-## Recommendations
+Recommendations
 
 To improve alignment between veterinary educators and employers, several strategies should be considered. Communication between veterinary schools and employers should be strengthened, as employers often underestimated the level of preclinical and clinical dental training reported by educators. Programs can address this perception gap by sharing curricular details and competency expectations through mechanisms such as externship evaluations, employer advisory boards, or structured graduate transition reports. Clinical exposure to dental procedures should also be enhanced, particularly in dentistry rotations, where employers tended to expect a higher number of completed procedures. Increasing hands on opportunities in core dental skills, especially extractions and radiograph interpretation, can better align training with workplace expectations.
 
 Clarifying learning objectives and defining shared competency standards is another important step. By standardizing what constitutes competence in key skills, educators and employers can more consistently assess graduate preparedness. This is especially relevant for procedures like open extractions and radiographic interpretation. Additionally, perceived discrepancies in the importance of certain skills, such as fluoride treatment and multirooted feline extractions, should be discussed within curriculum committees and employer advisory groups. These conversations can help determine whether changes in instruction or clearer expectation setting are needed. Ongoing dialogue between veterinary programs and employers through stakeholder surveys, curriculum reviews, and alumni feedback is essential to keeping curricula responsive to the evolving demands of clinical practice.
 
-## Summary of Key Findings
+Summary of Key Findings
 
 There was broad agreement between educators and employers regarding new graduate competence, curriculum content, and priorities for dental skills training. However, employers tended to slightly underestimate the extent of preclinical training that educators reported providing. Notably, employers placed significantly greater importance on teaching certain skills preclinically, specifically feline open extractions involving multiroot teeth and fluoride treatment. Additionally, employers expected a higher number of completed procedures during dentistry rotations, indicating stronger expectations for clinical repetition and hands on experience. Overall, most other comparisons between the groups revealed no statistically significant differences, with effect sizes generally small or negligible.
 
-## Final Thoughts
+Final Thoughts
 
 This analysis highlights generally strong alignment between educators and employers on core dental competencies, but also reveals subtle perception gaps, particularly in the expected number of clinical procedures and the importance of teaching advanced extractions and fluoride treatment. Employers tended to underestimate the scope of preclinical training and expected more procedural experience during clinical rotations. These differences, though not always statistically significant, point to a need for improved communication and transparency between veterinary programs and the profession to ensure shared expectations and better prepare graduates for clinical practice.
 
