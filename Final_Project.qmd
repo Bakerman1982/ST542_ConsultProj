@@ -62,6 +62,7 @@ header-includes:
     }
   - \makeatother
   - \pretocmd{\tableofcontents}{\clearpage}{}{}
+
 ---
 
 ```{r}
@@ -562,21 +563,21 @@ How do small animal primary care employers (medical directors and practice owner
 
 ## Statistical Questions
 
-1.  Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
+**S1.**   Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
 
-2.  Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum?
+**S2.**   Is there a difference between educators and practice owners in their reports (educators’ actual teaching vs. owners’ perceptions) of which dental skills were taught in the pre-clinical DVM curriculum?
 
-3.  Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
+**S3.**   Is there a difference between educators and practice owners in their level of agreement about whether specific dental skills should be taught pre-clinically?
 
-4.  Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
+**S4.**   Do employers and educators differ in their expectations about how many dental procedures new graduates should complete during clinical training?
 
-5.  Is there a difference between the instructional formats in dentistry reported by DVM programs and those perceived by employers to have been completed by early-career veterinarians?
+**S5.**   Is there a difference between the instructional formats in dentistry reported by DVM programs and those perceived by employers to have been completed by early-career veterinarians?
 
-6.  Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students?
+**S6.**   Do educators and employers differ in their views on which formats of clinical instruction in dentistry should be required for DVM students?
 
-7.  Is there a difference between the clinical dentistry skills that educators report DVM students are learning during clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
+**S7.**   Is there a difference between the clinical dentistry skills that educators report DVM students are learning during clinical training and the skills that employers believe recent graduates have completed as part of their DVM program?
 
-8.  Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
+**S8.**   Do educators and employers differ in their opinions about which clinical dentistry skills DVM students should be required to practice or learn during their clinical training?
 
 
 # Data
@@ -1073,9 +1074,11 @@ This question asked participants to enter a number corresponding to how many den
 
 As mentioned above, the Mann-Whitney U Test is a non-parametric test that does not require the assumption of normality. If the normality assumption were met, a two-sample t-test could be considered for this analysis. However, based on our examination of the data, the normality assumption is not satisfied; therefore, we will proceed with the Mann-Whitney U Test. The test will follow the same method described previously for statistical questions #2, 5, and 7.
 
+
 # Results
 
 ## S1
+
 ### Research Question: Are there significant differences between educators and practice owners in their belief that new graduates are competent in key dental skills on their first day of practice?
 
 To assess whether there are differences in perceptions of new graduate competence in dentistry, educators and employers were asked a parallel question (Q4). Employers were asked to rate their expectation that early career veterinarians can competently perform 12 specific dental skills on their first day of employment. Educators were asked to rate whether they believe new graduates can perform those same skills competently. Responses were recorded on a 4-point Likert scale from 1 (Strongly Disagree) to 4 (Strongly Agree).
@@ -2016,13 +2019,13 @@ ggplot(plot_data_s6, aes(y = Skill)) +
 
   geom_vline(xintercept = 0, color = "grey50", linetype = "solid", size = 0.5) +
 
-  # Update N label positioning for new group layout
+  # N= text, increased to size 6 (you asked for font size 16 — in ggplot this is size = 6 roughly)
   geom_text(data = total_n_s6 |> filter(Group == "Educator"),
             aes(x = -0.05, y = Skill, label = paste0("N=", N)), 
-            hjust = 1, size = 3, color = "black") +
+            hjust = 1, size = 6, color = "black") +
   geom_text(data = total_n_s6 |> filter(Group == "Employer"),
             aes(x = 0.05, y = Skill, label = paste0("N=", N)), 
-            hjust = 0, size = 3, color = "black") +
+            hjust = 0, size = 6, color = "black") +
 
   scale_x_continuous(
     breaks = seq(-1, 1, 0.1),
@@ -2045,19 +2048,21 @@ ggplot(plot_data_s6, aes(y = Skill)) +
   ) +
   theme_minimal() +
   theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    plot.subtitle = element_text(hjust = 0.5),
-    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(hjust = 0.5, size = 18),
+    plot.subtitle = element_text(hjust = 0.5, size = 14),
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),
+    axis.text.y = element_text(hjust = 1, size = 12),
+    axis.title.x = element_text(size = 13),  # ← updated x-axis label font
+    axis.title.y = element_text(size = 13),  # ← updated y-axis label font
     legend.position = "bottom",
-    panel.grid.major.y = element_blank(),
-    legend.title = element_text(face = "bold"),
-    axis.title.y = element_text(face = "bold")
+    legend.title = element_text(size = 12),  # ← updated legend title font
+    legend.text = element_text(size = 12),   # ← updated legend text font
+    panel.grid.major.y = element_blank()
   ) +
-  # Update group labels for new layout
-  annotate("text", x = -0.75, y = Inf, label = "Educator", 
-           vjust = 1.5, hjust = 0.5, size = 4, fontface = "bold", color = "black") +
-  annotate("text", x = 0.75, y = Inf, label = "Employer", 
-           vjust = 1.5, hjust = 0.5, size = 4, fontface = "bold", color = "black")
+  annotate("text", x = -0.5, y = Inf, label = "Educator", 
+           vjust = 1., hjust = 0.5, size = 6, color = "black") +
+  annotate("text", x = 0.5, y = Inf, label = "Employer", 
+           vjust = 1., hjust = 0.5, size = 6, color = "black")
 ```
 
 The response distributions for simulation and wet lab instruction appear nearly identical visually, and statistical analysis confirmed no significant differences between groups for these instructional types. Interestingly, the distribution for didactic instruction looks somewhat different from those two, despite also showing no statistically significant difference.
@@ -2152,17 +2157,18 @@ combined_percent <- bind_rows(educator_percent, employer_percent) %>%
     Group = factor(Group, levels = c("Educators", "Employers"))
   )
 
+
 # Dot plot
 ggplot(combined_percent, aes(x = percent, y = Label, color = Group)) +
   geom_point(aes(size = percent), alpha = 0.8) +
   geom_text(aes(label = paste0(round(percent, 1), "%")), hjust = -0.2, color = "black", fontface = "bold") +
-  scale_color_manual(values = c("Educators" = "#1f78b4","Employers" = "#e31a1c"))+
+  scale_color_manual(values = c("Educators" = "#1f78b4", "Employers" = "#e31a1c")) +
   scale_size(range = c(3, 8), guide = "none") +
   labs(
     x = "% of respondents in respective groups",
     y = NULL,
     title = "Clinical Training Skills",
-    subtitle = "Each dot shows percent of Eduactors or Employers who selected each skill",
+    subtitle = "Each dot shows percent of Educators or Employers who selected each skill",
     color = NULL
   ) +
   theme_minimal(base_size = 14) +
@@ -2170,11 +2176,13 @@ ggplot(combined_percent, aes(x = percent, y = Label, color = Group)) +
     legend.position = "top",
     panel.grid.major.y = element_blank(),
     panel.grid.minor = element_blank(),
-    plot.title = element_text(face = "bold"),
-    axis.text.y = element_text(size = 10),
+    plot.title = element_text(size = 18, hjust = 0.5, face = "plain"),     # Centered, not bold
+    plot.subtitle = element_text(size = 14, hjust = 0.5, face = "plain"),  # Centered, not bold
+    axis.text.y = element_text(size = 10, hjust = 1, face = "plain"),      # Right-aligned, not bold
     plot.title.position = "plot"
   ) +
   xlim(0, max(combined_percent$percent, na.rm = TRUE) + 10)
+
 
 ```
 
@@ -2620,21 +2628,32 @@ likert_colors_s8 <- c(
 
 # Generate the plot
 ggplot(plot_data_s8, aes(y = Skill)) +
+  # Educator bars
   geom_bar(data = . %>% filter(Group == "Educator"),
            aes(x = Proportion_Diverge, fill = Response_Factor), stat = "identity", width = 0.8) +
+  # Employer bars
   geom_bar(data = . %>% filter(Group == "Employer"),
            aes(x = Proportion_Diverge, fill = Response_Factor), stat = "identity", width = 0.8) +
+
+  # Vertical divider
   geom_vline(xintercept = 0, color = "grey40", linetype = "solid") +
+
+  # N labels
   geom_text(data = total_n_s8,
             aes(x = ifelse(Group == "Educator", -0.05, 0.05),
+                y = Skill,
                 label = paste0("N=", N),
                 hjust = ifelse(Group == "Educator", 1, 0)),
-            size = 3.5, color = "black") +
+            size = 6, color = "black") +
+
+  # X-axis settings
   scale_x_continuous(
     breaks = seq(-1, 1, 0.2),
     labels = function(x) paste0(abs(x * 100), "%"),
     limits = c(-1.1, 1.1)
   ) +
+
+  # Fill legend
   scale_fill_manual(
     values = likert_colors_s8,
     drop = FALSE,
@@ -2642,26 +2661,41 @@ ggplot(plot_data_s8, aes(y = Skill)) +
     breaks = c("1 - Strongly Disagree", "2 - Disagree", "3 - Agree", "4 - Strongly Agree"),
     guide = guide_legend(reverse = FALSE)
   ) +
+
+  # Labels
   labs(
     title = "Perceived Competence of Clinical Procedures",
     subtitle = "Distribution of Likert Scale Responses by Group (Educator vs. Employer)",
     x = "Proportion of Responses",
     y = "Clinical Procedure"
   ) +
-  theme_minimal(base_size = 14) +
-  theme(
-    plot.title = element_text(hjust = 0.5, face = "bold"),
-    plot.subtitle = element_text(hjust = 0.5),
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "bottom",
-    panel.grid.major.y = element_blank(),
-    legend.title = element_text(face = "bold"),
-    axis.title.y = element_text(face = "bold", margin = margin(r = 10))
-  ) +
-  annotate("text", x = -0.7, y = Inf, label = "Educator", vjust = 1.5, size = 5, fontface = "bold") +
-  annotate("text", x = 0.7, y = Inf, label = "Employer", vjust = 1.5, size = 5, fontface = "bold")
-```
 
+  # Theme matching S6
+  theme_minimal(base_size = 14) +
+    coord_cartesian(clip = "off") +
+  theme(
+    plot.margin = margin(t = 30, r = 10, b = 10, l = 10)
+  ) +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 18, face = "plain"),     # match S6
+    plot.subtitle = element_text(hjust = 0.5, size = 14, face = "plain"),  # match S6
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 14),          # match S6
+    axis.text.y = element_text(hjust = 1, size = 14),                      # match S6
+    axis.title.x = element_text(size = 16),                                # match S6
+    axis.title.y = element_text(size = 16),                                # match S6
+    legend.position = "bottom",
+    legend.title = element_text(size = 16),                                # match S6
+    legend.text = element_text(size = 16),                                 # match S6
+    panel.grid.major.y = element_blank()
+  ) +
+
+  # Educator/Employer labels
+  annotate("text", x = -0.5, y = Inf, label = "Educator", 
+           vjust = .65, hjust = 0.5, size = 6, color = "black") +
+  annotate("text", x = 0.5, y = Inf, label = "Employer", 
+           vjust = .65, hjust = 0.5, size = 6, color = "black")
+
+```
 
 
 # Discussion/Conclusion
