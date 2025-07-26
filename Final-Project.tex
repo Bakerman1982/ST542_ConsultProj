@@ -1,32 +1,29 @@
 % Options for packages loaded elsewhere
-% Options for packages loaded elsewhere
 \PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-  11pt,
+  12pt,
   letterpaper,
   DIV=11,
   numbers=noendperiod]{scrartcl}
-\usepackage{xcolor}
-\usepackage[margin=1in]{geometry}
+
 \usepackage{amsmath,amssymb}
-\setcounter{secnumdepth}{2}
 \usepackage{iftex}
 \ifPDFTeX
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
   \usepackage{textcomp} % provide euro and other symbols
 \else % if luatex or xetex
-  \usepackage{unicode-math} % this also loads fontspec
+  \usepackage{unicode-math}
   \defaultfontfeatures{Scale=MatchLowercase}
   \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
 \usepackage{lmodern}
-\ifPDFTeX\else
-  % xetex/luatex font selection
-  \setmainfont[]{Times New Roman}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+    \setmainfont[]{Times New Roman}
 \fi
 % Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -44,6 +41,10 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{2}
 % Make \paragraph and \subparagraph free-standing
 \makeatletter
 \ifx\paragraph\undefined\else
@@ -69,7 +70,8 @@
 \makeatother
 
 
-\usepackage{longtable,booktabs,array}
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
 \usepackage{calc} % for calculating minipage widths
 % Correct order of tables after \paragraph or \subparagraph
 \usepackage{etoolbox}
@@ -94,8 +96,6 @@
 % Set default figure placement to htbp
 \def\fps@figure{htbp}
 \makeatother
-
-
 % definitions for citeproc citations
 \NewDocumentCommand\citeproctext{}{}
 \NewDocumentCommand\citeproc{mm}{%
@@ -129,18 +129,6 @@
 \newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
-
-
-
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-
-
-
- 
-
 
 \usepackage{booktabs}
 \usepackage{longtable}
@@ -204,9 +192,11 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
+
 \usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\urlstyle{same}
+\urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={Bridging the Gap:},
   pdfauthor={Brock Akerman, Hanan Ali, Taylor Cesarski},
@@ -229,6 +219,7 @@
 Dentistry}
 \author{Brock Akerman, Hanan Ali, Taylor Cesarski}
 \date{2025-07-28}
+
 \begin{document}
 \maketitle
 
@@ -445,7 +436,7 @@ approximately 75\% indicated they were employed in private practice.
 This aligns with findings from the American Veterinary Medical
 Association (AVMA), which reported that ``most veterinarians age 75 or
 younger, 83.9\%, work in private clinical practice'' (American
-Veterinary Medical Association 2019).
+Veterinary Medical Association, 2019).
 
 \begin{longtable}[]{@{}lrr@{}}
 \caption{Job Setting or Organization: Counts and
@@ -783,12 +774,11 @@ follows the same method above as statistical questions \#2, 5, and 7.
 
 \section{Results}\label{results}
 
-\subsection{Statistical Analysis}\label{statistical-analysis}
+\subsection{S1}\label{s1}
 
-\subsubsection{S1 Are there significant differences between educators
-and practice owners in their belief that new graduates are competent in
-key dental skills on their first day of
-practice?}\label{s1-are-there-significant-differences-between-educators-and-practice-owners-in-their-belief-that-new-graduates-are-competent-in-key-dental-skills-on-their-first-day-of-practice}
+\textbf{Research Question:} Are there significant differences between
+educators and practice owners in their belief that new graduates are
+competent in key dental skills on their first day of practice?
 
 To assess whether there are differences in perceptions of new graduate
 competence in dentistry, educators and employers were asked a parallel
@@ -829,7 +819,7 @@ generalizable.
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:full_q4_mannwhitney}Mann-Whitney U-Test Results for Competency Ratings}
+\caption{Mann-Whitney U-Test Results for Competency Ratings}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \begin{tabular}[t]{ccccccc}
@@ -854,11 +844,12 @@ Fluoride treatment & 3 & 4 & 2 / 1 & 1.000 & -0.50 & Large negative effect\\
 \end{tabular}}
 \end{table}
 
-\subsubsection{S2 Is there a difference between educators and practice
-owners in their reports (educators' actual teaching vs.~owners'
+\subsection{S2}\label{s2}
+
+\textbf{Research Question:} Is there a difference between educators and
+practice owners in their reports (educators' actual teaching vs.~owners'
 perceptions) of which dental skills were taught in the pre-clinical DVM
-curriculum for recent
-graduates?}\label{s2-is-there-a-difference-between-educators-and-practice-owners-in-their-reports-educators-actual-teaching-vs.-owners-perceptions-of-which-dental-skills-were-taught-in-the-pre-clinical-dvm-curriculum-for-recent-graduates}
+curriculum for recent graduates?
 
 To evaluate whether differences exist between DVM educators and
 employers in their understanding of which dental skills are taught in
@@ -946,10 +937,11 @@ Local nerve blocks & 0.742 & 28 & 13 & 0.607 & 0.538 \\
 Dental radiograph interpretation & 1.000 & 28 & 13 & 0.643 & 0.615 \\
 \end{longtable}
 
-\subsubsection{S3 Is there a difference between educators and practice
-owners in their level of agreement about whether specific dental skills
-should be taught
-pre-clinically?}\label{s3-is-there-a-difference-between-educators-and-practice-owners-in-their-level-of-agreement-about-whether-specific-dental-skills-should-be-taught-pre-clinically}
+\subsection{S3}\label{s3}
+
+\textbf{Research Question:} Is there a difference between educators and
+practice owners in their level of agreement about whether specific
+dental skills should be taught pre-clinically?
 
 To assess whether educators and employers differ in their beliefs about
 which dental skills should be included in the pre-clinical DVM
@@ -991,7 +983,7 @@ their pre-clinical importance.
 \begingroup\fontsize{9}{11}\selectfont
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.4in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.7in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{1.1in}}
-\caption{\label{tab:question_3prep}Mann-Whitney U-Test Results for Pre-Clinical Dentistry Training}\\
+\caption{Mann-Whitney U-Test Results for Pre-Clinical Dentistry Training}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 \textbf{Skill} & \textbf{Med (Edu)} & \textbf{Med (Emp)} & \textbf{N (Edu / Emp)} & \textbf{P-Value} & \textbf{r\_rb} & \textbf{Interpretation}\\
@@ -1014,10 +1006,11 @@ Simple extractions - canine & 4 & 4 & 28 / 13 & 0.788 & -0.05 & Negligible effec
 \end{longtable}
 \endgroup{}
 
-\subsubsection{S4 Do employers and educators differ in their
+\subsection{S4}\label{s4}
+
+\textbf{Research Question:} Do employers and educators differ in their
 expectations about how many dental procedures new graduates should
-complete during clinical
-training?}\label{s4-do-employers-and-educators-differ-in-their-expectations-about-how-many-dental-procedures-new-graduates-should-complete-during-clinical-training}
+complete during clinical training?
 
 To assess whether educators and practice owners differ in their
 expectations for the number of dental procedures students should
@@ -1056,7 +1049,7 @@ rotations.
 
 \begin{table}[!h]
 \centering
-\caption{\label{tab:question_4prep}Mann-Whitney U Test: Expected Dental Procedures by Group and Setting}
+\caption{Mann-Whitney U Test: Expected Dental Procedures by Group and Setting}
 \centering
 \resizebox{\ifdim\width>\linewidth\linewidth\else\width\fi}{!}{
 \fontsize{8}{10}\selectfont
@@ -1072,10 +1065,12 @@ Primary\_Care & 3 & 4.0 & 27 & 10 & 0.287 & -0.23 & Small negative effect\\
 \end{tabular}}
 \end{table}
 
-\subsubsection{S5 Is there difference between the instructional formats
-in dentistry reported by DVM programs and the formats perceived by
-employers to have been completed by early career
-veterinarians?}\label{s5-is-there-difference-between-the-instructional-formats-in-dentistry-reported-by-dvm-programs-and-the-formats-perceived-by-employers-to-have-been-completed-by-early-career-veterinarians}
+\subsection{S5}\label{s5}
+
+\textbf{Research Question:} Is there a difference between the
+instructional formats in dentistry reported by DVM programs and the
+formats perceived by employers to have been completed by early career
+veterinarians?
 
 Both educators and employers were asked a question relating to the
 format of instruction during the clinical year.
@@ -1180,10 +1175,11 @@ Live Patient & 96.4 & 38.5 & 0.000105 *** \\
 None of These & 0.0 & 23.1 & 0.0268 * \\
 \end{longtable}
 
-\subsubsection{S6 Do educators and employers differ in their views on
-which formats of clinical instruction in dentistry should be required
-for DVM students as part of their clinical
-training?}\label{s6-do-educators-and-employers-differ-in-their-views-on-which-formats-of-clinical-instruction-in-dentistry-should-be-required-for-dvm-students-as-part-of-their-clinical-training}
+\subsection{S6}\label{s6}
+
+\textbf{Research Question:} Do educators and employers differ in their
+views on which formats of clinical instruction in dentistry should be
+required for DVM students as part of their clinical training?
 
 In Question \#21 of the employer survey, participants were asked:
 
@@ -1207,7 +1203,7 @@ Mann--Whitney U-test results, summary statistics, effect sizes, and
 ranked-biserial correlation outputs.
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.0in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
-\caption{\label{tab:6a_MannWhit_Table}Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
+\caption{Mann-Whitney U-Test Results for Clinical Instruction Formats}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
@@ -1277,11 +1273,12 @@ in sample size and variability can also exaggerate or smooth over
 apparent contrasts that don't reflect meaningful differences in central
 tendency.
 
-\subsubsection{S7 Is there a difference between the clinical dentistry
-skills that educators report DVM students are learning during their
-clinical training and the skills that employers believe recent graduates
-have completed as part of their DVM
-program?}\label{s7-is-there-a-difference-between-the-clinical-dentistry-skills-that-educators-report-dvm-students-are-learning-during-their-clinical-training-and-the-skills-that-employers-believe-recent-graduates-have-completed-as-part-of-their-dvm-program}
+\subsection{S7}\label{s7}
+
+\textbf{Research Question:} Is there a difference between the clinical
+dentistry skills that educators report DVM students are learning during
+their clinical training and the skills that employers believe recent
+graduates have completed as part of their DVM program?
 
 Both educators and employers were asked a question related to skills
 learned and practiced during the clinical year.
@@ -1425,10 +1422,11 @@ The largest difference was found in polishing. Educators selected this
 skill 82.1\% of the time, while employers selected this skill only
 30.8\% of the time. The resulting p-value was 0.00331.
 
-\subsubsection{S8 Do educators and employers differ in their opinions
-about which clinical dentistry skills DVM students should be required to
-practice or learn during their clinical
-training?}\label{s8-do-educators-and-employers-differ-in-their-opinions-about-which-clinical-dentistry-skills-dvm-students-should-be-required-to-practice-or-learn-during-their-clinical-training}
+\subsection{S8}\label{s8}
+
+\textbf{Research Question:} Do educators and employers differ in their
+opinions about which clinical dentistry skills DVM students should be
+required to practice or learn during their clinical training?
 
 In question \#26 of the employers' version of the survey, participants
 were asked:
@@ -1450,7 +1448,7 @@ the Mann--Whitney U-test results, summary statistics, effect sizes, and
 ranked-biserial correlation outputs.
 
 \begin{longtable}[t]{>{\centering\arraybackslash}p{1.3in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.5in}>{\centering\arraybackslash}p{0.65in}>{\centering\arraybackslash}p{0.55in}>{\centering\arraybackslash}p{0.75in}>{\centering\arraybackslash}p{1.1in}}
-\caption{\label{tab:8a_MannWhit_Table}Mann-Whitney U-Test Results for Clinical Procedures}\\
+\caption{Mann-Whitney U-Test Results for Clinical Procedures}\\
 \toprule
 \multicolumn{1}{c}{ } & \multicolumn{2}{c}{Median} & \multicolumn{1}{c}{N} & \multicolumn{1}{c}{ } & \multicolumn{1}{c}{Effect Size} & \multicolumn{1}{c}{ } \\
 Skill & Med (Edu) & Med (Emp) & N (Edu / Emp) & P-Value & r\_rb & Interpretation\\
@@ -1731,9 +1729,9 @@ expectations and better prepare graduates for clinical practice.
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
 \bibitem[\citeproctext]{ref-avma2019}
-American Veterinary Medical Association. 2019. {``Census of
-Veterinarians Finds Trends, Shortages, Practice Ownership.''} 2019.
-\url{https://www.avma.org/javma-news/2019-07-15/census-veterinarians-finds-trends-shortages-practice-ownership}.
+American Veterinary Medical Association. (2019). \emph{Census of
+veterinarians finds trends, shortages, practice ownership}.
+\url{https://www.avma.org/javma-news/2019-07-15/census-veterinarians-finds-trends-shortages-practice-ownership}
 
 \end{CSLReferences}
 
