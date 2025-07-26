@@ -2701,55 +2701,44 @@ ggplot(plot_data_s8, aes(y = Skill)) +
 # Discussion/Conclusion
 
 ## Interpretation of Results
+Overall, the results suggest that educators and employers are largely aligned in their perceptions of veterinary dental training and graduate competence. Both groups reported similar expectations about which skills are taught preclinically and the types of clinical experiences students receive. However, subtle differences in emphasis emerged.
 
-The results across suggest that educators and employers are largely aligned in their perceptions of dental training and graduate competence, with no statistically significant differences observed in most areas. Both groups reported similar beliefs about which skills are taught preclinically and how many procedures should be completed during clinical training. However, a few notable trends emerged. Employers tended to place slightly more importance on teaching advanced extractions and expected more hands on experience during dentistry rotations, while educators were slightly more confident in graduates' ability to interpret radio-graphs. Although these differences were not always statistically significant, they point to subtle mismatches in expectations that could be addressed through improved communication and curriculum transparency.
+Employers placed greater importance on advanced skills such as complex extractions and expected more extensive hands-on experience during clinical rotations. Educators, meanwhile, expressed slightly more confidence in graduates’ radiograph interpretation abilities. While these differences were not statistically significant, they may reflect underlying mismatches in expectations or communication gaps.
 
-Another notable finding involved perceptions of live patient instruction during clinical training. Employers expressed stronger support for live patient training than educators. In contrast, both groups showed similar views on wet labs, simulations, and didactic instruction. Overall, educators and employers largely agreed on the clinical skills that should be taught in dental training. Although differences were minimal and statistically non-significant, educators tended to place slightly greater importance on advanced procedures.
+One area of clearer divergence involved support for live patient instruction: employers were more likely than educators to emphasize its importance, whereas both groups viewed wet labs and simulations similarly. Additionally, educators consistently rated graduates as more competent across multiple skills, suggesting they may have greater confidence in current training approaches compared to employers. The fact that some employers believed certain instructional methods were not being used at all raises concerns about transparency or awareness of educational practices.
 
-The findings suggest a disconnect between educators and employers in how they perceive both student preparedness and the methods used to develop clinical skills. Educators consistently rated students as more proficient across a range of skills, indicating greater confidence in the effectiveness of current training approaches. On the other hand, employers were more cautious in their assessments, which could reflect different expectations, experiences with new graduates, or varying standards in clinical practice. The significant difference in views on instructional formats also highlights a potential misalignment in how each group understands or values different types of training. Additionally, the fact that some employers believed none of the instructional methods were being used raises concerns about transparency or awareness of educational practices. Overall, these differences point to a need for stronger collaboration between academic programs and the veterinary industry to ensure students are being prepared in ways that are both educationally sound and professionally relevant.
+## Implications
+These findings highlight opportunities to improve alignment between veterinary education and employer expectations:
 
+Transparency and Communication: Employers often underestimated the extent of dental training provided. Improving communication—through externship feedback, employer advisory boards, or graduate transition reports—could strengthen mutual understanding and trust.
 
+Curriculum Evaluation: Employers placed more emphasis on certain advanced procedures. Veterinary programs may benefit from reviewing whether current curricula adequately reflect real-world demands, particularly regarding procedures like open extractions and fluoride treatment.
 
+Clinical Exposure: Employers expected a greater number of completed procedures during clinical training. This points to a need to ensure students have sufficient opportunities for procedural repetition and experience, particularly in dentistry-specific rotations.
 
-## Implications of the Study
-
-The findings of this study have several important implications for veterinary education and the transition of new graduates into clinical practice. Overall, the results suggest that educators and small animal primary care employers are largely aligned in their expectations and beliefs about dental competencies but key perception gaps remain that may influence workforce readiness.
-
-First, while both groups generally agreed on the importance of dental training and reported similar expectations about pre-clinical and clinical instruction, employers consistently underestimated the extent of instruction that educators reported providing. This misalignment may contribute to a lack of confidence in new graduates and increase reliance on on the job training. Improved transparency and communication between DVM programs and employers could help align expectations and strengthen trust in the educational process.
-
-Second, differences in perceived importance of specific skills especially in areas like complex extractions and fluoride treatments highlight opportunities to review and potentially revise preclinical curriculum content. Employers placed greater emphasis on advanced skills than educators, suggesting a need to evaluate whether current curricula fully reflect the demands of entry level practice.
-
-Third, the trend for employers to expect a higher number of completed procedures during clinical rotations, particularly in dentistry specific settings, points to a possible mismatch in expectations about hands on experience. Veterinary programs may consider reevaluating case requirements and ensuring that students receive sufficient procedural volume to meet clinical demands upon graduation.
-
-Finally, these findings underscore the importance of ongoing collaboration between academia and clinical practice. By fostering dialogue between educators and employers, DVM programs can ensure that their graduates are not only technically competent, but also perceived as well prepared by those who hire and supervise them. Closing perception gaps may help reduce onboarding burdens, promote early career confidence, and ultimately enhance the quality of care delivered in small animal dentistry.
-
+Competency Standards: Establishing shared definitions of competence could help align assessment criteria between educators and employers, particularly for more complex skills.
 
 ## Limitations
+This study has several limitations. The small sample size—especially among employers—limits the generalizability of findings and reduces statistical power. Self-selection bias may have been introduced by recruiting participants through professional and personal networks.
 
-This study had several limitations that should be considered when interpreting the results. The sample sizes were relatively small, particularly for the employer group, which had only 13 respondents after data cleaning. This limited the statistical power of the analyses and may reduce the generalizability of the findings. In addition, the uneven group sizes restricted the types of statistical tests that could be used.
-
-The recruitment process may have introduced sampling bias. Participants were recruited through professional networks and personal outreach, which can result in self selection bias. The employer sample was disproportionately composed of practice owners compared to national demographics, which could have skewed the results toward the perspectives of individuals with more authority or stronger opinions about training and graduate readiness.
-
-There were also geographic and institutional limitations. Most employer responses came from practices located on the U.S. East Coast, while educator responses were more geographically diverse. This imbalance may limit the applicability of the findings to rural clinics or educational contexts outside of North America.
-
-All data were self reported which introduces additional concerns such as variation in how participants interpret survey items. For example, the concept of “competency” may be understood differently across respondents, even if they selected similar response options on the Likert scale.
-
-Lastly, missing data was another concern. Several participants did not complete the entire survey, and certain questions had high rates of missing or invalid responses. These gaps led to the exclusion of some data points and may have affected the robustness of the results for specific comparisons.
-
+Geographic and demographic imbalances were also present. Most employers were practice owners located on the U.S. East Coast, while educators were more geographically diverse. Additionally, all data were self-reported, which introduces potential variation in how participants interpreted survey items. Missing responses in some areas also reduced the robustness of certain comparisons.
 
 ## Recommendations
+To strengthen alignment between academic preparation and clinical practice:
 
-To improve alignment between veterinary educators and employers, several strategies should be considered. Communication between veterinary schools and employers should be strengthened, as employers often underestimated the level of preclinical and clinical dental training reported by educators. Programs can address this perception gap by sharing curricular details and competency expectations through mechanisms such as externship evaluations, employer advisory boards, or structured graduate transition reports. Clinical exposure to dental procedures should also be enhanced, particularly in dentistry rotations, where employers tended to expect a higher number of completed procedures. Increasing hands on opportunities in core dental skills, especially extractions and radiograph interpretation, can better align training with workplace expectations.
+Facilitate Dialogue: Engage stakeholders—through surveys, advisory boards, and curriculum reviews—to ensure that curricula remain relevant and responsive to clinical demands.
 
-Clarifying learning objectives and defining shared competency standards is another important step. By standardizing what constitutes competence in key skills, educators and employers can more consistently assess graduate preparedness. This is especially relevant for procedures like open extractions and radiographic interpretation. Additionally, perceived discrepancies in the importance of certain skills, such as fluoride treatment and multirooted feline extractions, should be discussed within curriculum committees and employer advisory groups. These conversations can help determine whether changes in instruction or clearer expectation setting are needed. Ongoing dialogue between veterinary programs and employers through stakeholder surveys, curriculum reviews, and alumni feedback is essential to keeping curricula responsive to the evolving demands of clinical practice.
+Clarify Expectations: Clearly communicate curricular goals and clinical training standards to both students and employers.
+
+Enhance Hands-on Training: Evaluate clinical caseloads and procedural opportunities, particularly in high-priority areas like radiograph interpretation and extractions.
+
+Standardize Competency Criteria: Adopt shared definitions of graduate readiness for core dental skills.
 
 ## Summary of Key Findings
-
-There was broad agreement between educators and employers regarding new graduate competence, curriculum content, and priorities for dental skills training. However, employers tended to slightly underestimate the extent of preclinical training that educators reported providing. Notably, employers placed significantly greater importance on teaching certain skills preclinically, specifically feline open extractions involving multiroot teeth and fluoride treatment. Additionally, employers expected a higher number of completed procedures during dentistry rotations, indicating stronger expectations for clinical repetition and hands on experience. Overall, most other comparisons between the groups revealed no statistically significant differences, with effect sizes generally small or negligible.
+Educators and employers were broadly aligned in their perceptions of dental training, but key perception gaps remain. Employers tended to underestimate preclinical instruction and expected more procedural experience during clinical rotations. They also placed greater emphasis on certain skills, such as feline open extractions and fluoride treatment. While most statistical differences were non-significant, these trends suggest opportunities to strengthen communication and curricular alignment.
 
 ## Final Thoughts
-
-This analysis highlights generally strong alignment between educators and employers on core dental competencies, but also reveals subtle perception gaps, particularly in the expected number of clinical procedures and the importance of teaching advanced extractions and fluoride treatment. Employers tended to underestimate the scope of preclinical training and expected more procedural experience during clinical rotations. These differences, though not always statistically significant, point to a need for improved communication and transparency between veterinary programs and the profession to ensure shared expectations and better prepare graduates for clinical practice.
+This study highlights strong overall agreement between educators and employers on core dental competencies while identifying important areas for improvement. Narrowing perception gaps—particularly around training volume, advanced skill instruction, and graduate readiness—can foster smoother transitions into practice, reduce onboarding burdens, and ultimately enhance the quality of veterinary dental care. Continued collaboration between veterinary programs and the profession will be essential to ensuring that graduates are both well-trained and well-understood.
 
 # Appendix
 
