@@ -1,8 +1,8 @@
 ---
 title: "Bridging the Gap:"
-subtitle: "Comparing Employer and Educator Expectations in Small Animal Dentistry"
+subtitle: " Exploring Perception Gaps in Dental Veterinary Training and Graduate Preparedness"
 author: Brock Akerman, Hanan Ali, Taylor Cesarski
-date: "July 28, 2025"
+date: "July 27, 2025"
 bibliography: references.bib
 csl: apa.csl
 format:
@@ -55,14 +55,13 @@ header-includes:
         \vspace{0.5em}
         {\large Dr. Dan Harris \par}
         \vspace{0.5em}
-        {\large July 28, 2025 \par}
+        {\large July 27, 2025 \par}
         \vspace*{4em}
       \end{center}
       \newpage
     }
   - \makeatother
   - \pretocmd{\tableofcontents}{\clearpage}{}{}
-
 ---
 
 ```{r}
